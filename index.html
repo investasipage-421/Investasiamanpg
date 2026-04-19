@@ -48,7 +48,6 @@ input{
     color:white;
 }
 
-/* ❗ FIX: button global tidak ganggu logout */
 button:not(#logoutBtn){
     width:100%;
     padding:10px;
@@ -64,7 +63,6 @@ button:not(#logoutBtn){
 /* DASHBOARD */
 #dashboard{display:none;height:100%;}
 
-/* TOP BAR */
 #topBar{
     display:flex;
     justify-content:space-between;
@@ -72,7 +70,6 @@ button:not(#logoutBtn){
     padding:10px 12px;
 }
 
-/* PROFILE */
 #profileBar{
     display:flex;
     align-items:center;
@@ -103,7 +100,6 @@ button:not(#logoutBtn){
     opacity:0.6;
 }
 
-/* 🔥 LOGOUT FIX KECIL */
 #logoutBtn{
     width:auto;
     padding:2px 6px;
@@ -157,12 +153,6 @@ button:not(#logoutBtn){
     border-radius:10px;
     margin-top:10px;
 }
-
-.switchText{
-    margin-top:10px;
-    display:block;
-    cursor:pointer;
-}
 </style>
 </head>
 
@@ -174,7 +164,7 @@ button:not(#logoutBtn){
 <input id="loginUser" placeholder="Email">
 <input id="loginPass" type="password" placeholder="Password">
 <button onclick="login()">Masuk</button>
-<p class="switchText" onclick="showRegister()">Register</p>
+<p onclick="showRegister()">Register</p>
 </div>
 
 <!-- REGISTER -->
@@ -183,40 +173,35 @@ button:not(#logoutBtn){
 <input id="regUser" placeholder="Email">
 <input id="regPass" type="password" placeholder="Password">
 <button onclick="register()">Daftar</button>
-<p class="switchText" onclick="showLogin()">Login</p>
+<p onclick="showLogin()">Login</p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard">
 
 <div id="topBar">
-
     <div id="profileBar">
         <img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
 
         <div id="userText">
-            <div id="welcome">Halo User</div>
+            <div id="welcome">ID: -</div>
             <div id="emailText">user@email.com</div>
         </div>
     </div>
 
     <button id="logoutBtn" onclick="logout()">Logout</button>
-
 </div>
 
 <div id="sidebar">
-<div class="menuItem active" onclick="showNews()">📰<br><span>Berita</span></div>
-<div class="menuItem" onclick="showQuiz()">📚<br><span>Soal</span></div>
-<div class="menuItem" onclick="showInvest()">💰<br><span>Invest</span></div>
+<div class="menuItem active">📰<br>Berita</div>
+<div class="menuItem">📚<br>Soal</div>
+<div class="menuItem">💰<br>Invest</div>
 </div>
 
 <div id="mainContent">
-
-<div id="newsBox"></div>
-<div id="quizBox" style="display:none;"></div>
-<div id="investBox" style="display:none;"></div>
-
+<div class="card">Selamat datang</div>
 </div>
+
 </div>
 
 <!-- FIREBASE -->
@@ -233,20 +218,30 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
+/* ID 4 digit */
+function getOrCreateID(email){
+    let key = "user_id_" + email;
+    let id = localStorage.getItem(key);
+
+    if(!id){
+        id = Math.floor(1000 + Math.random() * 9000);
+        localStorage.setItem(key, id);
+    }
+
+    return id;
+}
+
+/* REGISTER */
 function register(){
 let email = regUser.value;
 let pass = regPass.value;
-
-if(pass.length < 6){
-alert("Password minimal 6 karakter");
-return;
-}
 
 auth.createUserWithEmailAndPassword(email, pass)
 .then(()=>alert("Register sukses"))
 .catch(e=>alert(e.message));
 }
 
+/* LOGIN */
 function login(){
 let email = loginUser.value;
 let pass = loginPass.value;
@@ -258,22 +253,26 @@ masuk(user.user.email);
 .catch(e=>alert(e.message));
 }
 
-function masuk(user){
+/* MASUK DASHBOARD */
+function masuk(email){
 loginBox.style.display="none";
 registerBox.style.display="none";
 dashboard.style.display="block";
 
-let nama = user.split("@")[0];
-welcome.innerText = "Halo " + nama;
-emailText.innerText = user;
+let id = getOrCreateID(email);
+
+welcome.innerText = "ID: " + id;
+emailText.innerText = email;
 }
 
+/* LOGOUT */
 function logout(){
 auth.signOut();
 dashboard.style.display="none";
 loginBox.style.display="block";
 }
 
+/* SWITCH */
 function showLogin(){
 registerBox.style.display="none";
 loginBox.style.display="block";
@@ -282,27 +281,6 @@ loginBox.style.display="block";
 function showRegister(){
 loginBox.style.display="none";
 registerBox.style.display="block";
-}
-
-function showNews(){
-newsBox.style.display="block";
-quizBox.style.display="none";
-investBox.style.display="none";
-newsBox.innerHTML="<div class='card'>Berita</div>";
-}
-
-function showQuiz(){
-newsBox.style.display="none";
-quizBox.style.display="block";
-investBox.style.display="none";
-quizBox.innerHTML="<div class='card'>Soal</div>";
-}
-
-function showInvest(){
-newsBox.style.display="none";
-quizBox.style.display="none";
-investBox.style.display="block";
-investBox.innerHTML="<div class='card'>Investasi</div>";
 }
 </script>
 
