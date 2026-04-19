@@ -12,8 +12,8 @@ html,body{
     width:100%;
     height:100%;
     overflow:hidden;
-    color:white;
     background:black;
+    color:white;
 }
 
 /* LOGIN REGISTER */
@@ -52,25 +52,15 @@ button:not(#logoutBtn){
     cursor:pointer;
 }
 
-.switchText{
-    margin-top:10px;
-    font-size:13px;
-}
-
 /* DASHBOARD */
 #dashboard{display:none;height:100%;}
 
+/* TOP BAR */
 #topBar{
     display:flex;
     justify-content:space-between;
     align-items:center;
     padding:10px;
-}
-
-#profileBar{
-    display:flex;
-    align-items:center;
-    gap:8px;
 }
 
 #profilePic{
@@ -99,34 +89,31 @@ button:not(#logoutBtn){
     cursor:pointer;
 }
 
-/* SIDEBAR */
-#sidebar{
-    width:80px;
-    height:100%;
-    float:left;
+/* MENU ICON */
+.menuBar{
+    display:flex;
+    justify-content:space-around;
+    padding:12px;
     background:#111;
-    padding-top:20px;
-    text-align:center;
 }
 
 .menuItem{
-    margin:15px 0;
+    text-align:center;
     cursor:pointer;
-    font-size:18px;
+}
+
+.menuItem img{
+    width:35px;
+    height:35px;
 }
 
 /* CONTENT */
-#mainContent{
-    margin-left:80px;
-    padding:15px;
-}
-
 .card{
     background:white;
     color:black;
     padding:15px;
     border-radius:10px;
-    margin-top:10px;
+    margin:10px;
 }
 </style>
 </head>
@@ -140,7 +127,7 @@ button:not(#logoutBtn){
 <input id="loginPass" type="password" placeholder="Password">
 <button onclick="login()">Masuk</button>
 
-<p class="switchText">
+<p>
 Belum punya akun?
 <span onclick="showRegister()" style="color:cyan;cursor:pointer;">
 Registrasi sekarang
@@ -155,7 +142,7 @@ Registrasi sekarang
 <input id="regPass" type="password" placeholder="Password">
 <button onclick="register()">Daftar</button>
 
-<p class="switchText">
+<p>
 Sudah punya akun?
 <span onclick="showLogin()" style="color:cyan;cursor:pointer;">
 Login sekarang
@@ -166,10 +153,10 @@ Login sekarang
 <!-- DASHBOARD -->
 <div id="dashboard">
 
+<!-- TOP -->
 <div id="topBar">
     <div style="display:flex;align-items:center;gap:8px;">
         <img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
-
         <div>
             <div id="welcome">ID: -</div>
             <div id="emailText">email</div>
@@ -179,21 +166,30 @@ Login sekarang
     <button id="logoutBtn" onclick="logout()">Logout</button>
 </div>
 
-<!-- SIDEBAR -->
-<div id="sidebar">
-<div class="menuItem" onclick="showNews()">📰</div>
-<div class="menuItem" onclick="showQuiz()">📚</div>
-<div class="menuItem" onclick="showInvest()">💰</div>
+<!-- ICON MENU -->
+<div class="menuBar">
+
+    <div class="menuItem" onclick="showNews()">
+        <img src="https://cdn-icons-png.flaticon.com/512/21/21601.png">
+        <div style="font-size:11px;">Berita</div>
+    </div>
+
+    <div class="menuItem" onclick="showQuiz()">
+        <img src="https://cdn-icons-png.flaticon.com/512/29/29302.png">
+        <div style="font-size:11px;">Soal</div>
+    </div>
+
+    <div class="menuItem" onclick="showInvest()">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
+        <div style="font-size:11px;">Invest</div>
+    </div>
+
 </div>
 
 <!-- CONTENT -->
-<div id="mainContent">
-
 <div id="newsBox" class="card">Berita</div>
 <div id="quizBox" class="card" style="display:none;">Soal</div>
 <div id="investBox" class="card" style="display:none;">Investasi</div>
-
-</div>
 
 </div>
 
@@ -213,32 +209,26 @@ const auth = firebase.auth();
 
 /* ID 4 digit */
 function getOrCreateID(email){
-    let key = "id_" + email;
-    let id = localStorage.getItem(key);
+let key="id_"+email;
+let id=localStorage.getItem(key);
 
-    if(!id){
-        id = Math.floor(1000 + Math.random()*9000);
-        localStorage.setItem(key,id);
-    }
-    return id;
+if(!id){
+id=Math.floor(1000+Math.random()*9000);
+localStorage.setItem(key,id);
+}
+return id;
 }
 
 /* REGISTER */
 function register(){
-let email = regUser.value;
-let pass = regPass.value;
-
-auth.createUserWithEmailAndPassword(email, pass)
+auth.createUserWithEmailAndPassword(regUser.value,regPass.value)
 .then(()=>alert("Register sukses"))
 .catch(e=>alert(e.message));
 }
 
 /* LOGIN */
 function login(){
-let email = loginUser.value;
-let pass = loginPass.value;
-
-auth.signInWithEmailAndPassword(email, pass)
+auth.signInWithEmailAndPassword(loginUser.value,loginPass.value)
 .then(u=>masuk(u.user.email))
 .catch(e=>alert(e.message));
 }
@@ -249,10 +239,8 @@ loginBox.style.display="none";
 registerBox.style.display="none";
 dashboard.style.display="block";
 
-let id = getOrCreateID(email);
-
-welcome.innerText = "ID: " + id;
-emailText.innerText = email;
+welcome.innerText="ID: "+getOrCreateID(email);
+emailText.innerText=email;
 }
 
 /* LOGOUT */
@@ -278,24 +266,18 @@ function showNews(){
 newsBox.style.display="block";
 quizBox.style.display="none";
 investBox.style.display="none";
-
-newsBox.innerHTML="📢 Berita terbaru muncul di sini";
 }
 
 function showQuiz(){
 newsBox.style.display="none";
 quizBox.style.display="block";
 investBox.style.display="none";
-
-quizBox.innerHTML="📚 Soal latihan muncul di sini";
 }
 
 function showInvest(){
 newsBox.style.display="none";
 quizBox.style.display="none";
 investBox.style.display="block";
-
-investBox.innerHTML="💰 Investasi mulai dari kecil";
 }
 </script>
 
