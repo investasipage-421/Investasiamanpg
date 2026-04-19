@@ -9,47 +9,47 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
 
 html,body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:black;
-    color:white;
+width:100%;
+height:100%;
+overflow:hidden;
+background:black;
+color:white;
 }
 
-/* LOGIN REGISTER */
+/* LOGIN */
 .box{
-    background:#111;
-    padding:25px;
-    border-radius:15px;
-    width:90%;
-    max-width:350px;
-    text-align:center;
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
+background:#111;
+padding:25px;
+border-radius:15px;
+width:90%;
+max-width:350px;
+text-align:center;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
 }
 
 input{
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-    border:none;
-    border-radius:8px;
-    background:#222;
-    color:white;
+width:100%;
+padding:10px;
+margin:8px 0;
+border:none;
+border-radius:8px;
+background:#222;
+color:white;
 }
 
 button:not(#logoutBtn){
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    border:none;
-    border-radius:8px;
-    font-weight:bold;
-    background:white;
-    color:black;
-    cursor:pointer;
+width:100%;
+padding:10px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+font-weight:bold;
+background:white;
+color:black;
+cursor:pointer;
 }
 
 /* DASHBOARD */
@@ -57,63 +57,76 @@ button:not(#logoutBtn){
 
 /* TOP BAR */
 #topBar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:10px;
 }
 
 #profilePic{
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    border:2px solid white;
+width:38px;
+height:38px;
+border-radius:50%;
+border:2px solid white;
 }
 
 #welcome{
-    font-size:12px;
-    font-weight:bold;
+font-size:12px;
+font-weight:bold;
 }
 
 #emailText{
-    font-size:10px;
-    opacity:0.7;
+font-size:10px;
+opacity:0.7;
 }
 
 #logoutBtn{
-    font-size:10px;
-    padding:3px 6px;
-    border:none;
-    border-radius:5px;
-    background:white;
-    cursor:pointer;
+font-size:10px;
+padding:3px 6px;
+border:none;
+border-radius:5px;
+background:white;
+cursor:pointer;
 }
 
-/* MENU ICON */
-.menuBar{
-    display:flex;
-    justify-content:space-around;
-    padding:12px;
-    background:#111;
+/* SIDEBAR KIRI */
+#sidebar{
+position:fixed;
+left:0;
+top:70px;
+width:70px;
+background:#111;
+height:auto;
+padding:10px 0;
+border-right:1px solid #333;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:25px;
 }
 
 .menuItem{
-    text-align:center;
-    cursor:pointer;
+text-align:center;
+cursor:pointer;
 }
 
 .menuItem img{
-    width:35px;
-    height:35px;
+width:30px;
+height:30px;
 }
 
-/* CONTENT */
+/* CONTENT SHIFT */
+#content{
+padding:15px;
+margin-left:80px;
+}
+
 .card{
-    background:white;
-    color:black;
-    padding:15px;
-    border-radius:10px;
-    margin:10px;
+background:white;
+color:black;
+padding:15px;
+border-radius:10px;
+margin:10px;
 }
 </style>
 </head>
@@ -155,41 +168,45 @@ Login sekarang
 
 <!-- TOP -->
 <div id="topBar">
-    <div style="display:flex;align-items:center;gap:8px;">
-        <img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
-        <div>
-            <div id="welcome">ID: -</div>
-            <div id="emailText">email</div>
-        </div>
-    </div>
-
-    <button id="logoutBtn" onclick="logout()">Logout</button>
+<div style="display:flex;align-items:center;gap:8px;">
+<img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
+<div>
+<div id="welcome">ID: -</div>
+<div id="emailText">email</div>
+</div>
 </div>
 
-<!-- ICON MENU -->
-<div class="menuBar">
+<button id="logoutBtn" onclick="logout()">Logout</button>
+</div>
 
-    <div class="menuItem" onclick="showNews()">
-        <img src="https://cdn-icons-png.flaticon.com/512/21/21601.png">
-        <div style="font-size:11px;">Berita</div>
-    </div>
+<!-- SIDEBAR KIRI -->
+<div id="sidebar">
 
-    <div class="menuItem" onclick="showQuiz()">
-        <img src="https://cdn-icons-png.flaticon.com/512/29/29302.png">
-        <div style="font-size:11px;">Soal</div>
-    </div>
+<div onclick="showNews()" class="menuItem">
+<img src="https://cdn-icons-png.flaticon.com/512/21/21601.png">
+<div style="font-size:10px;">Berita</div>
+</div>
 
-    <div class="menuItem" onclick="showInvest()">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
-        <div style="font-size:11px;">Invest</div>
-    </div>
+<div onclick="showQuiz()" class="menuItem">
+<img src="https://cdn-icons-png.flaticon.com/512/29/29302.png">
+<div style="font-size:10px;">Soal</div>
+</div>
+
+<div onclick="showInvest()" class="menuItem">
+<img src="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
+<div style="font-size:10px;">Invest</div>
+</div>
 
 </div>
 
 <!-- CONTENT -->
+<div id="content">
+
 <div id="newsBox" class="card">Berita</div>
 <div id="quizBox" class="card" style="display:none;">Soal</div>
 <div id="investBox" class="card" style="display:none;">Investasi</div>
+
+</div>
 
 </div>
 
@@ -199,9 +216,9 @@ Login sekarang
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDZ5rTxZkIueebv_JRYXDBAtZiClvvHgGw",
-  authDomain: "page421.firebaseapp.com",
-  projectId: "page421",
+apiKey: "AIzaSyDZ5rTxZkIueebv_JRYXDBAtZiClvvHgGw",
+authDomain: "page421.firebaseapp.com",
+projectId: "page421",
 };
 
 firebase.initializeApp(firebaseConfig);
