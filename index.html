@@ -52,10 +52,21 @@ color:black;
 cursor:pointer;
 }
 
+/* LOADING */
+#loading{
+display:none;
+position:absolute;
+top:10px;
+left:50%;
+transform:translateX(-50%);
+color:white;
+font-size:12px;
+}
+
 /* DASHBOARD */
 #dashboard{display:none;height:100%;}
 
-/* TOP BAR */
+/* TOP */
 #topBar{
 display:flex;
 justify-content:space-between;
@@ -94,7 +105,7 @@ cursor:pointer;
 position:fixed;
 left:0;
 top:70px;
-width:70px;
+width:75px;
 background:#111;
 height:auto;
 padding:10px 0;
@@ -111,14 +122,14 @@ cursor:pointer;
 }
 
 .menuItem img{
-width:30px;
-height:30px;
+width:32px;
+height:32px;
 }
 
-/* CONTENT SHIFT */
+/* CONTENT */
 #content{
 padding:15px;
-margin-left:80px;
+margin-left:85px;
 }
 
 .card{
@@ -132,6 +143,9 @@ margin:10px;
 </head>
 
 <body>
+
+<!-- LOADING -->
+<div id="loading">Loading...</div>
 
 <!-- LOGIN -->
 <div class="box" id="loginBox">
@@ -179,21 +193,21 @@ Login sekarang
 <button id="logoutBtn" onclick="logout()">Logout</button>
 </div>
 
-<!-- SIDEBAR KIRI -->
+<!-- SIDEBAR -->
 <div id="sidebar">
 
 <div onclick="showNews()" class="menuItem">
-<img src="https://cdn-icons-png.flaticon.com/512/21/21601.png">
+<img src="https://img.icons8.com/color/48/news.png">
 <div style="font-size:10px;">Berita</div>
 </div>
 
 <div onclick="showQuiz()" class="menuItem">
-<img src="https://cdn-icons-png.flaticon.com/512/29/29302.png">
+<img src="https://img.icons8.com/color/48/book-shelf.png">
 <div style="font-size:10px;">Soal</div>
 </div>
 
 <div onclick="showInvest()" class="menuItem">
-<img src="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
+<img src="https://img.icons8.com/color/48/coins.png">
 <div style="font-size:10px;">Invest</div>
 </div>
 
@@ -238,16 +252,32 @@ return id;
 
 /* REGISTER */
 function register(){
+loading.style.display="block";
+
 auth.createUserWithEmailAndPassword(regUser.value,regPass.value)
-.then(()=>alert("Register sukses"))
-.catch(e=>alert(e.message));
+.then(()=>{
+loading.style.display="none";
+alert("Register sukses");
+})
+.catch(e=>{
+loading.style.display="none";
+alert(e.message);
+});
 }
 
 /* LOGIN */
 function login(){
+loading.style.display="block";
+
 auth.signInWithEmailAndPassword(loginUser.value,loginPass.value)
-.then(u=>masuk(u.user.email))
-.catch(e=>alert(e.message));
+.then(u=>{
+loading.style.display="none";
+masuk(u.user.email);
+})
+.catch(e=>{
+loading.style.display="none";
+alert(e.message);
+});
 }
 
 /* MASUK */
