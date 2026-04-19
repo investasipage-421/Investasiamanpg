@@ -1,24 +1,16 @@
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-getAuth,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword,
-signOut
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-/* CONFIG */
+<script>
 const firebaseConfig = {
   apiKey: "AIzaSyDZ5rTxZkIueebv_JRYXDBAtZiClvvHgGw",
   authDomain: "page421.firebaseapp.com",
   projectId: "page421",
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+/* Firebase CDN (bukan module) */
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
 /* REGISTER */
-window.register = function(){
+function register(){
 let email = regUser.value;
 let pass = regPass.value;
 
@@ -27,7 +19,7 @@ alert("Password minimal 6 karakter");
 return;
 }
 
-createUserWithEmailAndPassword(auth, email, pass)
+auth.createUserWithEmailAndPassword(email, pass)
 .then(()=>{
 alert("Register berhasil");
 showLogin();
@@ -36,11 +28,11 @@ showLogin();
 }
 
 /* LOGIN */
-window.login = function(){
+function login(){
 let email = loginUser.value;
 let pass = loginPass.value;
 
-signInWithEmailAndPassword(auth, email, pass)
+auth.signInWithEmailAndPassword(email, pass)
 .then((user)=>{
 masuk(user.user.email);
 })
@@ -48,39 +40,36 @@ masuk(user.user.email);
 }
 
 /* MASUK */
-window.masuk = function(user){
+function masuk(user){
 loginBox.style.display="none";
 registerBox.style.display="none";
 dashboard.style.display="block";
 
 welcome.innerText="Halo " + user;
-
 showNews();
 overlay.style.display="flex";
 }
 
 /* LOGOUT */
-window.logout = function(){
-signOut(auth);
+function logout(){
+auth.signOut();
 dashboard.style.display="none";
 loginBox.style.display="block";
 overlay.style.display="none";
 }
 
-/* UI FUNCTIONS (WAJIB BIAR TIDAK HILANG) */
-window.showLogin = function(){
+/* SWITCH */
+function showLogin(){
 registerBox.style.display="none";
 loginBox.style.display="block";
 }
 
-window.showRegister = function(){
+function showRegister(){
 loginBox.style.display="none";
 registerBox.style.display="block";
 }
-
-window.setActiveMenu = setActiveMenu;
-window.showNews = showNews;
-window.showQuiz = showQuiz;
-window.showInvest = showInvest;
-window.tutupPopup = tutupPopup;
 </script>
+
+<!-- Firebase CDN WAJIB -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
