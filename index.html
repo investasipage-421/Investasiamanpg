@@ -1,106 +1,13 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JB Uuusb</title>
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
-
-html,body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    color:white;
-}
-
-body::before{
-    content:"";
-    position:fixed;
-    width:100%;
-    height:100%;
-    background:#000;
-    z-index:-1;
-}
-
-.box{
-    background:#111;
-    padding:25px;
-    border-radius:15px;
-    width:90%;
-    max-width:350px;
-    text-align:center;
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-}
-
-input{
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-    border:none;
-    border-radius:8px;
-    background:#222;
-    color:white;
-}
-
-button{
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    border:none;
-    border-radius:8px;
-    font-size:16px;
-    font-weight:bold;
-    background:white;
-    color:black;
-}
-
-#dashboard{
-    display:none;
-    text-align:center;
-    margin-top:100px;
-}
-</style>
-</head>
-
-<body>
-
-<!-- LOGIN -->
-<div class="box" id="loginBox">
-<h2>Login</h2>
-<input id="loginUser" placeholder="Email">
-<input id="loginPass" type="password" placeholder="Password">
-<button onclick="login()">Masuk</button>
-</div>
-
-<!-- REGISTER -->
-<div class="box" id="registerBox" style="display:none;">
-<h2>Register</h2>
-<input id="regUser" placeholder="Email">
-<input id="regPass" type="password" placeholder="Password">
-<button onclick="register()">Daftar</button>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard">
-<h2 id="welcome"></h2>
-<button onclick="logout()">Logout</button>
-</div>
-
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
+import {
 getAuth,
 createUserWithEmailAndPassword,
 signInWithEmailAndPassword,
 signOut
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+/* 🔥 CONFIG FIREBASE KAMU */
 const firebaseConfig = {
   apiKey: "AIzaSyDZ5rTxZkIueebv_JRYXDBAtZiClvvHgGw",
   authDomain: "page421.firebaseapp.com",
@@ -110,32 +17,41 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-/* REGISTER */
+/* REGISTER (GANTI LOCALSTORAGE) */
 window.register = function(){
 let email = regUser.value;
 let pass = regPass.value;
 
 createUserWithEmailAndPassword(auth, email, pass)
 .then(()=>{
-alert("Register sukses");
-registerBox.style.display="none";
-loginBox.style.display="block";
+alert("Register berhasil");
+showLogin();
 })
 .catch(e=>alert(e.message));
 }
 
-/* LOGIN */
+/* LOGIN (ONLINE) */
 window.login = function(){
 let email = loginUser.value;
 let pass = loginPass.value;
 
 signInWithEmailAndPassword(auth, email, pass)
 .then((user)=>{
-loginBox.style.display="none";
-dashboard.style.display="block";
-welcome.innerText="Halo " + user.user.email;
+masuk(user.user.email);
 })
 .catch(e=>alert(e.message));
+}
+
+/* MASUK */
+window.masuk = function(user){
+loginBox.style.display="none";
+registerBox.style.display="none";
+dashboard.style.display="block";
+
+welcome.innerText="Halo " + user;
+
+showNews();
+overlay.style.display="flex";
 }
 
 /* LOGOUT */
@@ -143,8 +59,15 @@ window.logout = function(){
 signOut(auth);
 dashboard.style.display="none";
 loginBox.style.display="block";
+overlay.style.display="none";
 }
-</script>
 
-</body>
-</html>
+/* MENU & UI TETAP PUNYA KAMU */
+window.setActiveMenu = setActiveMenu;
+window.showNews = showNews;
+window.showQuiz = showQuiz;
+window.showInvest = showInvest;
+window.tutupPopup = tutupPopup;
+window.showLogin = showLogin;
+window.showRegister = showRegister;
+</script>
