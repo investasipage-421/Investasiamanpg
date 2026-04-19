@@ -100,7 +100,7 @@ background:white;
 cursor:pointer;
 }
 
-/* SIDEBAR KIRI */
+/* SIDEBAR */
 #sidebar{
 position:fixed;
 left:0;
@@ -113,17 +113,33 @@ border-right:1px solid #333;
 display:flex;
 flex-direction:column;
 align-items:center;
-gap:25px;
+gap:20px;
 }
 
+/* MENU ITEM + ANIMASI */
 .menuItem{
 text-align:center;
 cursor:pointer;
+padding:6px;
+border-radius:10px;
+transition:0.2s;
 }
 
 .menuItem img{
 width:32px;
 height:32px;
+}
+
+/* ACTIVE PUTIH */
+.menuItem.active{
+background:white;
+color:black;
+transform:scale(1.05);
+}
+
+/* klik animasi */
+.menuItem:active{
+transform:scale(0.9);
 }
 
 /* CONTENT */
@@ -144,7 +160,6 @@ margin:10px;
 
 <body>
 
-<!-- LOADING -->
 <div id="loading">Loading...</div>
 
 <!-- LOGIN -->
@@ -196,17 +211,17 @@ Login sekarang
 <!-- SIDEBAR -->
 <div id="sidebar">
 
-<div onclick="showNews()" class="menuItem">
+<div class="menuItem" onclick="showNews()">
 <img src="https://img.icons8.com/color/48/news.png">
 <div style="font-size:10px;">Berita</div>
 </div>
 
-<div onclick="showQuiz()" class="menuItem">
+<div class="menuItem" onclick="showQuiz()">
 <img src="https://img.icons8.com/color/48/book-shelf.png">
 <div style="font-size:10px;">Soal</div>
 </div>
 
-<div onclick="showInvest()" class="menuItem">
+<div class="menuItem" onclick="showInvest()">
 <img src="https://img.icons8.com/color/48/coins.png">
 <div style="font-size:10px;">Invest</div>
 </div>
@@ -238,7 +253,7 @@ projectId: "page421",
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-/* ID 4 digit */
+/* ID */
 function getOrCreateID(email){
 let key="id_"+email;
 let id=localStorage.getItem(key);
@@ -308,20 +323,31 @@ loginBox.style.display="none";
 registerBox.style.display="block";
 }
 
-/* MENU */
+/* MENU + ANIMASI AKTIF */
+function setActive(index){
+let items=document.querySelectorAll(".menuItem");
+items.forEach((el,i)=>{
+el.classList.remove("active");
+if(i===index) el.classList.add("active");
+});
+}
+
 function showNews(){
+setActive(0);
 newsBox.style.display="block";
 quizBox.style.display="none";
 investBox.style.display="none";
 }
 
 function showQuiz(){
+setActive(1);
 newsBox.style.display="none";
 quizBox.style.display="block";
 investBox.style.display="none";
 }
 
 function showInvest(){
+setActive(2);
 newsBox.style.display="none";
 quizBox.style.display="none";
 investBox.style.display="block";
