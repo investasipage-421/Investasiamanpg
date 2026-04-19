@@ -68,6 +68,66 @@ button{
 
 #dashboard{display:none;height:100%;}
 
+/* TOP BAR */
+#topBar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px;
+}
+
+/* PROFILE */
+#profileBar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    max-width:70%;
+}
+
+#profilePic{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:2px solid white;
+    object-fit:cover;
+}
+
+#userText{
+    display:flex;
+    flex-direction:column;
+    line-height:1.1;
+}
+
+#welcome{
+    font-size:12px;
+    font-weight:bold;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:120px;
+}
+
+#emailText{
+    font-size:9px;
+    opacity:0.6;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:120px;
+}
+
+/* LOGOUT */
+#logoutBtn{
+    padding:4px 8px;
+    font-size:10px;
+    border-radius:6px;
+    background:white;
+    color:black;
+    border:none;
+    cursor:pointer;
+}
+
+/* SIDEBAR */
 #sidebar{
     width:80px;
     height:100%;
@@ -100,27 +160,6 @@ button{
     margin-left:80px;
     padding:15px;
     height:100vh;
-    position:relative;
-}
-
-/* 🔥 LOGOUT FIX */
-#logoutBtn{
-    position:absolute;
-    top:10px;
-    right:10px;
-    padding:3px 7px;
-    font-size:10px;
-    border-radius:6px;
-    background:#fff;
-    color:#000;
-    border:none;
-    cursor:pointer;
-    width:auto;
-    font-weight:bold;
-}
-
-#logoutBtn:hover{
-    opacity:0.8;
 }
 
 .card{
@@ -141,31 +180,35 @@ button{
 <input id="loginUser" placeholder="Email">
 <input id="loginPass" type="password" placeholder="Password">
 <button onclick="login()">Masuk</button>
-
-<p class="switchText" onclick="showRegister()">
-Belum punya akun? Registrasi sekarang
-</p>
+<p class="switchText" onclick="showRegister()">Belum punya akun? Register</p>
 </div>
 
 <!-- REGISTER -->
 <div class="box" id="registerBox" style="display:none;">
 <h2>Register</h2>
 <input id="regUser" placeholder="Email">
-<input id="regPass" type="password" placeholder="Password 6 karakter">
-
-<p style="font-size:12px;opacity:0.7;margin-top:-5px;">
-Password minimal 6 karakter
-</p>
-
+<input id="regPass" type="password" placeholder="Password (min 6)">
 <button onclick="register()">Daftar</button>
-
-<p class="switchText" onclick="showLogin()">
-Sudah punya akun? Login sekarang
-</p>
+<p class="switchText" onclick="showLogin()">Sudah punya akun? Login</p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard">
+
+<div id="topBar">
+
+    <div id="profileBar">
+        <img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
+
+        <div id="userText">
+            <div id="welcome">Halo User</div>
+            <div id="emailText">user@email.com</div>
+        </div>
+    </div>
+
+    <button id="logoutBtn" onclick="logout()">Logout</button>
+
+</div>
 
 <div id="sidebar">
 <div class="menuItem active" onclick="showNews()">📰<br><span>Berita</span></div>
@@ -174,10 +217,6 @@ Sudah punya akun? Login sekarang
 </div>
 
 <div id="mainContent">
-
-<button id="logoutBtn" onclick="logout()">Logout</button>
-
-<div id="welcome"></div>
 
 <div id="newsBox"></div>
 <div id="quizBox" style="display:none;"></div>
@@ -205,11 +244,13 @@ function register(){
 let email = regUser.value;
 let pass = regPass.value;
 
+if(pass.length < 6){
+alert("Password minimal 6 karakter");
+return;
+}
+
 auth.createUserWithEmailAndPassword(email, pass)
-.then(()=>{
-alert("Register sukses");
-showLogin();
-})
+.then(()=>alert("Register sukses"))
 .catch(e=>alert(e.message));
 }
 
@@ -231,8 +272,10 @@ loginBox.style.display="none";
 registerBox.style.display="none";
 dashboard.style.display="block";
 
-welcome.innerText="Halo " + user;
-showNews();
+let nama = user.split("@")[0].replace(/\./g," ");
+
+welcome.innerText = "Halo " + nama;
+emailText.innerText = user;
 }
 
 /* LOGOUT */
