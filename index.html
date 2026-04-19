@@ -102,19 +102,6 @@ button{
     height:100vh;
 }
 
-#profileBar{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-#profilePic{
-    width:50px;
-    height:50px;
-    border-radius:50%;
-    border:2px solid white;
-}
-
 .card{
     background:white;
     color:black;
@@ -133,7 +120,10 @@ button{
 <input id="loginUser" placeholder="Email">
 <input id="loginPass" type="password" placeholder="Password">
 <button onclick="login()">Masuk</button>
-<p class="switchText" onclick="showRegister()">Register</p>
+
+<p class="switchText" onclick="showRegister()">
+Belum punya akun? Registrasi sekarang
+</p>
 </div>
 
 <!-- REGISTER -->
@@ -142,7 +132,10 @@ button{
 <input id="regUser" placeholder="Email">
 <input id="regPass" type="password" placeholder="Password">
 <button onclick="register()">Daftar</button>
-<p class="switchText" onclick="showLogin()">Login</p>
+
+<p class="switchText" onclick="showLogin()">
+Sudah punya akun? Login sekarang
+</p>
 </div>
 
 <!-- DASHBOARD -->
@@ -158,10 +151,7 @@ button{
 
 <button onclick="logout()">Logout</button>
 
-<div id="profileBar">
-<img id="profilePic">
-<p id="welcome"></p>
-</div>
+<div id="welcome"></div>
 
 <div id="newsBox"></div>
 <div id="quizBox" style="display:none;"></div>
@@ -188,11 +178,6 @@ const auth = firebase.auth();
 function register(){
 let email = regUser.value;
 let pass = regPass.value;
-
-if(pass.length < 6){
-alert("Minimal 6 karakter");
-return;
-}
 
 auth.createUserWithEmailAndPassword(email, pass)
 .then(()=>{
