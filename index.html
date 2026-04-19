@@ -59,21 +59,10 @@ button{
     color:black;
 }
 
-.switchText{
-    color:white;
-    margin-top:12px;
-    display:block;
-    cursor:pointer;
-}
-
-#dashboard{display:none;height:100%;}
-
-.card{
-    background:white;
-    color:black;
-    padding:15px;
-    border-radius:10px;
-    margin-top:10px;
+#dashboard{
+    display:none;
+    text-align:center;
+    margin-top:100px;
 }
 </style>
 </head>
@@ -83,35 +72,35 @@ button{
 <!-- LOGIN -->
 <div class="box" id="loginBox">
 <h2>Login</h2>
-<input id="loginUser" placeholder="Username">
+<input id="loginUser" placeholder="Email">
 <input id="loginPass" type="password" placeholder="Password">
 <button onclick="login()">Masuk</button>
-<p class="switchText" onclick="showRegister()">Belum punya akun? Register</p>
 </div>
 
 <!-- REGISTER -->
 <div class="box" id="registerBox" style="display:none;">
 <h2>Register</h2>
-<input id="regUser" placeholder="Username">
+<input id="regUser" placeholder="Email">
 <input id="regPass" type="password" placeholder="Password">
 <button onclick="register()">Daftar</button>
-<p class="switchText" onclick="showLogin()">Sudah punya akun? Login</p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard">
-<h3 id="welcome"></h3>
+<h2 id="welcome"></h2>
 <button onclick="logout()">Logout</button>
-
-<div class="card">Dashboard Firebase aktif 🚀</div>
 </div>
 
-<!-- FIREBASE SCRIPT -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { 
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-/* 🔑 CONFIG KAMU */
 const firebaseConfig = {
   apiKey: "AIzaSyDZ5rTxZkIueebv_JRYXDBAtZiClvvHgGw",
   authDomain: "page421.firebaseapp.com",
@@ -121,49 +110,32 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-/* SWITCH */
-window.showRegister = function(){
-loginBox.style.display="none";
-registerBox.style.display="block";
-}
-
-window.showLogin = function(){
-registerBox.style.display="none";
-loginBox.style.display="block";
-}
-
 /* REGISTER */
 window.register = function(){
-let email = regUser.value + "@gmail.com";
+let email = regUser.value;
 let pass = regPass.value;
 
 createUserWithEmailAndPassword(auth, email, pass)
 .then(()=>{
-alert("Register berhasil");
-showLogin();
+alert("Register sukses");
+registerBox.style.display="none";
+loginBox.style.display="block";
 })
 .catch(e=>alert(e.message));
 }
 
 /* LOGIN */
 window.login = function(){
-let email = loginUser.value + "@gmail.com";
+let email = loginUser.value;
 let pass = loginPass.value;
 
 signInWithEmailAndPassword(auth, email, pass)
 .then((user)=>{
-masuk(user.user.email);
-})
-.catch(()=>alert("Login gagal"));
-}
-
-/* MASUK */
-function masuk(email){
 loginBox.style.display="none";
-registerBox.style.display="none";
 dashboard.style.display="block";
-
-welcome.innerText="Halo " + email;
+welcome.innerText="Halo " + user.user.email;
+})
+.catch(e=>alert(e.message));
 }
 
 /* LOGOUT */
