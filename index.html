@@ -129,8 +129,15 @@ Belum punya akun? Registrasi sekarang
 <!-- REGISTER -->
 <div class="box" id="registerBox" style="display:none;">
 <h2>Register</h2>
+
 <input id="regUser" placeholder="Email">
-<input id="regPass" type="password" placeholder="Password">
+
+<input id="regPass" type="password" placeholder="Password 6 karakter">
+
+<p style="font-size:12px;opacity:0.7;margin-top:-5px;">
+Password minimal 6 karakter
+</p>
+
 <button onclick="register()">Daftar</button>
 
 <p class="switchText" onclick="showLogin()">
@@ -178,6 +185,11 @@ const auth = firebase.auth();
 function register(){
 let email = regUser.value;
 let pass = regPass.value;
+
+if(pass.length < 6){
+alert("Password minimal 6 karakter");
+return;
+}
 
 auth.createUserWithEmailAndPassword(email, pass)
 .then(()=>{
