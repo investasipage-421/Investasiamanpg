@@ -7,7 +7,7 @@ signInWithEmailAndPassword,
 signOut
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-/* 🔥 CONFIG FIREBASE KAMU */
+/* CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyDZ5rTxZkIueebv_JRYXDBAtZiClvvHgGw",
   authDomain: "page421.firebaseapp.com",
@@ -17,10 +17,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-/* REGISTER (GANTI LOCALSTORAGE) */
+/* REGISTER */
 window.register = function(){
 let email = regUser.value;
 let pass = regPass.value;
+
+if(pass.length < 6){
+alert("Password minimal 6 karakter");
+return;
+}
 
 createUserWithEmailAndPassword(auth, email, pass)
 .then(()=>{
@@ -30,7 +35,7 @@ showLogin();
 .catch(e=>alert(e.message));
 }
 
-/* LOGIN (ONLINE) */
+/* LOGIN */
 window.login = function(){
 let email = loginUser.value;
 let pass = loginPass.value;
@@ -62,12 +67,20 @@ loginBox.style.display="block";
 overlay.style.display="none";
 }
 
-/* MENU & UI TETAP PUNYA KAMU */
+/* UI FUNCTIONS (WAJIB BIAR TIDAK HILANG) */
+window.showLogin = function(){
+registerBox.style.display="none";
+loginBox.style.display="block";
+}
+
+window.showRegister = function(){
+loginBox.style.display="none";
+registerBox.style.display="block";
+}
+
 window.setActiveMenu = setActiveMenu;
 window.showNews = showNews;
 window.showQuiz = showQuiz;
 window.showInvest = showInvest;
 window.tutupPopup = tutupPopup;
-window.showLogin = showLogin;
-window.showRegister = showRegister;
 </script>
