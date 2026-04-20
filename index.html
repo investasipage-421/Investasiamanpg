@@ -2,105 +2,125 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Firebase Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>investasi page421</title>
 
 <style>
-body{
-  font-family: Arial;
-  background:#111;
-  color:white;
-  text-align:center;
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
+
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+background:black;
+color:white;
 }
+
 .box{
-  width:90%;
-  max-width:350px;
-  margin:100px auto;
-  background:#222;
-  padding:20px;
-  border-radius:10px;
+background:#111;
+padding:25px;
+border-radius:15px;
+width:90%;
+max-width:350px;
+text-align:center;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
 }
+
 input{
-  width:100%;
-  padding:10px;
-  margin:8px 0;
+width:100%;
+padding:10px;
+margin:8px 0;
+border:none;
+border-radius:8px;
+background:#222;
+color:white;
 }
+
 button{
-  width:100%;
-  padding:10px;
-  margin-top:8px;
-  font-weight:bold;
+width:100%;
+padding:10px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+font-weight:bold;
+background:white;
+color:black;
 }
+
+#dashboard{display:none;}
 </style>
 </head>
 
 <body>
 
-<div class="box">
-<h2>Firebase Login</h2>
-
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-
-<button onclick="register()">Daftar</button>
-<button onclick="login()">Login</button>
-<button onclick="logout()">Logout</button>
-
-<p id="status"></p>
+<div class="box" id="loginBox">
+<h2>Login</h2>
+<input id="loginUser" placeholder="Email">
+<input id="loginPass" type="password" placeholder="Password">
+<button onclick="login()">Masuk</button>
+<p onclick="register()" style="color:cyan;cursor:pointer;">Daftar</p>
 </div>
 
-<script type="module">
+<div id="dashboard">
+<h2>Berhasil Login</h2>
+<button onclick="logout()">Logout</button>
+</div>
 
-// 🔥 Firebase
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { 
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
-// 🔑 CONFIG KAMU
+<script>
+// 🔥 CONFIG FIREBASE KAMU
 const firebaseConfig = {
-  apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
-  authDomain: "page421-b9a6c.firebaseapp.com",
-  projectId: "page421-b9a6c",
-  appId: "1:299269632550:web:ab2fe1e15b8d2cebbb6ce7"
+apiKey: "AIzaSyDZ5rTxZkIueebv_JRYXDBAtZiClvvHgGw",
+authDomain: "page421.firebaseapp.com",
+projectId: "page421"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
-// 🔥 REGISTER
-window.register = function(){
-  let email = document.getElementById("email").value;
-  let pass = document.getElementById("password").value;
+/* REGISTER */
+function register(){
+let email = prompt("Email:");
+let pass = prompt("Password (min 6):");
 
-  createUserWithEmailAndPassword(auth, email, pass)
-  .then(() => {
-    status.innerText = "Berhasil daftar ✔";
-  })
-  .catch(err => alert(err.message));
+auth.createUserWithEmailAndPassword(email, pass)
+.then(()=>alert("Register berhasil ✔"))
+.catch(e=>alert(e.message));
 }
 
-// 🔥 LOGIN
-window.login = function(){
-  let email = document.getElementById("email").value;
-  let pass = document.getElementById("password").value;
+/* LOGIN */
+function login(){
+let email = loginUser.value;
+let pass = loginPass.value;
 
-  signInWithEmailAndPassword(auth, email, pass)
-  .then(() => {
-    status.innerText = "Login berhasil ✔";
-  })
-  .catch(err => alert(err.message));
+auth.signInWithEmailAndPassword(email, pass)
+.then(u=>{
+loginBox.style.display="none";
+dashboard.style.display="block";
+})
+.catch(e=>alert(e.message));
 }
 
-// 🔥 LOGOUT
-window.logout = function(){
-  signOut(auth).then(() => {
-    status.innerText = "Logout ✔";
-  });
+/* LOGOUT */
+function logout(){
+auth.signOut();
+dashboard.style.display="none";
+loginBox.style.display="block";
 }
 
+/* AUTO CHECK LOGIN */
+auth.onAuthStateChanged(user=>{
+if(user){
+loginBox.style.display="none";
+dashboard.style.display="block";
+}
+});
 </script>
 
 </body>
