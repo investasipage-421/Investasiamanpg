@@ -32,7 +32,6 @@ background:#222;
 color:white;
 }
 
-/* tombol utama */
 button:not(#logoutBtn):not(.claimBtn){
 width:100%;
 padding:10px;
@@ -181,11 +180,13 @@ font-weight:bold;
 <!-- CONTENT -->
 <div id="content">
 
+<!-- BERITA -->
 <div id="newsBox" class="card">
 <h3>🔥 Berita Viral Hari Ini</h3>
 <p>Berita terkini seputar teknologi, game, dan investasi.</p>
 </div>
 
+<!-- SOAL -->
 <div id="quizBox" class="card" style="display:none;">Soal</div>
 
 <!-- INVEST -->
@@ -199,6 +200,30 @@ Profit: Rp5.000 / hari
 </div>
 
 <button class="claimBtn" onclick="beliPaket()">Beli</button>
+</div>
+
+<!-- 🔥 DEPOSIT -->
+<div id="depositBox" class="card" style="display:none;">
+<h3>💳 Deposit</h3>
+
+<p style="font-weight:bold;">
+Silahkan depo untuk mengaktifkan paket
+</p>
+
+<br>
+
+<p>Hubungi WhatsApp:</p>
+
+<b style="color:green;">082279321876</b>
+
+<br><br>
+
+<a href="https://wa.me/6282279321876" target="_blank">
+<button style="background:green;color:white;">
+Chat WhatsApp
+</button>
+</a>
+
 </div>
 
 </div>
@@ -247,10 +272,16 @@ nama = nama.charAt(0).toUpperCase() + nama.slice(1);
 welcome.innerText = "Halo, " + nama + " 👋";
 }
 
-/* BELI */
+/* 🔥 BELI → KE DEPOSIT */
 function beliPaket(){
 if(confirm("Beli paket Rp20.000 ?")){
-alert("Pembelian berhasil 💰");
+
+newsBox.style.display="none";
+quizBox.style.display="none";
+investBox.style.display="none";
+
+depositBox.style.display="block";
+
 }
 }
 
@@ -262,13 +293,37 @@ loginBox.style.display="block";
 }
 
 /* MENU */
-function showNews(){ newsBox.style.display="block"; quizBox.style.display="none"; investBox.style.display="none"; }
-function showQuiz(){ newsBox.style.display="none"; quizBox.style.display="block"; investBox.style.display="none"; }
-function showInvest(){ newsBox.style.display="none"; quizBox.style.display="none"; investBox.style.display="block"; }
+function showNews(){
+newsBox.style.display="block";
+quizBox.style.display="none";
+investBox.style.display="none";
+depositBox.style.display="none";
+}
+
+function showQuiz(){
+newsBox.style.display="none";
+quizBox.style.display="block";
+investBox.style.display="none";
+depositBox.style.display="none";
+}
+
+function showInvest(){
+newsBox.style.display="none";
+quizBox.style.display="none";
+investBox.style.display="block";
+depositBox.style.display="none";
+}
 
 /* SWITCH */
-function showLogin(){ registerBox.style.display="none"; loginBox.style.display="block"; }
-function showRegister(){ loginBox.style.display="none"; registerBox.style.display="block"; }
+function showLogin(){
+registerBox.style.display="none";
+loginBox.style.display="block";
+}
+
+function showRegister(){
+loginBox.style.display="none";
+registerBox.style.display="block";
+}
 
 /* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
