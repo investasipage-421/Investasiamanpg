@@ -53,9 +53,6 @@ align-items:center;
 padding:10px;
 }
 
-#welcome{font-size:13px;font-weight:bold;}
-#saldoText{font-size:11px;opacity:0.8;}
-
 #sidebar{
 position:fixed;
 left:0;
@@ -70,22 +67,11 @@ align-items:center;
 gap:20px;
 }
 
-.menuItem{
-cursor:pointer;
-padding:10px;
-border-radius:10px;
-}
-.menuItem:active{
-background:white;
-color:black;
-}
+.menuItem{cursor:pointer;padding:10px;border-radius:10px;}
+.menuItem:active{background:white;color:black;}
 
-#content{
-padding:15px;
-margin-left:85px;
-}
+#content{padding:15px;margin-left:85px;}
 
-/* CARD */
 .card{
 background:white;
 color:black;
@@ -101,16 +87,16 @@ margin:10px;
 <!-- LOGIN -->
 <div class="box" id="loginBox">
 <h2>Login</h2>
-<input id="loginUser" placeholder="Email">
+<input id="loginEmail" placeholder="Email">
 <input id="loginPass" type="password" placeholder="Password">
 <button onclick="login()">Masuk</button>
-<p onclick="showRegister()" style="color:cyan;cursor:pointer;">Registrasi</p>
+<p onclick="showRegister()" style="color:cyan;cursor:pointer;">Register</p>
 </div>
 
 <!-- REGISTER -->
 <div class="box" id="registerBox" style="display:none;">
 <h2>Register</h2>
-<input id="regUser" placeholder="Email">
+<input id="regEmail" placeholder="Email">
 <input id="regPass" type="password" placeholder="Password">
 <button onclick="register()">Daftar</button>
 <p onclick="showLogin()" style="color:cyan;cursor:pointer;">Login</p>
@@ -127,24 +113,21 @@ margin:10px;
 <button onclick="logout()">Logout</button>
 </div>
 
-<!-- SIDEBAR (USER ONLY) -->
 <div id="sidebar">
 <div class="menuItem" onclick="showNews()">📰</div>
 <div class="menuItem" onclick="showQuiz()">📚</div>
 <div class="menuItem" onclick="showInvest()">💰</div>
 </div>
 
-<!-- CONTENT -->
 <div id="content">
 
 <div id="newsBox" class="card">Berita</div>
 <div id="quizBox" class="card" style="display:none;">Soal</div>
 <div id="investBox" class="card" style="display:none;">Investasi</div>
 
-<!-- 🔥 ADMIN BOX -->
 <div id="adminBox" class="card" style="display:none;">
-<h3>👑 Dashboard Admin</h3>
-<p>Panel admin kosong dulu</p>
+<h3>👑 Admin Panel</h3>
+<p>Dashboard admin aktif</p>
 </div>
 
 </div>
@@ -157,7 +140,7 @@ margin:10px;
 
 <script>
 const firebaseConfig = {
-apiKey: "AIzaSyDZ5rTxZkIueebv_JRYXDBAtZiClvvHgGw",
+apiKey: "YOUR_API_KEY",
 authDomain: "page421.firebaseapp.com",
 databaseURL: "https://page421-default-rtdb.firebaseio.com",
 projectId: "page421",
@@ -167,19 +150,39 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
+/* ADMIN EMAIL */
 const ADMIN_EMAIL = "nagha.kancil@gmail.com";
+
+/* ELEMENT */
+const loginBox = document.getElementById("loginBox");
+const registerBox = document.getElementById("registerBox");
+const dashboard = document.getElementById("dashboard");
+
+const loginEmail = document.getElementById("loginEmail");
+const loginPass = document.getElementById("loginPass");
+const regEmail = document.getElementById("regEmail");
+const regPass = document.getElementById("regPass");
+
+const welcome = document.getElementById("welcome");
+const saldoText = document.getElementById("saldoText");
+
+const sidebar = document.getElementById("sidebar");
+const newsBox = document.getElementById("newsBox");
+const quizBox = document.getElementById("quizBox");
+const investBox = document.getElementById("investBox");
+const adminBox = document.getElementById("adminBox");
 
 /* REGISTER */
 function register(){
-auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
-.then(()=>{ alert("Registrasi berhasil!"); return auth.signOut(); })
+auth.createUserWithEmailAndPassword(regEmail.value, regPass.value)
+.then(()=>auth.signOut())
 .then(()=>showLogin())
 .catch(e=>alert(e.message));
 }
 
 /* LOGIN */
 function login(){
-auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
+auth.signInWithEmailAndPassword(loginEmail.value, loginPass.value)
 .catch(e=>alert(e.message));
 }
 
@@ -189,19 +192,42 @@ const ref = db.ref("users/" + user.uid);
 
 ref.once("value").then(snap=>{
 if(!snap.exists()){
-ref.set({email:user.email,saldo:0});
+ref.set({
+email:user.email,
+saldo:0,
+role: user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? "admin" : "user"
+});
 }
 });
 
 ref.on("value", snap=>{
 let data = snap.val();
 
-let nama = data.email.split("@")[0];
-nama = nama.charAt(0).toUpperCase() + nama.slice(1);
-
-welcome.innerText = "Halo, " + nama;
+let name = data.email.split("@")[0];
+welcome.innerText = "Halo, " + name;
 saldoText.innerText = "Saldo: Rp " + (data.saldo || 0);
+
+if(data.role === "admin"){
+showAdmin();
+}else{
+showUser();
+}
 });
+}
+
+/* DASHBOARD CONTROL */
+function showAdmin(){
+sidebar.style.display="none";
+newsBox.style.display="none";
+quizBox.style.display="none";
+investBox.style.display="none";
+adminBox.style.display="block";
+}
+
+function showUser(){
+sidebar.style.display="flex";
+adminBox.style.display="none";
+showNews();
 }
 
 /* MASUK */
@@ -211,24 +237,6 @@ registerBox.style.display="none";
 dashboard.style.display="block";
 
 saveUser(user);
-
-// 🔥 ADMIN MODE
-if(user.email === ADMIN_EMAIL){
-
-sidebar.style.display = "none";
-
-newsBox.style.display="none";
-quizBox.style.display="none";
-investBox.style.display="none";
-
-adminBox.style.display="block";
-
-}else{
-
-sidebar.style.display = "flex";
-showNews();
-
-}
 }
 
 /* LOGOUT */
@@ -238,7 +246,7 @@ dashboard.style.display="none";
 loginBox.style.display="block";
 }
 
-/* MENU USER */
+/* MENU */
 function showNews(){
 newsBox.style.display="block";
 quizBox.style.display="none";
@@ -273,9 +281,7 @@ registerBox.style.display="block";
 
 /* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
-if(user){
-masuk(user);
-}
+if(user) masuk(user);
 });
 </script>
 
