@@ -60,8 +60,7 @@ border-radius:50%;
 border:2px solid white;
 }
 
-#welcome{font-size:12px;font-weight:bold;}
-#emailText{font-size:10px;opacity:0.7;}
+#welcome{font-size:13px;font-weight:bold;}
 
 #logoutBtn{
 font-size:10px;
@@ -141,8 +140,7 @@ margin:10px;
 <div style="display:flex;align-items:center;gap:8px;">
 <img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
 <div>
-<div id="welcome">ID: -</div>
-<div id="emailText">email</div>
+<div id="welcome">Halo, - 👋</div>
 </div>
 </div>
 <button id="logoutBtn" onclick="logout()">Logout</button>
@@ -180,27 +178,19 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-/* ELEMENT */
 const loginBox = document.getElementById("loginBox");
 const registerBox = document.getElementById("registerBox");
 const dashboard = document.getElementById("dashboard");
 
-let isRegistering = false;
-
 /* REGISTER */
 function register(){
-isRegistering = true;
-
 auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
 .then(()=>{
 alert("Registrasi berhasil!");
 auth.signOut();
 showLogin();
 })
-.catch(e=>alert(e.message))
-.finally(()=>{
-setTimeout(()=>{ isRegistering = false; }, 1000);
-});
+.catch(e=>alert(e.message));
 }
 
 /* LOGIN */
@@ -209,7 +199,13 @@ auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
 .catch(e=>alert(e.message));
 }
 
-/* 🔥 FIX UTAMA DI SINI */
+/* AMBIL NAMA DARI EMAIL */
+function getNama(email){
+let nama = email.split("@")[0];
+return nama.charAt(0).toUpperCase() + nama.slice(1);
+}
+
+/* SAVE USER */
 function saveUser(user){
 const ref = db.ref("users/" + user.uid);
 
@@ -217,15 +213,15 @@ ref.on("value", (snap)=>{
 
 if(snap.exists()){
 const data = snap.val();
-welcome.innerText = "ID: " + data.id;
-emailText.innerText = data.email;
+const nama = getNama(data.email);
+welcome.innerText = "Halo, " + nama + " 👋";
 }else{
-const id = Math.floor(1000 + Math.random() * 9000);
-
 ref.set({
-email: user.email,
-id: id
+email: user.email
 });
+
+const nama = getNama(user.email);
+welcome.innerText = "Halo, " + nama + " 👋";
 }
 
 });
@@ -280,12 +276,6 @@ investBox.style.display="block";
 /* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
 if(user){
-
-if(isRegistering){
-auth.signOut();
-return;
-}
-
 masuk(user);
 }
 });
