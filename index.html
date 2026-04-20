@@ -237,20 +237,21 @@ auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
 .catch(e=>alert(e.message));
 }
 
-/* SAVE USER + ID PERMANEN */
+/* SAVE USER + ID FIX */
 function saveUser(user){
 const ref = db.ref("users/" + user.uid);
 
 ref.once("value").then(snap=>{
 if(!snap.exists()){
+
 const id = Math.floor(1000 + Math.random() * 9000);
 
 ref.set({
 email: user.email,
 id: id
-});
-
+}).then(()=>{
 setUI(user.email, id);
+});
 
 }else{
 let data = snap.val();
@@ -268,7 +269,7 @@ dashboard.style.display="block";
 saveUser(user);
 }
 
-/* UI ID + EMAIL */
+/* UI */
 function setUI(email,id){
 document.getElementById("welcome").innerText = "ID: " + id;
 document.getElementById("emailText").innerText = email;
@@ -312,7 +313,7 @@ document.getElementById("quizBox").style.display="none";
 document.getElementById("investBox").style.display="block";
 }
 
-/* AUTO LOGIN FIX */
+/* AUTO LOGIN CONTROL */
 auth.onAuthStateChanged(user=>{
 if(user){
 
