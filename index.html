@@ -7,7 +7,7 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
-html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
+html,body{width:100%;height:100%;background:black;color:white;}
 
 .box{
 background:#111;
@@ -53,13 +53,6 @@ align-items:center;
 padding:10px;
 }
 
-#profilePic{
-width:38px;
-height:38px;
-border-radius:50%;
-border:2px solid white;
-}
-
 #welcome{font-size:12px;font-weight:bold;}
 #emailText{font-size:10px;opacity:0.7;}
 
@@ -70,45 +63,6 @@ border:none;
 border-radius:5px;
 background:white;
 cursor:pointer;
-}
-
-#sidebar{
-position:fixed;
-left:0;
-top:70px;
-width:75px;
-background:#111;
-padding:10px 0;
-border-right:1px solid #333;
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:20px;
-}
-
-.menuItem{
-text-align:center;
-cursor:pointer;
-padding:10px;
-border-radius:10px;
-}
-.menuItem:active{
-transform:scale(0.9);
-background:white;
-color:black;
-}
-
-#content{
-padding:15px;
-margin-left:85px;
-}
-
-.card{
-background:white;
-color:black;
-padding:15px;
-border-radius:10px;
-margin:10px;
 }
 </style>
 </head>
@@ -121,7 +75,7 @@ margin:10px;
 <input id="loginUser" placeholder="Email">
 <input id="loginPass" type="password" placeholder="Password">
 <button onclick="login()">Masuk</button>
-<p>Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Registrasi</span></p>
+<p>Belum punya akun? <span onclick="showRegister()" style="color:cyan;">Registrasi</span></p>
 </div>
 
 <!-- REGISTER -->
@@ -130,35 +84,18 @@ margin:10px;
 <input id="regUser" placeholder="Email">
 <input id="regPass" type="password" placeholder="Password">
 <button onclick="register()">Daftar</button>
-<p>Sudah punya akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;">Login</span></p>
+<p>Sudah punya akun? <span onclick="showLogin()" style="color:cyan;">Login</span></p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard">
-
 <div id="topBar">
-<div style="display:flex;align-items:center;gap:8px;">
-<img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
 <div>
 <div id="welcome">ID: -</div>
 <div id="emailText">email</div>
 </div>
-</div>
 <button id="logoutBtn" onclick="logout()">Logout</button>
 </div>
-
-<div id="sidebar">
-<div class="menuItem" onclick="showNews()">📰 Berita</div>
-<div class="menuItem" onclick="showQuiz()">📚 Soal</div>
-<div class="menuItem" onclick="showInvest()">💰 Invest</div>
-</div>
-
-<div id="content">
-<div id="newsBox" class="card">Berita</div>
-<div id="quizBox" class="card" style="display:none;">Soal</div>
-<div id="investBox" class="card" style="display:none;">Investasi</div>
-</div>
-
 </div>
 
 <!-- FIREBASE -->
@@ -193,10 +130,11 @@ showLogin();
 /* LOGIN */
 function login(){
 auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
-.catch(e=>alert(e.message));
+.then(()=>alert("LOGIN BERHASIL"))
+.catch(e=>alert("LOGIN ERROR: " + e.message));
 }
 
-/* 🔥 FIX UTAMA (PASTI SIMPAN DATA) */
+/* 🔥 SAVE USER + DEBUG */
 function saveUser(user){
 const ref = db.ref("users/" + user.uid);
 
@@ -207,8 +145,13 @@ email: user.email,
 id: id
 })
 .then(()=>{
+alert("DATA MASUK ✅");
+
 welcome.innerText = "ID: " + id;
 emailText.innerText = user.email;
+})
+.catch((err)=>{
+alert("GAGAL SIMPAN ❌: " + err.message);
 });
 }
 
@@ -237,25 +180,6 @@ loginBox.style.display="block";
 function showRegister(){
 loginBox.style.display="none";
 registerBox.style.display="block";
-}
-
-/* MENU */
-function showNews(){
-newsBox.style.display="block";
-quizBox.style.display="none";
-investBox.style.display="none";
-}
-
-function showQuiz(){
-newsBox.style.display="none";
-quizBox.style.display="block";
-investBox.style.display="none";
-}
-
-function showInvest(){
-newsBox.style.display="none";
-quizBox.style.display="none";
-investBox.style.display="block";
 }
 
 /* AUTO LOGIN */
