@@ -113,9 +113,7 @@ border-radius:10px;
 margin:10px;
 }
 
-#newsBox p{
-line-height:1.5;
-}
+#newsBox p{line-height:1.5;}
 </style>
 </head>
 
@@ -162,40 +160,60 @@ line-height:1.5;
 <!-- CONTENT -->
 <div id="content">
 
-<!-- 🔥 BERITA -->
+<!-- BERITA -->
 <div id="newsBox" class="card">
-
 <h3>🔥 Berita Viral Hari Ini</h3>
 <p style="font-size:10px;opacity:0.6;">Update terbaru</p>
-
 <hr><br>
 
 <b>📱 Teknologi</b>
 <p><b>AI di Smartphone Makin Canggih</b><br>
-Banyak HP terbaru kini dilengkapi fitur AI yang bisa mengedit foto, membuat video, dan bahkan menjawab pertanyaan secara otomatis.</p>
+HP terbaru kini punya fitur AI otomatis edit foto dan video.</p>
 
 <br>
 
 <b>🎮 Game</b>
-<p><b>Game Mobile Baru Viral di TikTok</b><br>
-Game ini mendadak populer karena gameplay unik dan banyak dimainkan oleh kreator konten di Indonesia.</p>
+<p><b>Game Viral di TikTok</b><br>
+Banyak gamer Indonesia memainkan game ini karena seru dan unik.</p>
 
 <br>
 
 <b>💰 Investasi</b>
-<p><b>Harga Emas Naik Tajam</b><br>
-Dalam beberapa hari terakhir, harga emas mengalami kenaikan signifikan dan menarik perhatian investor pemula.</p>
-
-<br>
-
-<b>🌍 Sosial</b>
-<p><b>Video Kreator Indonesia Mendunia</b><br>
-Sebuah video sederhana dari kreator lokal viral hingga jutaan penonton hanya dalam 24 jam.</p>
-
+<p><b>Harga Emas Naik</b><br>
+Investor mulai melirik emas karena kenaikan harga.</p>
 </div>
 
+<!-- SOAL -->
 <div id="quizBox" class="card" style="display:none;">Soal</div>
-<div id="investBox" class="card" style="display:none;">Investasi</div>
+
+<!-- 🔥 INVEST -->
+<div id="investBox" class="card" style="display:none; position:relative;">
+
+<h3>💰 Investasi</h3>
+
+<div style="margin-top:10px;">
+<b>Paket Hemat</b><br>
+Deposit: Rp20.000<br>
+Profit: Rp5.000 / hari
+</div>
+
+<button onclick="claimProfit()" 
+style="
+position:absolute;
+right:10px;
+bottom:10px;
+font-size:10px;
+padding:5px 8px;
+border-radius:6px;
+background:black;
+color:white;
+border:none;
+cursor:pointer;
+">
+Claim
+</button>
+
+</div>
 
 </div>
 </div>
@@ -218,10 +236,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-const loginBox = document.getElementById("loginBox");
-const registerBox = document.getElementById("registerBox");
-const dashboard = document.getElementById("dashboard");
-
 let isRegistering = false;
 
 /* REGISTER */
@@ -233,13 +247,9 @@ auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
 alert("Registrasi berhasil! Silakan login");
 return auth.signOut();
 })
-.then(()=>{
-showLogin();
-})
+.then(()=>showLogin())
 .catch(e=>alert(e.message))
-.finally(()=>{
-setTimeout(()=>{ isRegistering = false; }, 1000);
-});
+.finally(()=>setTimeout(()=>{isRegistering=false;},1000));
 }
 
 /* LOGIN */
@@ -258,12 +268,11 @@ return nama.charAt(0).toUpperCase() + nama.slice(1);
 function saveUser(user){
 const ref = db.ref("users/" + user.uid);
 
-ref.on("value", (snap)=>{
+ref.on("value", snap=>{
 if(snap.exists()){
-const data = snap.val();
-welcome.innerText = "Halo, " + getNama(data.email) + " 👋";
+welcome.innerText = "Halo, " + getNama(snap.val().email) + " 👋";
 }else{
-ref.set({ email: user.email });
+ref.set({ email:user.email });
 }
 });
 }
@@ -278,22 +287,16 @@ welcome.innerText = "Halo, " + getNama(user.email) + " 👋";
 saveUser(user);
 }
 
+/* CLAIM */
+function claimProfit(){
+alert("Berhasil claim Rp5.000 hari ini 💰");
+}
+
 /* LOGOUT */
 function logout(){
 auth.signOut();
 dashboard.style.display="none";
 loginBox.style.display="block";
-}
-
-/* SWITCH */
-function showLogin(){
-registerBox.style.display="none";
-loginBox.style.display="block";
-}
-
-function showRegister(){
-loginBox.style.display="none";
-registerBox.style.display="block";
 }
 
 /* MENU */
@@ -313,6 +316,17 @@ function showInvest(){
 newsBox.style.display="none";
 quizBox.style.display="none";
 investBox.style.display="block";
+}
+
+/* SWITCH */
+function showLogin(){
+registerBox.style.display="none";
+loginBox.style.display="block";
+}
+
+function showRegister(){
+loginBox.style.display="none";
+registerBox.style.display="block";
 }
 
 /* AUTO LOGIN */
