@@ -61,11 +61,7 @@ border:2px solid white;
 }
 
 #welcome{font-size:13px;font-weight:bold;}
-
-#saldoText{
-font-size:11px;
-opacity:0.8;
-}
+#saldoText{font-size:11px;opacity:0.8;}
 
 #logoutBtn{
 font-size:10px;
@@ -119,7 +115,7 @@ margin:10px;
 }
 
 /* INVEST */
-#investBox{padding-bottom:40px;}
+#investBox{padding-bottom:50px;}
 
 .claimBtn{
 position:absolute;
@@ -132,7 +128,6 @@ background:black;
 color:white;
 border:none;
 cursor:pointer;
-width:auto;
 font-weight:bold;
 }
 </style>
@@ -182,34 +177,38 @@ font-weight:bold;
 <!-- CONTENT -->
 <div id="content">
 
-<div id="newsBox" class="card">
-<h3>🔥 Berita Viral Hari Ini</h3>
-<p>Berita terkini seputar teknologi, game, dan investasi.</p>
-</div>
-
+<div id="newsBox" class="card">Berita</div>
 <div id="quizBox" class="card" style="display:none;">Soal</div>
 
 <!-- INVEST -->
 <div id="investBox" class="card" style="display:none; position:relative;">
 <h3>💰 Investasi</h3>
-<div style="margin-top:10px;">
 <b>Paket Hemat</b><br>
 Deposit: Rp20.000<br>
 Profit: Rp5.000 / hari
-</div>
 <button class="claimBtn" onclick="beliPaket()">Beli</button>
 </div>
 
 <!-- DEPOSIT -->
 <div id="depositBox" class="card" style="display:none;">
 <h3>💳 Deposit</h3>
-<p><b>Silahkan depo melalui WhatsApp:</b></p>
+<p><b>Silahkan transfer ke:</b></p>
+<p style="color:green;">082279321876</p>
+
 <br>
-<b style="color:green;">082279321876</b>
-<br><br>
+
 <a href="https://wa.me/6282279321876" target="_blank">
 <button style="background:green;color:white;">Chat WhatsApp</button>
 </a>
+
+<br><br>
+
+<!-- 🔥 ADMIN ONLY -->
+<button id="btnSelesai" onclick="konfirmasiAdmin()" 
+style="background:blue;color:white;display:none;">
+Selesai
+</button>
+
 </div>
 
 </div>
@@ -232,16 +231,14 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-let isRegistering = false;
+const ADMIN_EMAIL = "nagha.kancil@gmail.com";
 
 /* REGISTER */
 function register(){
-isRegistering = true;
 auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
 .then(()=>{ alert("Registrasi berhasil! Silakan login"); return auth.signOut(); })
 .then(()=>showLogin())
-.catch(e=>alert(e.message))
-.finally(()=>setTimeout(()=>{isRegistering=false;},1000));
+.catch(e=>alert(e.message));
 }
 
 /* LOGIN */
@@ -250,13 +247,13 @@ auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
 .catch(e=>alert(e.message));
 }
 
-/* SAVE USER + SALDO */
+/* SAVE USER */
 function saveUser(user){
 const ref = db.ref("users/" + user.uid);
 
 ref.on("value", snap=>{
 if(snap.exists()){
-const data = snap.val();
+let data = snap.val();
 
 let nama = data.email.split("@")[0];
 nama = nama.charAt(0).toUpperCase() + nama.slice(1);
@@ -265,10 +262,7 @@ welcome.innerText = "Halo, " + nama + " 👋";
 saldoText.innerText = "Saldo: Rp " + (data.saldo || 0);
 
 }else{
-ref.set({
-email:user.email,
-saldo:0
-});
+ref.set({ email:user.email, saldo:0 });
 }
 });
 }
@@ -278,19 +272,46 @@ function masuk(user){
 loginBox.style.display="none";
 registerBox.style.display="none";
 dashboard.style.display="block";
+
 saveUser(user);
+
+// 🔥 ADMIN ONLY BUTTON
+if(user.email === ADMIN_EMAIL){
+document.getElementById("btnSelesai").style.display = "block";
+}
 }
 
 /* BELI */
 function beliPaket(){
 if(confirm("Beli paket Rp20.000 ?")){
-
 newsBox.style.display="none";
 quizBox.style.display="none";
 investBox.style.display="none";
 depositBox.style.display="block";
-
 }
+}
+
+/* KONFIRMASI ADMIN */
+function konfirmasiAdmin(){
+const user = auth.currentUser;
+
+if(user.email !== ADMIN_EMAIL){
+alert("Bukan admin!");
+return;
+}
+
+const ref = db.ref("users/" + user.uid);
+
+ref.once("value").then(snap=>{
+let data = snap.val();
+let saldo = data.saldo || 0;
+
+saldo += 20000;
+
+ref.update({ saldo: saldo });
+
+alert("✅ Saldo berhasil ditambah");
+});
 }
 
 /* LOGOUT */
@@ -312,7 +333,6 @@ function showRegister(){loginBox.style.display="none";registerBox.style.display=
 /* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
 if(user){
-if(isRegistering) return;
 masuk(user);
 }
 });
