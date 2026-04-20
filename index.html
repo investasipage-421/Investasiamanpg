@@ -16,7 +16,7 @@ background:black;
 color:white;
 }
 
-/* LOGIN */
+/* LOGIN / REGISTER */
 .box{
 background:#111;
 padding:25px;
@@ -55,7 +55,7 @@ cursor:pointer;
 /* DASHBOARD */
 #dashboard{display:none;height:100%;}
 
-/* TOP */
+/* TOP BAR */
 #topBar{
 display:flex;
 justify-content:space-between;
@@ -249,27 +249,23 @@ auth.createUserWithEmailAndPassword(regUser.value,regPass.value)
 /* LOGIN */
 function login(){
 auth.signInWithEmailAndPassword(loginUser.value,loginPass.value)
-.then(u=>masuk(u.user))
 .catch(e=>alert(e.message));
 }
 
-/* CREATE / GET USER DATA (FIREBASE ID) */
-function createUserData(user){
-const uid = user.uid;
-const ref = db.ref("users/"+uid);
+/* SIMPAN USER KE FIREBASE */
+function saveUser(user){
+const ref = db.ref("users/" + user.uid);
 
 ref.once("value").then(snap=>{
 if(!snap.exists()){
 const id = Math.floor(1000+Math.random()*9000);
-
 ref.set({
 email:user.email,
 id:id
 });
-
 setUI(user.email,id);
 }else{
-const data = snap.val();
+let data = snap.val();
 setUI(data.email,data.id);
 }
 });
@@ -281,7 +277,7 @@ loginBox.style.display="none";
 registerBox.style.display="none";
 dashboard.style.display="block";
 
-createUserData(user);
+saveUser(user);
 }
 
 /* UI */
@@ -337,7 +333,7 @@ el.classList.toggle("active",index===i);
 });
 }
 
-/* AUTH LISTENER */
+/* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
 if(user){
 masuk(user);
@@ -346,4 +342,4 @@ masuk(user);
 </script>
 
 </body>
-</html>0p
+</html>
