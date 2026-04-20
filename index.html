@@ -101,6 +101,8 @@ color:black;
 #content{
 padding:15px;
 margin-left:85px;
+overflow:auto;
+height:calc(100vh - 70px);
 }
 
 .card{
@@ -109,6 +111,10 @@ color:black;
 padding:15px;
 border-radius:10px;
 margin:10px;
+}
+
+#newsBox p{
+line-height:1.5;
 }
 </style>
 </head>
@@ -146,18 +152,52 @@ margin:10px;
 <button id="logoutBtn" onclick="logout()">Logout</button>
 </div>
 
+<!-- SIDEBAR -->
 <div id="sidebar">
 <div class="menuItem" onclick="showNews()">📰 Berita</div>
 <div class="menuItem" onclick="showQuiz()">📚 Soal</div>
 <div class="menuItem" onclick="showInvest()">💰 Invest</div>
 </div>
 
+<!-- CONTENT -->
 <div id="content">
-<div id="newsBox" class="card">Berita</div>
-<div id="quizBox" class="card" style="display:none;">Soal</div>
-<div id="investBox" class="card" style="display:none;">Investasi</div>
+
+<!-- 🔥 BERITA -->
+<div id="newsBox" class="card">
+
+<h3>🔥 Berita Viral Hari Ini</h3>
+<p style="font-size:10px;opacity:0.6;">Update terbaru</p>
+
+<hr><br>
+
+<b>📱 Teknologi</b>
+<p><b>AI di Smartphone Makin Canggih</b><br>
+Banyak HP terbaru kini dilengkapi fitur AI yang bisa mengedit foto, membuat video, dan bahkan menjawab pertanyaan secara otomatis.</p>
+
+<br>
+
+<b>🎮 Game</b>
+<p><b>Game Mobile Baru Viral di TikTok</b><br>
+Game ini mendadak populer karena gameplay unik dan banyak dimainkan oleh kreator konten di Indonesia.</p>
+
+<br>
+
+<b>💰 Investasi</b>
+<p><b>Harga Emas Naik Tajam</b><br>
+Dalam beberapa hari terakhir, harga emas mengalami kenaikan signifikan dan menarik perhatian investor pemula.</p>
+
+<br>
+
+<b>🌍 Sosial</b>
+<p><b>Video Kreator Indonesia Mendunia</b><br>
+Sebuah video sederhana dari kreator lokal viral hingga jutaan penonton hanya dalam 24 jam.</p>
+
 </div>
 
+<div id="quizBox" class="card" style="display:none;">Soal</div>
+<div id="investBox" class="card" style="display:none;">Investasi</div>
+
+</div>
 </div>
 
 <!-- FIREBASE -->
@@ -208,7 +248,7 @@ auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
 .catch(e=>alert(e.message));
 }
 
-/* AMBIL NAMA */
+/* NAMA */
 function getNama(email){
 let nama = email.split("@")[0];
 return nama.charAt(0).toUpperCase() + nama.slice(1);
@@ -228,15 +268,13 @@ ref.set({ email: user.email });
 });
 }
 
-/* MASUK (🔥 FIX UTAMA) */
+/* MASUK */
 function masuk(user){
 loginBox.style.display="none";
 registerBox.style.display="none";
 dashboard.style.display="block";
 
-// 🔥 LANGSUNG TAMPIL NAMA (hilangkan "-")
 welcome.innerText = "Halo, " + getNama(user.email) + " 👋";
-
 saveUser(user);
 }
 
