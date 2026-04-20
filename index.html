@@ -32,7 +32,8 @@ background:#222;
 color:white;
 }
 
-button:not(#logoutBtn){
+/* tombol umum */
+button:not(#logoutBtn):not(.claimBtn){
 width:100%;
 padding:10px;
 margin-top:10px;
@@ -71,6 +72,7 @@ background:white;
 cursor:pointer;
 }
 
+/* sidebar */
 #sidebar{
 position:fixed;
 left:0;
@@ -113,7 +115,20 @@ border-radius:10px;
 margin:10px;
 }
 
-#newsBox p{line-height:1.5;}
+/* 🔥 tombol claim kecil */
+.claimBtn{
+position:absolute;
+right:10px;
+bottom:10px;
+font-size:9px;
+padding:3px 7px;
+border-radius:5px;
+background:black;
+color:white;
+border:none;
+cursor:pointer;
+width:auto;
+}
 </style>
 </head>
 
@@ -163,30 +178,13 @@ margin:10px;
 <!-- BERITA -->
 <div id="newsBox" class="card">
 <h3>🔥 Berita Viral Hari Ini</h3>
-<p style="font-size:10px;opacity:0.6;">Update terbaru</p>
-<hr><br>
-
-<b>📱 Teknologi</b>
-<p><b>AI di Smartphone Makin Canggih</b><br>
-HP terbaru kini punya fitur AI otomatis edit foto dan video.</p>
-
-<br>
-
-<b>🎮 Game</b>
-<p><b>Game Viral di TikTok</b><br>
-Banyak gamer Indonesia memainkan game ini karena seru dan unik.</p>
-
-<br>
-
-<b>💰 Investasi</b>
-<p><b>Harga Emas Naik</b><br>
-Investor mulai melirik emas karena kenaikan harga.</p>
+<p>Berita terkini seputar teknologi, game, dan investasi.</p>
 </div>
 
 <!-- SOAL -->
 <div id="quizBox" class="card" style="display:none;">Soal</div>
 
-<!-- 🔥 INVEST -->
+<!-- INVEST -->
 <div id="investBox" class="card" style="display:none; position:relative;">
 
 <h3>💰 Investasi</h3>
@@ -197,21 +195,7 @@ Deposit: Rp20.000<br>
 Profit: Rp5.000 / hari
 </div>
 
-<button onclick="claimProfit()" 
-style="
-position:absolute;
-right:10px;
-bottom:10px;
-font-size:10px;
-padding:5px 8px;
-border-radius:6px;
-background:black;
-color:white;
-border:none;
-cursor:pointer;
-">
-Claim
-</button>
+<button class="claimBtn" onclick="claimProfit()">Claim</button>
 
 </div>
 
@@ -234,7 +218,6 @@ projectId: "page421",
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
-const db = firebase.database();
 
 let isRegistering = false;
 
@@ -258,38 +241,21 @@ auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
 .catch(e=>alert(e.message));
 }
 
-/* NAMA */
-function getNama(email){
-let nama = email.split("@")[0];
-return nama.charAt(0).toUpperCase() + nama.slice(1);
-}
-
-/* SAVE USER */
-function saveUser(user){
-const ref = db.ref("users/" + user.uid);
-
-ref.on("value", snap=>{
-if(snap.exists()){
-welcome.innerText = "Halo, " + getNama(snap.val().email) + " 👋";
-}else{
-ref.set({ email:user.email });
-}
-});
-}
-
 /* MASUK */
 function masuk(user){
 loginBox.style.display="none";
 registerBox.style.display="none";
 dashboard.style.display="block";
 
-welcome.innerText = "Halo, " + getNama(user.email) + " 👋";
-saveUser(user);
+let nama = user.email.split("@")[0];
+nama = nama.charAt(0).toUpperCase() + nama.slice(1);
+
+welcome.innerText = "Halo, " + nama + " 👋";
 }
 
 /* CLAIM */
 function claimProfit(){
-alert("Berhasil claim Rp5.000 hari ini 💰");
+alert("Berhasil claim Rp5.000 💰");
 }
 
 /* LOGOUT */
