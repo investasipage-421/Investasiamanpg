@@ -3,23 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investasi Page421</title>
+<title>Fingrow Clone</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
-html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
+body{background:#0b0f14;color:white;}
 
+/* LOGIN */
 .box{
-background:#111;
-padding:25px;
-border-radius:15px;
-width:90%;
-max-width:350px;
-text-align:center;
 position:absolute;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
+width:90%;
+max-width:350px;
+background:#161b22;
+padding:20px;
+border-radius:15px;
+text-align:center;
 }
 
 input{
@@ -28,57 +29,91 @@ padding:10px;
 margin:8px 0;
 border:none;
 border-radius:8px;
-background:#222;
+background:#0d1117;
 color:white;
 }
 
 button{
 width:100%;
 padding:10px;
-margin-top:10px;
 border:none;
 border-radius:8px;
+background:#2ea043;
+color:white;
 font-weight:bold;
-background:white;
-color:black;
-cursor:pointer;
+margin-top:10px;
 }
 
-#dashboard{display:none;height:100%;}
+/* DASHBOARD */
+#app{display:none;}
 
-#topBar{
+.top{
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:10px;
+padding:20px;
 }
 
-#sidebar{
-position:fixed;
-left:0;
-top:70px;
-width:75px;
-background:#111;
-padding:10px 0;
-border-right:1px solid #333;
-display:none;
-flex-direction:column;
+.avatar{
+width:40px;
+height:40px;
+border-radius:50%;
+background:#1f6feb;
+display:flex;
 align-items:center;
-gap:20px;
+justify-content:center;
+font-weight:bold;
 }
 
-.menuItem{cursor:pointer;padding:10px;border-radius:10px;}
-.menuItem:active{background:white;color:black;}
+.balanceCard{
+margin:20px;
+padding:20px;
+border-radius:15px;
+background:linear-gradient(135deg,#1f6feb,#2ea043);
+}
 
-#content{padding:15px;margin-left:85px;}
+.balanceCard p{font-size:12px;opacity:0.9;}
+.balanceCard h1{font-size:26px;margin-top:5px;}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+padding:20px;
+}
+
+.item{
+background:#161b22;
+padding:15px;
+border-radius:12px;
+text-align:center;
+font-size:12px;
+}
 
 .card{
-background:white;
-color:black;
+margin:15px;
 padding:15px;
-border-radius:10px;
-margin:10px;
+background:#161b22;
+border-radius:12px;
 }
+
+/* ADMIN */
+#adminPanel{display:none;}
+
+/* BOTTOM NAV */
+.bottomNav{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#0d1117;
+display:flex;
+justify-content:space-around;
+padding:10px 0;
+border-top:1px solid #222;
+}
+
+.navItem{font-size:12px;opacity:0.7;}
 </style>
 </head>
 
@@ -87,50 +122,53 @@ margin:10px;
 <!-- LOGIN -->
 <div class="box" id="loginBox">
 <h2>Login</h2>
-<input id="loginEmail" placeholder="Email">
-<input id="loginPass" type="password" placeholder="Password">
+<input id="email" placeholder="Email">
+<input id="pass" type="password" placeholder="Password">
 <button onclick="login()">Masuk</button>
-<p onclick="showRegister()" style="color:cyan;cursor:pointer;">Register</p>
+<p onclick="toggle()" style="color:cyan;cursor:pointer;margin-top:10px;">Register</p>
 </div>
 
-<!-- REGISTER -->
-<div class="box" id="registerBox" style="display:none;">
-<h2>Register</h2>
-<input id="regEmail" placeholder="Email">
-<input id="regPass" type="password" placeholder="Password">
-<button onclick="register()">Daftar</button>
-<p onclick="showLogin()" style="color:cyan;cursor:pointer;">Login</p>
-</div>
+<!-- APP -->
+<div id="app">
 
-<!-- DASHBOARD -->
-<div id="dashboard">
-
-<div id="topBar">
+<div class="top">
 <div>
-<div id="welcome">Halo 👋</div>
-<div id="saldoText">Saldo: Rp 0</div>
+<h3 id="hello">Halo</h3>
+<p style="opacity:0.6;font-size:12px;">Dashboard Finansial</p>
 </div>
-<button onclick="logout()">Logout</button>
-</div>
-
-<div id="sidebar">
-<div class="menuItem" onclick="showNews()">📰</div>
-<div class="menuItem" onclick="showQuiz()">📚</div>
-<div class="menuItem" onclick="showInvest()">💰</div>
+<div class="avatar">U</div>
 </div>
 
-<div id="content">
+<div class="balanceCard">
+<p>Total Saldo</p>
+<h1 id="saldo">Rp 0</h1>
+</div>
 
-<div id="newsBox" class="card">Berita</div>
-<div id="quizBox" class="card" style="display:none;">Soal</div>
-<div id="investBox" class="card" style="display:none;">Investasi</div>
+<div class="grid">
+<div class="item">Deposit</div>
+<div class="item">Withdraw</div>
+<div class="item">Invest</div>
+<div class="item">History</div>
+</div>
 
-<div id="adminBox" class="card" style="display:none;">
+<div class="card">
+<h3>📊 Aktivitas</h3>
+<p style="opacity:0.6;font-size:12px;">Belum ada transaksi</p>
+</div>
+
+<!-- ADMIN -->
+<div class="card" id="adminPanel">
 <h3>👑 Admin Panel</h3>
-<p>Dashboard admin aktif</p>
+<p>Hanya admin yang lihat ini</p>
 </div>
 
+<div class="bottomNav">
+<div class="navItem">Home</div>
+<div class="navItem">Market</div>
+<div class="navItem">Wallet</div>
+<div class="navItem">Profile</div>
 </div>
+
 </div>
 
 <!-- FIREBASE -->
@@ -142,7 +180,7 @@ margin:10px;
 const firebaseConfig = {
 apiKey: "YOUR_API_KEY",
 authDomain: "page421.firebaseapp.com",
-databaseURL: "https://page421-default-rtdb.firebaseio.com",
+databaseURL: "https://page421-default-rtdb.asia-southeast1.firebasedatabase.app",
 projectId: "page421",
 };
 
@@ -152,42 +190,27 @@ const db = firebase.database();
 
 const ADMIN_EMAIL = "nagha.kancil@gmail.com";
 
-/* ELEMENT */
+/* UI */
 const loginBox = document.getElementById("loginBox");
-const registerBox = document.getElementById("registerBox");
-const dashboard = document.getElementById("dashboard");
+const app = document.getElementById("app");
+const saldo = document.getElementById("saldo");
+const hello = document.getElementById("hello");
+const adminPanel = document.getElementById("adminPanel");
 
-const loginEmail = document.getElementById("loginEmail");
-const loginPass = document.getElementById("loginPass");
-const regEmail = document.getElementById("regEmail");
-const regPass = document.getElementById("regPass");
-
-const welcome = document.getElementById("welcome");
-const saldoText = document.getElementById("saldoText");
-
-const sidebar = document.getElementById("sidebar");
-const newsBox = document.getElementById("newsBox");
-const quizBox = document.getElementById("quizBox");
-const investBox = document.getElementById("investBox");
-const adminBox = document.getElementById("adminBox");
-
-/* REGISTER */
-function register(){
-auth.createUserWithEmailAndPassword(regEmail.value, regPass.value)
-.then(()=>auth.signOut())
-.then(()=>showLogin())
-.catch(e=>alert(e.message));
+/* REGISTER / LOGIN TOGGLE */
+function toggle(){
+alert("Gunakan Firebase register di upgrade berikutnya 👍");
 }
 
 /* LOGIN */
 function login(){
-auth.signInWithEmailAndPassword(loginEmail.value, loginPass.value)
+auth.signInWithEmailAndPassword(email.value, pass.value)
 .catch(e=>alert(e.message));
 }
 
 /* SAVE USER */
 function saveUser(user){
-const ref = db.ref("users/" + user.uid);
+const ref = db.ref("users/"+user.uid);
 
 ref.once("value").then(snap=>{
 if(!snap.exists()){
@@ -203,93 +226,32 @@ ref.on("value", snap=>{
 let data = snap.val();
 
 let name = data.email.split("@")[0];
-welcome.innerText = "Halo, " + name;
-saldoText.innerText = "Saldo: Rp " + (data.saldo || 0);
+hello.innerText = "Halo, "+name;
+
+saldo.innerText = "Rp "+(data.saldo||0);
 
 if(data.role==="admin"){
-showAdmin();
+adminPanel.style.display="block";
 }else{
-showUser();
+adminPanel.style.display="none";
 }
 });
-}
-
-/* DASHBOARD */
-function showAdmin(){
-sidebar.style.display="none";
-adminBox.style.display="block";
-newsBox.style.display="none";
-quizBox.style.display="none";
-investBox.style.display="none";
-}
-
-function showUser(){
-sidebar.style.display="flex";
-adminBox.style.display="none";
-showNews();
 }
 
 /* MASUK */
 function masuk(user){
 loginBox.style.display="none";
-registerBox.style.display="none";
-dashboard.style.display="block";
-
+app.style.display="block";
 saveUser(user);
 }
 
 /* LOGOUT */
-function logout(){
-auth.signOut();
-dashboard.style.display="none";
-loginBox.style.display="block";
-registerBox.style.display="none";
-}
-
-/* MENU */
-function showNews(){
-newsBox.style.display="block";
-quizBox.style.display="none";
-investBox.style.display="none";
-adminBox.style.display="none";
-}
-
-function showQuiz(){
-newsBox.style.display="none";
-quizBox.style.display="block";
-investBox.style.display="none";
-adminBox.style.display="none";
-}
-
-function showInvest(){
-newsBox.style.display="none";
-quizBox.style.display="none";
-investBox.style.display="block";
-adminBox.style.display="none";
-}
-
-/* SWITCH */
-function showLogin(){
-registerBox.style.display="none";
-loginBox.style.display="block";
-}
-
-function showRegister(){
-loginBox.style.display="none";
-registerBox.style.display="block";
-}
-
-/* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
 if(user){
-loginBox.style.display="none";
-registerBox.style.display="none";
-dashboard.style.display="block";
 masuk(user);
 }else{
-dashboard.style.display="none";
+app.style.display="none";
 loginBox.style.display="block";
-registerBox.style.display="none";
 }
 });
 </script>
