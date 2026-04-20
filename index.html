@@ -140,7 +140,7 @@ margin:10px;
 <div style="display:flex;align-items:center;gap:8px;">
 <img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
 <div>
-<div id="welcome">Halo, - 👋</div>
+<div id="welcome">Halo 👋</div>
 </div>
 </div>
 <button id="logoutBtn" onclick="logout()">Logout</button>
@@ -191,7 +191,7 @@ isRegistering = true;
 auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
 .then(()=>{
 alert("Registrasi berhasil! Silakan login");
-return auth.signOut(); // 🔥 paksa logout
+return auth.signOut();
 })
 .then(()=>{
 showLogin();
@@ -224,16 +224,18 @@ const data = snap.val();
 welcome.innerText = "Halo, " + getNama(data.email) + " 👋";
 }else{
 ref.set({ email: user.email });
-welcome.innerText = "Halo, " + getNama(user.email) + " 👋";
 }
 });
 }
 
-/* MASUK */
+/* MASUK (🔥 FIX UTAMA) */
 function masuk(user){
 loginBox.style.display="none";
 registerBox.style.display="none";
 dashboard.style.display="block";
+
+// 🔥 LANGSUNG TAMPIL NAMA (hilangkan "-")
+welcome.innerText = "Halo, " + getNama(user.email) + " 👋";
 
 saveUser(user);
 }
@@ -256,15 +258,29 @@ loginBox.style.display="none";
 registerBox.style.display="block";
 }
 
+/* MENU */
+function showNews(){
+newsBox.style.display="block";
+quizBox.style.display="none";
+investBox.style.display="none";
+}
+
+function showQuiz(){
+newsBox.style.display="none";
+quizBox.style.display="block";
+investBox.style.display="none";
+}
+
+function showInvest(){
+newsBox.style.display="none";
+quizBox.style.display="none";
+investBox.style.display="block";
+}
+
 /* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
 if(user){
-
-// 🔥 cegah auto masuk setelah register
-if(isRegistering){
-return;
-}
-
+if(isRegistering) return;
 masuk(user);
 }
 });
