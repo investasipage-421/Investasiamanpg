@@ -102,7 +102,6 @@ text-align:center;
 cursor:pointer;
 padding:6px;
 border-radius:10px;
-transition:0.2s;
 }
 
 .menuItem img{
@@ -175,20 +174,9 @@ margin:10px;
 
 <!-- SIDEBAR -->
 <div id="sidebar">
-<div class="menuItem" onclick="showNews()">
-<img src="https://img.icons8.com/color/48/news.png">
-<div style="font-size:10px;">Berita</div>
-</div>
-
-<div class="menuItem" onclick="showQuiz()">
-<img src="https://img.icons8.com/color/48/book-shelf.png">
-<div style="font-size:10px;">Soal</div>
-</div>
-
-<div class="menuItem" onclick="showInvest()">
-<img src="https://img.icons8.com/color/48/coins.png">
-<div style="font-size:10px;">Invest</div>
-</div>
+<div class="menuItem" onclick="showNews()">📢 Berita</div>
+<div class="menuItem" onclick="showQuiz()">📚 Soal</div>
+<div class="menuItem" onclick="showInvest()">💰 Invest</div>
 </div>
 
 <!-- CONTENT -->
@@ -236,9 +224,18 @@ const newsBox = document.getElementById("newsBox");
 const quizBox = document.getElementById("quizBox");
 const investBox = document.getElementById("investBox");
 
-/* REGISTER */
+/* REGISTER (OPSI 1 FIX) */
 function register(){
 auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
+.then(()=>{
+  alert("Berhasil daftar, silakan login");
+
+  auth.signOut();   // 🔥 tidak auto login
+  showLogin();      // balik ke login
+
+  regUser.value = "";
+  regPass.value = "";
+})
 .catch(e=>alert(e.message));
 }
 
