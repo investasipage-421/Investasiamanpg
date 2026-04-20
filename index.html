@@ -105,10 +105,6 @@ border-radius:10px;
 transition:0.2s;
 }
 
-.menuItem:active{
-transform:scale(0.9);
-}
-
 .menuItem.active{
 background:white;
 color:black;
@@ -171,24 +167,11 @@ margin:10px;
 <button id="logoutBtn" onclick="logout()">Logout</button>
 </div>
 
-<!-- SIDEBAR ICON FIX -->
+<!-- SIDEBAR -->
 <div id="sidebar">
-
-<div class="menuItem" onclick="showNews()">
-<div style="font-size:22px;">📰</div>
-<div style="font-size:10px;">Berita</div>
-</div>
-
-<div class="menuItem" onclick="showQuiz()">
-<div style="font-size:22px;">📚</div>
-<div style="font-size:10px;">Soal</div>
-</div>
-
-<div class="menuItem" onclick="showInvest()">
-<div style="font-size:22px;">💰</div>
-<div style="font-size:10px;">Invest</div>
-</div>
-
+<div class="menuItem" onclick="showNews()">📰 Berita</div>
+<div class="menuItem" onclick="showQuiz()">📚 Soal</div>
+<div class="menuItem" onclick="showInvest()">💰 Invest</div>
 </div>
 
 <!-- CONTENT -->
@@ -216,7 +199,6 @@ projectId: "page421",
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
-const db = firebase.database();
 
 /* ELEMENT */
 const loginBox = document.getElementById("loginBox");
@@ -229,18 +211,26 @@ const loginPass = document.getElementById("loginPass");
 const regUser = document.getElementById("regUser");
 const regPass = document.getElementById("regPass");
 
-const welcome = document.getElementById("welcome");
-const emailText = document.getElementById("emailText");
+let isRegistering = false;
 
-/* REGISTER */
+/* REGISTER FIX */
 function register(){
+isRegistering = true;
+
 auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
 .then(()=>{
 alert("Registrasi berhasil!");
+
 auth.signOut();
 showLogin();
+
+regUser.value="";
+regPass.value="";
 })
-.catch(e=>alert(e.message));
+.catch(e=>alert(e.message))
+.finally(()=>{
+setTimeout(()=>{ isRegistering = false; }, 1000);
+});
 }
 
 /* LOGIN */
@@ -294,9 +284,15 @@ document.getElementById("quizBox").style.display="none";
 document.getElementById("investBox").style.display="block";
 }
 
-/* AUTO LOGIN */
+/* AUTO LOGIN FIX */
 auth.onAuthStateChanged(user=>{
 if(user){
+
+if(isRegistering){
+auth.signOut();
+return;
+}
+
 masuk(user);
 }
 });
