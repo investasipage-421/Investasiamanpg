@@ -1,1 +1,50 @@
+<script type="module">
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+// 🔥 CONFIG KAMU (SUDAH BENAR)
+const firebaseConfig = {
+  apiKey: "AIzaSyDZ5rTxZkIueebv_JRYXDBAtZiClvvHgGw",
+  authDomain: "page421.firebaseapp.com",
+  databaseURL: "https://page421-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "page421",
+  storageBucket: "page421.firebasestorage.app",
+  messagingSenderId: "568195320694",
+  appId: "1:568195320694:web:6c8c9815c8542d64300857",
+  measurementId: "G-YRY2T3LEJG"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// LOGIN
+window.login = function(){
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      alert("Login berhasil ke Investasi Page421!");
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
+}
+
+// DAFTAR
+window.register = function(){
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      alert("Akun berhasil dibuat!");
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
+}
+
+</script>
