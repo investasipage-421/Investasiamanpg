@@ -104,11 +104,6 @@ padding:6px;
 border-radius:10px;
 }
 
-.menuItem img{
-width:32px;
-height:32px;
-}
-
 .menuItem.active{
 background:white;
 color:black;
@@ -219,12 +214,12 @@ const regPass = document.getElementById("regPass");
 const welcome = document.getElementById("welcome");
 const emailText = document.getElementById("emailText");
 
-const newsBox = document.getElementById("newsBox");
-const quizBox = document.getElementById("quizBox");
-const investBox = document.getElementById("investBox");
+let isRegistering = false;
 
-/* REGISTER FIX */
+/* REGISTER (FIX FINAL) */
 function register(){
+isRegistering = true;
+
 auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
 .then(()=>{
 alert("Registrasi berhasil!");
@@ -235,7 +230,10 @@ regPass.value="";
 auth.signOut();
 showLogin();
 })
-.catch(e=>alert(e.message));
+.catch(e=>alert(e.message))
+.finally(()=>{
+setTimeout(()=>{ isRegistering = false; }, 1000);
+});
 }
 
 /* LOGIN */
@@ -244,36 +242,11 @@ auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
 .catch(e=>alert(e.message));
 }
 
-/* SAVE USER */
-function saveUser(user){
-const ref = db.ref("users/" + user.uid);
-
-ref.once("value").then(snap=>{
-if(!snap.exists()){
-const id = Math.floor(1000+Math.random()*9000);
-ref.set({ email:user.email, id:id });
-setUI(user.email,id);
-}else{
-let data = snap.val();
-setUI(data.email,data.id);
-}
-});
-}
-
 /* MASUK */
 function masuk(user){
 loginBox.style.display="none";
 registerBox.style.display="none";
 dashboard.style.display="block";
-
-saveUser(user);
-showNews();
-}
-
-/* UI */
-function setUI(email,id){
-welcome.innerText="ID: "+id;
-emailText.innerText=email;
 }
 
 /* LOGOUT */
@@ -295,28 +268,15 @@ loginBox.style.display="none";
 registerBox.style.display="block";
 }
 
-/* MENU */
-function showNews(){
-newsBox.style.display="block";
-quizBox.style.display="none";
-investBox.style.display="none";
-}
-
-function showQuiz(){
-newsBox.style.display="none";
-quizBox.style.display="block";
-investBox.style.display="none";
-}
-
-function showInvest(){
-newsBox.style.display="none";
-quizBox.style.display="none";
-investBox.style.display="block";
-}
-
-/* AUTO LOGIN */
+/* AUTO LOGIN CONTROL (INI PENTING) */
 auth.onAuthStateChanged(user=>{
 if(user){
+
+if(isRegistering){
+auth.signOut();
+return;
+}
+
 masuk(user);
 }
 });
