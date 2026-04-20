@@ -102,6 +102,11 @@ text-align:center;
 cursor:pointer;
 padding:6px;
 border-radius:10px;
+transition:0.2s;
+}
+
+.menuItem:active{
+transform:scale(0.9);
 }
 
 .menuItem.active{
@@ -166,11 +171,24 @@ margin:10px;
 <button id="logoutBtn" onclick="logout()">Logout</button>
 </div>
 
-<!-- SIDEBAR -->
+<!-- SIDEBAR ICON FIX -->
 <div id="sidebar">
-<div class="menuItem" onclick="showNews()">Berita</div>
-<div class="menuItem" onclick="showQuiz()">Soal</div>
-<div class="menuItem" onclick="showInvest()">Invest</div>
+
+<div class="menuItem" onclick="showNews()">
+<div style="font-size:22px;">📰</div>
+<div style="font-size:10px;">Berita</div>
+</div>
+
+<div class="menuItem" onclick="showQuiz()">
+<div style="font-size:22px;">📚</div>
+<div style="font-size:10px;">Soal</div>
+</div>
+
+<div class="menuItem" onclick="showInvest()">
+<div style="font-size:22px;">💰</div>
+<div style="font-size:10px;">Invest</div>
+</div>
+
 </div>
 
 <!-- CONTENT -->
@@ -214,26 +232,15 @@ const regPass = document.getElementById("regPass");
 const welcome = document.getElementById("welcome");
 const emailText = document.getElementById("emailText");
 
-let isRegistering = false;
-
-/* REGISTER (FIX FINAL) */
+/* REGISTER */
 function register(){
-isRegistering = true;
-
 auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
 .then(()=>{
 alert("Registrasi berhasil!");
-
-regUser.value="";
-regPass.value="";
-
 auth.signOut();
 showLogin();
 })
-.catch(e=>alert(e.message))
-.finally(()=>{
-setTimeout(()=>{ isRegistering = false; }, 1000);
-});
+.catch(e=>alert(e.message));
 }
 
 /* LOGIN */
@@ -268,15 +275,28 @@ loginBox.style.display="none";
 registerBox.style.display="block";
 }
 
-/* AUTO LOGIN CONTROL (INI PENTING) */
-auth.onAuthStateChanged(user=>{
-if(user){
-
-if(isRegistering){
-auth.signOut();
-return;
+/* MENU */
+function showNews(){
+document.getElementById("newsBox").style.display="block";
+document.getElementById("quizBox").style.display="none";
+document.getElementById("investBox").style.display="none";
 }
 
+function showQuiz(){
+document.getElementById("newsBox").style.display="none";
+document.getElementById("quizBox").style.display="block";
+document.getElementById("investBox").style.display="none";
+}
+
+function showInvest(){
+document.getElementById("newsBox").style.display="none";
+document.getElementById("quizBox").style.display="none";
+document.getElementById("investBox").style.display="block";
+}
+
+/* AUTO LOGIN */
+auth.onAuthStateChanged(user=>{
+if(user){
 masuk(user);
 }
 });
