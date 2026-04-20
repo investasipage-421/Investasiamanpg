@@ -62,6 +62,11 @@ border:2px solid white;
 
 #welcome{font-size:13px;font-weight:bold;}
 
+#saldoText{
+font-size:11px;
+opacity:0.8;
+}
+
 #logoutBtn{
 font-size:10px;
 padding:3px 6px;
@@ -71,7 +76,6 @@ background:white;
 cursor:pointer;
 }
 
-/* sidebar */
 #sidebar{
 position:fixed;
 left:0;
@@ -114,12 +118,9 @@ border-radius:10px;
 margin:10px;
 }
 
-/* ruang bawah */
-#investBox{
-padding-bottom:40px;
-}
+/* INVEST */
+#investBox{padding-bottom:40px;}
 
-/* tombol beli */
 .claimBtn{
 position:absolute;
 right:10px;
@@ -165,6 +166,7 @@ font-weight:bold;
 <img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
 <div>
 <div id="welcome">Halo 👋</div>
+<div id="saldoText">Saldo: Rp 0</div>
 </div>
 </div>
 <button id="logoutBtn" onclick="logout()">Logout</button>
@@ -180,50 +182,34 @@ font-weight:bold;
 <!-- CONTENT -->
 <div id="content">
 
-<!-- BERITA -->
 <div id="newsBox" class="card">
 <h3>🔥 Berita Viral Hari Ini</h3>
 <p>Berita terkini seputar teknologi, game, dan investasi.</p>
 </div>
 
-<!-- SOAL -->
 <div id="quizBox" class="card" style="display:none;">Soal</div>
 
 <!-- INVEST -->
 <div id="investBox" class="card" style="display:none; position:relative;">
 <h3>💰 Investasi</h3>
-
 <div style="margin-top:10px;">
 <b>Paket Hemat</b><br>
 Deposit: Rp20.000<br>
 Profit: Rp5.000 / hari
 </div>
-
 <button class="claimBtn" onclick="beliPaket()">Beli</button>
 </div>
 
-<!-- 🔥 DEPOSIT -->
+<!-- DEPOSIT -->
 <div id="depositBox" class="card" style="display:none;">
 <h3>💳 Deposit</h3>
-
-<p style="font-weight:bold;">
-Silahkan depo untuk mengaktifkan paket
-</p>
-
+<p><b>Silahkan depo melalui WhatsApp:</b></p>
 <br>
-
-<p>Hubungi WhatsApp:</p>
-
 <b style="color:green;">082279321876</b>
-
 <br><br>
-
 <a href="https://wa.me/6282279321876" target="_blank">
-<button style="background:green;color:white;">
-Chat WhatsApp
-</button>
+<button style="background:green;color:white;">Chat WhatsApp</button>
 </a>
-
 </div>
 
 </div>
@@ -232,16 +218,19 @@ Chat WhatsApp
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
 const firebaseConfig = {
 apiKey: "AIzaSyDZ5rTxZkIueebv_JRYXDBAtZiClvvHgGw",
 authDomain: "page421.firebaseapp.com",
+databaseURL: "https://page421-default-rtdb.firebaseio.com",
 projectId: "page421",
 };
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+const db = firebase.database();
 
 let isRegistering = false;
 
@@ -261,25 +250,44 @@ auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
 .catch(e=>alert(e.message));
 }
 
+/* SAVE USER + SALDO */
+function saveUser(user){
+const ref = db.ref("users/" + user.uid);
+
+ref.on("value", snap=>{
+if(snap.exists()){
+const data = snap.val();
+
+let nama = data.email.split("@")[0];
+nama = nama.charAt(0).toUpperCase() + nama.slice(1);
+
+welcome.innerText = "Halo, " + nama + " 👋";
+saldoText.innerText = "Saldo: Rp " + (data.saldo || 0);
+
+}else{
+ref.set({
+email:user.email,
+saldo:0
+});
+}
+});
+}
+
 /* MASUK */
 function masuk(user){
 loginBox.style.display="none";
 registerBox.style.display="none";
 dashboard.style.display="block";
-
-let nama = user.email.split("@")[0];
-nama = nama.charAt(0).toUpperCase() + nama.slice(1);
-welcome.innerText = "Halo, " + nama + " 👋";
+saveUser(user);
 }
 
-/* 🔥 BELI → KE DEPOSIT */
+/* BELI */
 function beliPaket(){
 if(confirm("Beli paket Rp20.000 ?")){
 
 newsBox.style.display="none";
 quizBox.style.display="none";
 investBox.style.display="none";
-
 depositBox.style.display="block";
 
 }
@@ -293,37 +301,13 @@ loginBox.style.display="block";
 }
 
 /* MENU */
-function showNews(){
-newsBox.style.display="block";
-quizBox.style.display="none";
-investBox.style.display="none";
-depositBox.style.display="none";
-}
-
-function showQuiz(){
-newsBox.style.display="none";
-quizBox.style.display="block";
-investBox.style.display="none";
-depositBox.style.display="none";
-}
-
-function showInvest(){
-newsBox.style.display="none";
-quizBox.style.display="none";
-investBox.style.display="block";
-depositBox.style.display="none";
-}
+function showNews(){newsBox.style.display="block";quizBox.style.display="none";investBox.style.display="none";depositBox.style.display="none";}
+function showQuiz(){newsBox.style.display="none";quizBox.style.display="block";investBox.style.display="none";depositBox.style.display="none";}
+function showInvest(){newsBox.style.display="none";quizBox.style.display="none";investBox.style.display="block";depositBox.style.display="none";}
 
 /* SWITCH */
-function showLogin(){
-registerBox.style.display="none";
-loginBox.style.display="block";
-}
-
-function showRegister(){
-loginBox.style.display="none";
-registerBox.style.display="block";
-}
+function showLogin(){registerBox.style.display="none";loginBox.style.display="block";}
+function showRegister(){loginBox.style.display="none";registerBox.style.display="block";}
 
 /* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
