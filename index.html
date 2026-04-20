@@ -32,7 +32,7 @@ background:#222;
 color:white;
 }
 
-button:not(#logoutBtn):not(.claimBtn){
+button{
 width:100%;
 padding:10px;
 margin-top:10px;
@@ -53,24 +53,8 @@ align-items:center;
 padding:10px;
 }
 
-#profilePic{
-width:38px;
-height:38px;
-border-radius:50%;
-border:2px solid white;
-}
-
 #welcome{font-size:13px;font-weight:bold;}
 #saldoText{font-size:11px;opacity:0.8;}
-
-#logoutBtn{
-font-size:10px;
-padding:3px 6px;
-border:none;
-border-radius:5px;
-background:white;
-cursor:pointer;
-}
 
 #sidebar{
 position:fixed;
@@ -87,14 +71,11 @@ gap:20px;
 }
 
 .menuItem{
-text-align:center;
 cursor:pointer;
 padding:10px;
 border-radius:10px;
-transition:0.2s;
 }
 .menuItem:active{
-transform:scale(0.92);
 background:white;
 color:black;
 }
@@ -102,33 +83,15 @@ color:black;
 #content{
 padding:15px;
 margin-left:85px;
-overflow:auto;
-height:calc(100vh - 70px);
 }
 
+/* CARD */
 .card{
 background:white;
 color:black;
 padding:15px;
 border-radius:10px;
 margin:10px;
-}
-
-/* INVEST */
-#investBox{padding-bottom:50px;}
-
-.claimBtn{
-position:absolute;
-right:10px;
-bottom:5px;
-font-size:11px;
-padding:5px 10px;
-border-radius:6px;
-background:black;
-color:white;
-border:none;
-cursor:pointer;
-font-weight:bold;
 }
 </style>
 </head>
@@ -141,7 +104,7 @@ font-weight:bold;
 <input id="loginUser" placeholder="Email">
 <input id="loginPass" type="password" placeholder="Password">
 <button onclick="login()">Masuk</button>
-<p>Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Registrasi</span></p>
+<p onclick="showRegister()" style="color:cyan;cursor:pointer;">Registrasi</p>
 </div>
 
 <!-- REGISTER -->
@@ -150,28 +113,25 @@ font-weight:bold;
 <input id="regUser" placeholder="Email">
 <input id="regPass" type="password" placeholder="Password">
 <button onclick="register()">Daftar</button>
-<p>Sudah punya akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;">Login</span></p>
+<p onclick="showLogin()" style="color:cyan;cursor:pointer;">Login</p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard">
 
 <div id="topBar">
-<div style="display:flex;align-items:center;gap:8px;">
-<img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
 <div>
 <div id="welcome">Halo 👋</div>
 <div id="saldoText">Saldo: Rp 0</div>
 </div>
-</div>
-<button id="logoutBtn" onclick="logout()">Logout</button>
+<button onclick="logout()">Logout</button>
 </div>
 
-<!-- SIDEBAR -->
+<!-- SIDEBAR (USER ONLY) -->
 <div id="sidebar">
-<div class="menuItem" onclick="showNews()">📰 Berita</div>
-<div class="menuItem" onclick="showQuiz()">📚 Soal</div>
-<div class="menuItem" onclick="showInvest()">💰 Invest</div>
+<div class="menuItem" onclick="showNews()">📰</div>
+<div class="menuItem" onclick="showQuiz()">📚</div>
+<div class="menuItem" onclick="showInvest()">💰</div>
 </div>
 
 <!-- CONTENT -->
@@ -179,36 +139,12 @@ font-weight:bold;
 
 <div id="newsBox" class="card">Berita</div>
 <div id="quizBox" class="card" style="display:none;">Soal</div>
+<div id="investBox" class="card" style="display:none;">Investasi</div>
 
-<!-- INVEST -->
-<div id="investBox" class="card" style="display:none; position:relative;">
-<h3>💰 Investasi</h3>
-<b>Paket Hemat</b><br>
-Deposit: Rp20.000<br>
-Profit: Rp5.000 / hari
-<button class="claimBtn" onclick="beliPaket()">Beli</button>
-</div>
-
-<!-- DEPOSIT -->
-<div id="depositBox" class="card" style="display:none;">
-<h3>💳 Deposit</h3>
-<p><b>Silahkan transfer ke:</b></p>
-<p style="color:green;">082279321876</p>
-
-<br>
-
-<a href="https://wa.me/6282279321876" target="_blank">
-<button style="background:green;color:white;">Chat WhatsApp</button>
-</a>
-
-<br><br>
-
-<!-- 🔥 ADMIN ONLY -->
-<button id="btnSelesai" onclick="konfirmasiAdmin()" 
-style="background:blue;color:white;display:none;">
-Selesai
-</button>
-
+<!-- 🔥 ADMIN BOX -->
+<div id="adminBox" class="card" style="display:none;">
+<h3>👑 Dashboard Admin</h3>
+<p>Panel admin kosong dulu</p>
 </div>
 
 </div>
@@ -236,7 +172,7 @@ const ADMIN_EMAIL = "nagha.kancil@gmail.com";
 /* REGISTER */
 function register(){
 auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
-.then(()=>{ alert("Registrasi berhasil! Silakan login"); return auth.signOut(); })
+.then(()=>{ alert("Registrasi berhasil!"); return auth.signOut(); })
 .then(()=>showLogin())
 .catch(e=>alert(e.message));
 }
@@ -251,19 +187,20 @@ auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
 function saveUser(user){
 const ref = db.ref("users/" + user.uid);
 
+ref.once("value").then(snap=>{
+if(!snap.exists()){
+ref.set({email:user.email,saldo:0});
+}
+});
+
 ref.on("value", snap=>{
-if(snap.exists()){
 let data = snap.val();
 
 let nama = data.email.split("@")[0];
 nama = nama.charAt(0).toUpperCase() + nama.slice(1);
 
-welcome.innerText = "Halo, " + nama + " 👋";
+welcome.innerText = "Halo, " + nama;
 saldoText.innerText = "Saldo: Rp " + (data.saldo || 0);
-
-}else{
-ref.set({ email:user.email, saldo:0 });
-}
 });
 }
 
@@ -275,43 +212,23 @@ dashboard.style.display="block";
 
 saveUser(user);
 
-// 🔥 ADMIN ONLY BUTTON
+// 🔥 ADMIN MODE
 if(user.email === ADMIN_EMAIL){
-document.getElementById("btnSelesai").style.display = "block";
-}
-}
 
-/* BELI */
-function beliPaket(){
-if(confirm("Beli paket Rp20.000 ?")){
+sidebar.style.display = "none";
+
 newsBox.style.display="none";
 quizBox.style.display="none";
 investBox.style.display="none";
-depositBox.style.display="block";
+
+adminBox.style.display="block";
+
+}else{
+
+sidebar.style.display = "flex";
+showNews();
+
 }
-}
-
-/* KONFIRMASI ADMIN */
-function konfirmasiAdmin(){
-const user = auth.currentUser;
-
-if(user.email !== ADMIN_EMAIL){
-alert("Bukan admin!");
-return;
-}
-
-const ref = db.ref("users/" + user.uid);
-
-ref.once("value").then(snap=>{
-let data = snap.val();
-let saldo = data.saldo || 0;
-
-saldo += 20000;
-
-ref.update({ saldo: saldo });
-
-alert("✅ Saldo berhasil ditambah");
-});
 }
 
 /* LOGOUT */
@@ -321,14 +238,38 @@ dashboard.style.display="none";
 loginBox.style.display="block";
 }
 
-/* MENU */
-function showNews(){newsBox.style.display="block";quizBox.style.display="none";investBox.style.display="none";depositBox.style.display="none";}
-function showQuiz(){newsBox.style.display="none";quizBox.style.display="block";investBox.style.display="none";depositBox.style.display="none";}
-function showInvest(){newsBox.style.display="none";quizBox.style.display="none";investBox.style.display="block";depositBox.style.display="none";}
+/* MENU USER */
+function showNews(){
+newsBox.style.display="block";
+quizBox.style.display="none";
+investBox.style.display="none";
+adminBox.style.display="none";
+}
+
+function showQuiz(){
+newsBox.style.display="none";
+quizBox.style.display="block";
+investBox.style.display="none";
+adminBox.style.display="none";
+}
+
+function showInvest(){
+newsBox.style.display="none";
+quizBox.style.display="none";
+investBox.style.display="block";
+adminBox.style.display="none";
+}
 
 /* SWITCH */
-function showLogin(){registerBox.style.display="none";loginBox.style.display="block";}
-function showRegister(){loginBox.style.display="none";registerBox.style.display="block";}
+function showLogin(){
+registerBox.style.display="none";
+loginBox.style.display="block";
+}
+
+function showRegister(){
+loginBox.style.display="none";
+registerBox.style.display="block";
+}
 
 /* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
