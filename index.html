@@ -120,7 +120,7 @@ margin:10px;
 padding-bottom:40px;
 }
 
-/* 🔥 CLAIM FINAL */
+/* tombol beli */
 .claimBtn{
 position:absolute;
 right:10px;
@@ -198,7 +198,7 @@ Deposit: Rp20.000<br>
 Profit: Rp5.000 / hari
 </div>
 
-<button class="claimBtn" onclick="claimProfit()">Claim</button>
+<button class="claimBtn" onclick="beliPaket()">Beli</button>
 </div>
 
 </div>
@@ -247,9 +247,11 @@ nama = nama.charAt(0).toUpperCase() + nama.slice(1);
 welcome.innerText = "Halo, " + nama + " 👋";
 }
 
-/* CLAIM */
-function claimProfit(){
-alert("Berhasil claim Rp5.000 💰");
+/* BELI */
+function beliPaket(){
+if(confirm("Beli paket Rp20.000 ?")){
+alert("Pembelian berhasil 💰");
+}
 }
 
 /* LOGOUT */
