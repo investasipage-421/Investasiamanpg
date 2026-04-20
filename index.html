@@ -237,25 +237,24 @@ auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
 .catch(e=>alert(e.message));
 }
 
-/* SAVE USER + ID FIX */
+/* SAVE USER (FIX UTAMA) */
 function saveUser(user){
 const ref = db.ref("users/" + user.uid);
 
 ref.once("value").then(snap=>{
-if(!snap.exists()){
+if(snap.exists()){
+const data = snap.val();
+setUI(data.email, data.id);
+}else{
 
 const id = Math.floor(1000 + Math.random() * 9000);
 
 ref.set({
 email: user.email,
 id: id
-}).then(()=>{
-setUI(user.email, id);
 });
 
-}else{
-let data = snap.val();
-setUI(data.email, data.id);
+setUI(user.email, id);
 }
 });
 }
@@ -296,24 +295,24 @@ registerBox.style.display="block";
 
 /* MENU */
 function showNews(){
-document.getElementById("newsBox").style.display="block";
-document.getElementById("quizBox").style.display="none";
-document.getElementById("investBox").style.display="none";
+newsBox.style.display="block";
+quizBox.style.display="none";
+investBox.style.display="none";
 }
 
 function showQuiz(){
-document.getElementById("newsBox").style.display="none";
-document.getElementById("quizBox").style.display="block";
-document.getElementById("investBox").style.display="none";
+newsBox.style.display="none";
+quizBox.style.display="block";
+investBox.style.display="none";
 }
 
 function showInvest(){
-document.getElementById("newsBox").style.display="none";
-document.getElementById("quizBox").style.display="none";
-document.getElementById("investBox").style.display="block";
+newsBox.style.display="none";
+quizBox.style.display="none";
+investBox.style.display="block";
 }
 
-/* AUTO LOGIN CONTROL */
+/* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
 if(user){
 
