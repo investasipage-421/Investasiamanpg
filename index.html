@@ -32,7 +32,7 @@ background:#222;
 color:white;
 }
 
-/* tombol umum */
+/* tombol utama */
 button:not(#logoutBtn):not(.claimBtn){
 width:100%;
 padding:10px;
@@ -115,11 +115,16 @@ border-radius:10px;
 margin:10px;
 }
 
-/* 🔥 tombol claim kecil */
+/* 🔥 kasih ruang bawah */
+#investBox{
+padding-bottom:35px;
+}
+
+/* 🔥 tombol claim kecil & turun */
 .claimBtn{
 position:absolute;
 right:10px;
-bottom:10px;
+bottom:0px;
 font-size:9px;
 padding:3px 7px;
 border-radius:5px;
@@ -186,7 +191,6 @@ width:auto;
 
 <!-- INVEST -->
 <div id="investBox" class="card" style="display:none; position:relative;">
-
 <h3>💰 Investasi</h3>
 
 <div style="margin-top:10px;">
@@ -196,7 +200,6 @@ Profit: Rp5.000 / hari
 </div>
 
 <button class="claimBtn" onclick="claimProfit()">Claim</button>
-
 </div>
 
 </div>
@@ -205,18 +208,15 @@ Profit: Rp5.000 / hari
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
 const firebaseConfig = {
 apiKey: "AIzaSyDZ5rTxZkIueebv_JRYXDBAtZiClvvHgGw",
 authDomain: "page421.firebaseapp.com",
-databaseURL: "https://page421-default-rtdb.firebaseio.com",
 projectId: "page421",
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const auth = firebase.auth();
 
 let isRegistering = false;
@@ -224,12 +224,8 @@ let isRegistering = false;
 /* REGISTER */
 function register(){
 isRegistering = true;
-
 auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
-.then(()=>{
-alert("Registrasi berhasil! Silakan login");
-return auth.signOut();
-})
+.then(()=>{ alert("Registrasi berhasil! Silakan login"); return auth.signOut(); })
 .then(()=>showLogin())
 .catch(e=>alert(e.message))
 .finally(()=>setTimeout(()=>{isRegistering=false;},1000));
@@ -249,7 +245,6 @@ dashboard.style.display="block";
 
 let nama = user.email.split("@")[0];
 nama = nama.charAt(0).toUpperCase() + nama.slice(1);
-
 welcome.innerText = "Halo, " + nama + " 👋";
 }
 
@@ -266,34 +261,13 @@ loginBox.style.display="block";
 }
 
 /* MENU */
-function showNews(){
-newsBox.style.display="block";
-quizBox.style.display="none";
-investBox.style.display="none";
-}
-
-function showQuiz(){
-newsBox.style.display="none";
-quizBox.style.display="block";
-investBox.style.display="none";
-}
-
-function showInvest(){
-newsBox.style.display="none";
-quizBox.style.display="none";
-investBox.style.display="block";
-}
+function showNews(){ newsBox.style.display="block"; quizBox.style.display="none"; investBox.style.display="none"; }
+function showQuiz(){ newsBox.style.display="none"; quizBox.style.display="block"; investBox.style.display="none"; }
+function showInvest(){ newsBox.style.display="none"; quizBox.style.display="none"; investBox.style.display="block"; }
 
 /* SWITCH */
-function showLogin(){
-registerBox.style.display="none";
-loginBox.style.display="block";
-}
-
-function showRegister(){
-loginBox.style.display="none";
-registerBox.style.display="block";
-}
+function showLogin(){ registerBox.style.display="none"; loginBox.style.display="block"; }
+function showRegister(){ loginBox.style.display="none"; registerBox.style.display="block"; }
 
 /* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
