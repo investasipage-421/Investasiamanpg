@@ -61,7 +61,7 @@ width:75px;
 background:#111;
 padding:10px 0;
 border-right:1px solid #333;
-display:flex;
+display:none;
 flex-direction:column;
 align-items:center;
 gap:20px;
@@ -150,7 +150,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-/* ADMIN EMAIL */
 const ADMIN_EMAIL = "nagha.kancil@gmail.com";
 
 /* ELEMENT */
@@ -195,7 +194,7 @@ if(!snap.exists()){
 ref.set({
 email:user.email,
 saldo:0,
-role: user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? "admin" : "user"
+role:user.email.toLowerCase()===ADMIN_EMAIL.toLowerCase()?"admin":"user"
 });
 }
 });
@@ -207,7 +206,7 @@ let name = data.email.split("@")[0];
 welcome.innerText = "Halo, " + name;
 saldoText.innerText = "Saldo: Rp " + (data.saldo || 0);
 
-if(data.role === "admin"){
+if(data.role==="admin"){
 showAdmin();
 }else{
 showUser();
@@ -215,13 +214,13 @@ showUser();
 });
 }
 
-/* DASHBOARD CONTROL */
+/* DASHBOARD */
 function showAdmin(){
 sidebar.style.display="none";
+adminBox.style.display="block";
 newsBox.style.display="none";
 quizBox.style.display="none";
 investBox.style.display="none";
-adminBox.style.display="block";
 }
 
 function showUser(){
@@ -244,6 +243,7 @@ function logout(){
 auth.signOut();
 dashboard.style.display="none";
 loginBox.style.display="block";
+registerBox.style.display="none";
 }
 
 /* MENU */
@@ -281,7 +281,16 @@ registerBox.style.display="block";
 
 /* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
-if(user) masuk(user);
+if(user){
+loginBox.style.display="none";
+registerBox.style.display="none";
+dashboard.style.display="block";
+masuk(user);
+}else{
+dashboard.style.display="none";
+loginBox.style.display="block";
+registerBox.style.display="none";
+}
 });
 </script>
 
