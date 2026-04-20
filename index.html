@@ -70,15 +70,8 @@ border-radius:50%;
 border:2px solid white;
 }
 
-#welcome{
-font-size:12px;
-font-weight:bold;
-}
-
-#emailText{
-font-size:10px;
-opacity:0.7;
-}
+#welcome{font-size:12px;font-weight:bold;}
+#emailText{font-size:10px;opacity:0.7;}
 
 #logoutBtn{
 font-size:10px;
@@ -96,7 +89,6 @@ left:0;
 top:70px;
 width:75px;
 background:#111;
-height:auto;
 padding:10px 0;
 border-right:1px solid #333;
 display:flex;
@@ -124,10 +116,6 @@ color:black;
 transform:scale(1.05);
 }
 
-.menuItem:active{
-transform:scale(0.9);
-}
-
 /* CONTENT */
 #content{
 padding:15px;
@@ -153,11 +141,8 @@ margin:10px;
 <input id="loginPass" type="password" placeholder="Password">
 <button onclick="login()">Masuk</button>
 
-<p>
-Belum punya akun?
-<span onclick="showRegister()" style="color:cyan;cursor:pointer;">
-Registrasi sekarang
-</span>
+<p>Belum punya akun?
+<span onclick="showRegister()" style="color:cyan;cursor:pointer;">Registrasi</span>
 </p>
 </div>
 
@@ -168,11 +153,8 @@ Registrasi sekarang
 <input id="regPass" type="password" placeholder="Password">
 <button onclick="register()">Daftar</button>
 
-<p>
-Sudah punya akun?
-<span onclick="showLogin()" style="color:cyan;cursor:pointer;">
-Login sekarang
-</span>
+<p>Sudah punya akun?
+<span onclick="showLogin()" style="color:cyan;cursor:pointer;">Login</span>
 </p>
 </div>
 
@@ -193,7 +175,6 @@ Login sekarang
 
 <!-- SIDEBAR -->
 <div id="sidebar">
-
 <div class="menuItem" onclick="showNews()">
 <img src="https://img.icons8.com/color/48/news.png">
 <div style="font-size:10px;">Berita</div>
@@ -208,16 +189,13 @@ Login sekarang
 <img src="https://img.icons8.com/color/48/coins.png">
 <div style="font-size:10px;">Invest</div>
 </div>
-
 </div>
 
 <!-- CONTENT -->
 <div id="content">
-
 <div id="newsBox" class="card">Berita</div>
 <div id="quizBox" class="card" style="display:none;">Soal</div>
 <div id="investBox" class="card" style="display:none;">Investasi</div>
-
 </div>
 
 </div>
@@ -240,29 +218,44 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
+/* DOM */
+const loginBox = document.getElementById("loginBox");
+const registerBox = document.getElementById("registerBox");
+const dashboard = document.getElementById("dashboard");
+
+const loginUser = document.getElementById("loginUser");
+const loginPass = document.getElementById("loginPass");
+
+const regUser = document.getElementById("regUser");
+const regPass = document.getElementById("regPass");
+
+const welcome = document.getElementById("welcome");
+const emailText = document.getElementById("emailText");
+
+const newsBox = document.getElementById("newsBox");
+const quizBox = document.getElementById("quizBox");
+const investBox = document.getElementById("investBox");
+
 /* REGISTER */
 function register(){
-auth.createUserWithEmailAndPassword(regUser.value,regPass.value)
+auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
 .catch(e=>alert(e.message));
 }
 
 /* LOGIN */
 function login(){
-auth.signInWithEmailAndPassword(loginUser.value,loginPass.value)
+auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
 .catch(e=>alert(e.message));
 }
 
-/* SIMPAN USER KE FIREBASE */
+/* SAVE USER */
 function saveUser(user){
 const ref = db.ref("users/" + user.uid);
 
 ref.once("value").then(snap=>{
 if(!snap.exists()){
 const id = Math.floor(1000+Math.random()*9000);
-ref.set({
-email:user.email,
-id:id
-});
+ref.set({ email:user.email, id:id });
 setUI(user.email,id);
 }else{
 let data = snap.val();
@@ -278,6 +271,8 @@ registerBox.style.display="none";
 dashboard.style.display="block";
 
 saveUser(user);
+showNews();
+setActive(0);
 }
 
 /* UI */
@@ -326,7 +321,7 @@ quizBox.style.display="none";
 investBox.style.display="block";
 }
 
-/* ACTIVE MENU */
+/* ACTIVE */
 function setActive(i){
 document.querySelectorAll(".menuItem").forEach((el,index)=>{
 el.classList.toggle("active",index===i);
