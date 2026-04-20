@@ -182,15 +182,24 @@ const loginBox = document.getElementById("loginBox");
 const registerBox = document.getElementById("registerBox");
 const dashboard = document.getElementById("dashboard");
 
+let isRegistering = false;
+
 /* REGISTER */
 function register(){
+isRegistering = true;
+
 auth.createUserWithEmailAndPassword(regUser.value, regPass.value)
 .then(()=>{
-alert("Registrasi berhasil!");
-auth.signOut();
+alert("Registrasi berhasil! Silakan login");
+return auth.signOut(); // 🔥 paksa logout
+})
+.then(()=>{
 showLogin();
 })
-.catch(e=>alert(e.message));
+.catch(e=>alert(e.message))
+.finally(()=>{
+setTimeout(()=>{ isRegistering = false; }, 1000);
+});
 }
 
 /* LOGIN */
@@ -199,7 +208,7 @@ auth.signInWithEmailAndPassword(loginUser.value, loginPass.value)
 .catch(e=>alert(e.message));
 }
 
-/* AMBIL NAMA DARI EMAIL */
+/* AMBIL NAMA */
 function getNama(email){
 let nama = email.split("@")[0];
 return nama.charAt(0).toUpperCase() + nama.slice(1);
@@ -210,20 +219,13 @@ function saveUser(user){
 const ref = db.ref("users/" + user.uid);
 
 ref.on("value", (snap)=>{
-
 if(snap.exists()){
 const data = snap.val();
-const nama = getNama(data.email);
-welcome.innerText = "Halo, " + nama + " 👋";
+welcome.innerText = "Halo, " + getNama(data.email) + " 👋";
 }else{
-ref.set({
-email: user.email
-});
-
-const nama = getNama(user.email);
-welcome.innerText = "Halo, " + nama + " 👋";
+ref.set({ email: user.email });
+welcome.innerText = "Halo, " + getNama(user.email) + " 👋";
 }
-
 });
 }
 
@@ -254,28 +256,15 @@ loginBox.style.display="none";
 registerBox.style.display="block";
 }
 
-/* MENU */
-function showNews(){
-newsBox.style.display="block";
-quizBox.style.display="none";
-investBox.style.display="none";
-}
-
-function showQuiz(){
-newsBox.style.display="none";
-quizBox.style.display="block";
-investBox.style.display="none";
-}
-
-function showInvest(){
-newsBox.style.display="none";
-quizBox.style.display="none";
-investBox.style.display="block";
-}
-
 /* AUTO LOGIN */
 auth.onAuthStateChanged(user=>{
 if(user){
+
+// 🔥 cegah auto masuk setelah register
+if(isRegistering){
+return;
+}
+
 masuk(user);
 }
 });
