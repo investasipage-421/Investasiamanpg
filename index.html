@@ -1,8 +1,10 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>investasi page421</title><style>
+<title>investasi page421</title>
+<style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
 
 html,body{
@@ -58,6 +60,7 @@ left:50%;
 transform:translateX(-50%);
 color:white;
 font-size:12px;
+z-index: 999;
 }
 
 /* DASHBOARD */
@@ -149,7 +152,10 @@ padding:15px;
 border-radius:10px;
 margin:10px;
 }
-</style></head><body><div id="loading">Loading...</div><!-- LOGIN --><div class="box" id="loginBox">
+</style></head><body><div id="loading">Loading...</div>
+
+<!-- LOGIN -->
+<div class="box" id="loginBox">
 <h2>Login</h2>
 <input id="loginUser" placeholder="Email">
 <input id="loginPass" type="password" placeholder="Password">
@@ -159,17 +165,26 @@ Belum punya akun?
 Registrasi sekarang
 </span>
 </p>
-</div><!-- REGISTER --><div class="box" id="registerBox" style="display:none;">
+</div>
+
+<!-- REGISTER -->
+<div class="box" id="registerBox" style="display:none;">
 <h2>Register</h2>
 <input id="regUser" placeholder="Email">
-<input id="regPass" type="password" placeholder="Password">
+<!-- Tambahkan info minimal 6 karakter di placeholder -->
+<input id="regPass" type="password" placeholder="Password (Min 6 Karakter)">
 <button onclick="register()">Daftar</button><p>
 Sudah punya akun?
 <span onclick="showLogin()" style="color:cyan;cursor:pointer;">
 Login sekarang
 </span>
 </p>
-</div><!-- DASHBOARD --><div id="dashboard"><!-- TOP --><div id="topBar">
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+<!-- TOP -->
+<div id="topBar">
 <div style="display:flex;align-items:center;gap:8px;">
 <img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
 <div>
@@ -189,7 +204,13 @@ Login sekarang
 <div style="font-size:10px;">Invest</div>
 </div></div><!-- CONTENT --><div id="content"><div id="newsBox" class="card">Berita</div>
 <div id="quizBox" class="card" style="display:none;">Soal</div>
-<div id="investBox" class="card" style="display:none;">Investasi</div></div></div><!-- FIREBASE --><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script><script>
+<div id="investBox" class="card" style="display:none;">Investasi</div></div></div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script>
 const firebaseConfig = {
 apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
 authDomain: "page421-b9a6c.firebaseapp.com",
@@ -201,104 +222,113 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.database();
+const loading = document.getElementById('loading');
 
 /* REGISTER */
 function register(){
-loading.style.display="block";
+    // Ambil value password
+    const password = regPass.value;
 
-auth.createUserWithEmailAndPassword(regUser.value,regPass.value)
-.then(userCred=>{
-let user = userCred.user;
+    // VALIDASI: Cek jika password kurang dari 6 karakter
+    if(password.length < 6){
+        alert("Gagal: Password minimal harus 6 karakter!");
+        return; // Menghentikan fungsi agar tidak lanjut ke Firebase
+    }
 
-/* SIMPAN USER */
-db.ref("users/" + user.uid).set({
-email: user.email
-});
+    loading.style.display="block";
 
-loading.style.display="none";
-alert("Register sukses");
-})
-.catch(e=>{
-loading.style.display="none";
-alert(e.message);
-});
+    auth.createUserWithEmailAndPassword(regUser.value, password)
+    .then(userCred=>{
+        let user = userCred.user;
+
+        /* SIMPAN USER */
+        db.ref("users/" + user.uid).set({
+            email: user.email
+        });
+
+        loading.style.display="none";
+        alert("Register sukses");
+        showLogin();
+    })
+    .catch(e=>{
+        loading.style.display="none";
+        alert(e.message);
+    });
 }
 
 /* LOGIN */
 function login(){
-loading.style.display="block";
+    loading.style.display="block";
 
-auth.signInWithEmailAndPassword(loginUser.value,loginPass.value)
-.then(u=>{
-loading.style.display="none";
-masuk(u.user);
-})
-.catch(e=>{
-loading.style.display="none";
-alert(e.message);
-});
+    auth.signInWithEmailAndPassword(loginUser.value,loginPass.value)
+    .then(u=>{
+        loading.style.display="none";
+        masuk(u.user);
+    })
+    .catch(e=>{
+        loading.style.display="none";
+        alert(e.message);
+    });
 }
 
 /* MASUK TANPA ID */
 function masuk(user){
-loginBox.style.display="none";
-registerBox.style.display="none";
-dashboard.style.display="block";
+    loginBox.style.display="none";
+    registerBox.style.display="none";
+    dashboard.style.display="block";
 
-db.ref("users/" + user.uid).once("value").then(snap=>{
-let data = snap.val();
-
-welcome.innerText = "Halo 👋";
-emailText.innerText = data?.email || user.email;
-});
+    db.ref("users/" + user.uid).once("value").then(snap=>{
+        let data = snap.val();
+        welcome.innerText = "Halo 👋";
+        emailText.innerText = data?.email || user.email;
+    });
 }
 
 /* LOGOUT */
 function logout(){
-auth.signOut();
-dashboard.style.display="none";
-loginBox.style.display="block";
+    auth.signOut();
+    dashboard.style.display="none";
+    loginBox.style.display="block";
 }
 
 /* SWITCH */
 function showLogin(){
-registerBox.style.display="none";
-loginBox.style.display="block";
+    registerBox.style.display="none";
+    loginBox.style.display="block";
 }
 
 function showRegister(){
-loginBox.style.display="none";
-registerBox.style.display="block";
+    loginBox.style.display="none";
+    registerBox.style.display="block";
 }
 
 /* MENU */
 function setActive(index){
-let items=document.querySelectorAll(".menuItem");
-items.forEach((el,i)=>{
-el.classList.remove("active");
-if(i===index) el.classList.add("active");
-});
+    let items=document.querySelectorAll(".menuItem");
+    items.forEach((el,i)=>{
+        el.classList.remove("active");
+        if(i===index) el.classList.add("active");
+    });
 }
 
 function showNews(){
-setActive(0);
-newsBox.style.display="block";
-quizBox.style.display="none";
-investBox.style.display="none";
+    setActive(0);
+    newsBox.style.display="block";
+    quizBox.style.display="none";
+    investBox.style.display="none";
 }
 
 function showQuiz(){
-setActive(1);
-newsBox.style.display="none";
-quizBox.style.display="block";
-investBox.style.display="none";
+    setActive(1);
+    newsBox.style.display="none";
+    quizBox.style.display="block";
+    investBox.style.display="none";
 }
 
 function showInvest(){
-setActive(2);
-newsBox.style.display="none";
-quizBox.style.display="none";
-investBox.style.display="block";
+    setActive(2);
+    newsBox.style.display="none";
+    quizBox.style.display="none";
+    investBox.style.display="block";
 }
-</script></body>
-</html>
+</script></body></html>
