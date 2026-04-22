@@ -238,18 +238,15 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-let isRegistering = false; // KUNCI agar dashboard tidak muncul saat daftar
+let isRegistering = false; 
 
-// CEK STATUS LOGIN
 auth.onAuthStateChanged(user => {
-    // Jika ada user DAN bukan lagi proses daftar, buka dashboard
     if (user && !isRegistering) {
         document.getElementById('loginBox').style.display = "none";
         document.getElementById('registerBox').style.display = "none";
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
     } else if (!isRegistering) {
-        // Jika tidak ada user, tampilkan login
         document.getElementById('loginBox').style.display = "block";
         document.getElementById('dashboard').style.display = "none";
     }
@@ -265,25 +262,27 @@ function register(){
         return;
     }
 
-    isRegistering = true; // AKTIFKAN KUNCI
+    isRegistering = true; 
     document.getElementById('loading').style.display = "block";
 
     auth.createUserWithEmailAndPassword(email, pass)
     .then(userCred => {
         db.ref("users/" + userCred.user.uid).set({ email: email });
 
-        // Paksa keluar agar tidak otomatis masuk
         auth.signOut().then(() => {
-            isRegistering = false; // MATIKAN KUNCI
+            isRegistering = false; 
             document.getElementById('loading').style.display = "none";
-            alert("Berhasil Daftar! Silakan Login Manual.");
+            
+            // PERUBAHAN DISINI: Pesan diperingkas sesuai permintaan
+            alert("Registrasi Berhasil!"); 
+            
             showLogin();
             document.getElementById('regUser').value = "";
             document.getElementById('regPass').value = "";
         });
     })
     .catch(e => {
-        isRegistering = false; // MATIKAN KUNCI JIKA GAGAL
+        isRegistering = false; 
         document.getElementById('loading').style.display = "none";
         alert(e.message);
     });
