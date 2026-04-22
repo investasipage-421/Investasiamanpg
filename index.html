@@ -37,26 +37,15 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 .invest-card { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 20px; color: white; }
 .invest-title { color: cyan; font-size: 20px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; }
 .invest-detail { font-size: 14px; margin-bottom: 6px; color: #ddd; }
-.invest-detail b { color: cyan; }
+.invest-note { background: rgba(0, 229, 255, 0.1); padding: 10px; border-radius: 8px; margin-top: 15px; font-size: 14px; color: cyan; border-left: 4px solid cyan; }
+.btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 15px; cursor: pointer; }
 
-/* NOTE/CATATAN STYLE */
-.invest-note {
-    background: rgba(255, 255, 255, 0.08);
-    padding: 12px;
-    border-radius: 8px;
-    margin-top: 15px;
-    font-size: 14px;
-    color: cyan;
-    border-left: 4px solid cyan;
-}
-
-.btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 15px; cursor: pointer; font-size: 15px; }
-
-/* DEPO BOX */
-.depo-container { background: #f1f1f1; border-radius: 15px; padding: 20px; text-align: center; border: 2px dashed cyan; }
-.depo-label { font-size: 14px; color: #555; font-weight: normal; }
-.depo-nominal-bold { font-size: 22px; color: #000; display: block; margin: 10px 0; }
-.btn-depo { width: 100%; padding: 15px; background: #000; color: cyan; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
+/* DEPO PAGE */
+.depo-container { background: #f1f1f1; border-radius: 15px; padding: 25px; text-align: center; border: 2px dashed #00b8d4; }
+.depo-label { font-size: 13px; color: #555; margin-bottom: 5px; }
+.depo-title-bold { font-size: 20px; color: #000; font-weight: 900; display: block; margin-bottom: 10px; }
+.btn-depo { width: 100%; padding: 15px; background: #000; color: #00e5ff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,229,255,0.2); }
+.btn-depo:disabled { background: #ccc; color: #666; box-shadow: none; }
 
 #statusTopup { margin-top: 15px; padding: 12px; border-radius: 10px; font-size: 13px; display: none; text-align: center; }
 .pending-style { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
@@ -65,7 +54,7 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 </head>
 <body>
 
-<div id="loading">Memproses...</div>
+<div id="loading">Memproses ke Database...</div>
 
 <!-- LOGIN/REGISTER -->
 <div class="box" id="loginBox">
@@ -73,7 +62,7 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
     <input id="loginUser" type="email" placeholder="Email">
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">MASUK</button>
-    <p style="margin-top:15px; font-size:12px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Daftar</span></p>
+    <p style="margin-top:15px; font-size:12px;">Belum akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Daftar</span></p>
 </div>
 
 <div class="box" id="registerBox" style="display:none;">
@@ -81,7 +70,7 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
     <input id="regUser" type="email" placeholder="Email">
     <input id="regPass" type="password" placeholder="Pass 6 Digit">
     <button onclick="register()">DAFTAR SEKARANG</button>
-    <p style="margin-top:15px; font-size:12px;">Sudah punya akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;">Login</span></p>
+    <p style="margin-top:15px; font-size:12px;">Sudah akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;">Login</span></p>
 </div>
 
 <!-- DASHBOARD -->
@@ -98,25 +87,24 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
     </div>
 
     <div id="sidebar">
-        <div class="menuItem active" id="mNews" onclick="showNews()"><img src="https://img.icons8.com/color/48/news.png"><div style="font-size:10px;">Berita</div></div>
-        <div class="menuItem" id="mQuiz" onclick="showQuiz()"><img src="https://img.icons8.com/color/48/book-shelf.png"><div style="font-size:10px;">Soal</div></div>
-        <div class="menuItem" id="mInvest" onclick="showInvest()"><img src="https://img.icons8.com/color/48/coins.png"><div style="font-size:10px;">Invest</div></div>
-        <div class="menuItem" id="mDepo" onclick="showDepo()"><img src="https://img.icons8.com/color/48/request-money.png"><div style="font-size:10px;">Depo</div></div>
+        <div class="menuItem active" id="mNews" onclick="showNews()"><img src="https://img.icons8.com/color/48/news.png"></div>
+        <div class="menuItem" id="mQuiz" onclick="showQuiz()"><img src="https://img.icons8.com/color/48/book-shelf.png"></div>
+        <div class="menuItem" id="mInvest" onclick="showInvest()"><img src="https://img.icons8.com/color/48/coins.png"></div>
+        <div class="menuItem" id="mDepo" onclick="showDepo()"><img src="https://img.icons8.com/color/48/request-money.png"></div>
     </div>
 
     <div id="content">
-        <div id="newsBox" class="card">Halaman Berita - Selamat Datang!</div>
+        <div id="newsBox" class="card">Selamat Datang di Halaman Berita.</div>
         <div id="quizBox" class="card" style="display:none;">Halaman Soal Latihan.</div>
 
         <!-- INVEST BOX -->
         <div id="investBox" style="display:none;">
             <div class="invest-card">
                 <div class="invest-title">Paket Investasi A</div>
-                <div class="invest-detail">💰 Depo : <b>Rp 20.000</b></div>
-                <div class="invest-detail">📈 Profit : <b>Rp 30.000 (Total)</b></div>
-                <div class="invest-detail">📅 Sampai : <b>60 Hari</b></div>
+                <div class="invest-detail">💰 Depo : Rp 20.000</div>
+                <div class="invest-detail">📈 Profit : Rp 30.000 (Total)</div>
+                <div class="invest-detail">📅 Sampai : 60 Hari</div>
                 
-                <!-- NOTE SESUAI PERMINTAAN -->
                 <div class="invest-note">
                     note : Satu hari : 500
                 </div>
@@ -127,13 +115,15 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 
         <!-- DEPO BOX -->
         <div id="depoBox" class="card" style="display:none;">
-            <h3 style="margin-bottom:15px; text-align:center;">Halaman Depo</h3>
+            <h3 style="margin-bottom:15px; text-align:center; color: #000;">Isi Saldo</h3>
             <div class="depo-container">
                 <p class="depo-label">KONFIRMASI PEMBAYARAN</p>
-                <b class="depo-nominal-bold">NOMINAL DEPO 50.000!!</b>
-                <h1 style="color:black; margin-bottom:15px;">Rp 50.000</h1>
+                <b class="depo-title-bold">NOMINAL DEPO 50.000!!</b>
+                <h1 style="color: #000; margin-bottom: 20px; font-size: 32px;">Rp 50.000</h1>
+                
                 <button id="btnKirimTopup" class="btn-depo" onclick="kirimDepo()">REQUEST DEPO SEKARANG</button>
             </div>
+            
             <div id="statusTopup"></div>
         </div>
     </div>
@@ -164,7 +154,7 @@ auth.onAuthStateChanged(user => {
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Hitung Saldo dari status "selesai" di folder topup
+        // Monitor folder 'topup' untuk hitung saldo
         db.ref("topup").on("value", (snap) => {
             let totalSaldo = 0;
             let adaPending = false;
@@ -186,15 +176,13 @@ auth.onAuthStateChanged(user => {
             if (adaPending) {
                 statusBox.style.display = "block";
                 statusBox.className = "pending-style";
-                statusBox.innerHTML = "🕒 <b>STATUS:</b> Menunggu ACC Admin...";
+                statusBox.innerHTML = "🕒 <b>STATUS PENDING:</b> Menunggu ACC Admin...";
                 btn.disabled = true;
-                btn.innerText = "DALAM PROSES...";
-                btn.style.background = "#ccc";
+                btn.innerText = "SEDANG DIPROSES...";
             } else {
                 statusBox.style.display = "none";
                 btn.disabled = false;
                 btn.innerText = "REQUEST DEPO SEKARANG";
-                btn.style.background = "#000";
             }
         });
     } else {
@@ -203,43 +191,52 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-function buyInvest() {
-    if (globalSaldo < 20000) {
-        alert("Saldo tidak cukup, silahkan depo sekarang!");
-        showDepo();
-    } else {
-        if (confirm("Beli Paket Investasi A seharga Rp 20.000?")) {
-            alert("Berhasil! Silahkan hubungi admin untuk aktivasi manual.");
-        }
-    }
-}
-
 function kirimDepo() {
     const user = auth.currentUser;
-    const orderID = Date.now();
+    if (!user) return;
+
+    const orderID = Date.now().toString();
     document.getElementById('loading').style.display = "block";
+
+    // Kirim data ke Firebase
     db.ref("topup/" + orderID).set({
         uid: user.uid,
         email: user.email,
         nominal: 50000,
         status: "pending"
-    }).then(() => { 
+    })
+    .then(() => {
         document.getElementById('loading').style.display = "none";
-        alert("Permintaan Terkirim!"); 
+        alert("Berhasil! Permintaan Rp 50.000 terkirim. Cek Firebase sekarang.");
+    })
+    .catch((error) => {
+        document.getElementById('loading').style.display = "none";
+        alert("Gagal Kirim ke Firebase: " + error.message);
     });
+}
+
+function buyInvest() {
+    if (globalSaldo < 20000) {
+        alert("Saldo tidak cukup, silahkan depo sekarang!");
+        showDepo();
+    } else {
+        if (confirm("Beli paket seharga Rp 20.000?")) {
+            alert("Berhasil! Silahkan hubungi admin untuk aktivasi.");
+        }
+    }
 }
 
 function login(){
     const email = document.getElementById('loginUser').value;
     const pass = document.getElementById('loginPass').value;
-    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Login Gagal"));
+    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Gagal Login"));
 }
 
 function register(){
     const email = document.getElementById('regUser').value;
     const pass = document.getElementById('regPass').value;
     if(pass.length < 6) return alert("Password minimal 6 angka");
-    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Daftar Sukses"); showLogin(); });
+    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Sukses Daftar"); showLogin(); });
 }
 
 function logout(){ auth.signOut().then(() => location.reload()); }
