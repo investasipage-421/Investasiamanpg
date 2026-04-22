@@ -123,7 +123,7 @@ border-right:1px solid #333;
 display:flex;
 flex-direction:column;
 align-items:center;
-gap:25px;
+gap:20px; /* Dipersempit sedikit agar cukup banyak menu */
 }
 
 .menuItem{
@@ -132,6 +132,7 @@ cursor:pointer;
 padding:8px;
 border-radius:10px;
 width: 60px;
+transition: 0.3s;
 }
 
 .menuItem img{
@@ -248,6 +249,11 @@ font-weight: bold;
             <img src="https://img.icons8.com/color/48/coins.png">
             <div style="font-size:10px;">Invest</div>
         </div>
+        <!-- MENU DEPO BARU -->
+        <div class="menuItem" id="mDepo" onclick="showDepo()">
+            <img src="https://img.icons8.com/color/48/request-money.png">
+            <div style="font-size:10px;">Depo</div>
+        </div>
     </div>
 
     <div id="content">
@@ -265,6 +271,13 @@ font-weight: bold;
                 <div class="invest-detail">Sampai : 60 Hari</div>
                 <button class="btn-invest" onclick="buyInvest()">Beli Sekarang</button>
             </div>
+        </div>
+
+        <!-- DEPO BOX -->
+        <div id="depoBox" class="card" style="display:none;">
+            <h3 style="margin-bottom:10px;">Deposit Saldo</h3>
+            <p style="font-size:14px; font-weight:normal;">Silahkan hubungi admin untuk melakukan pengisian saldo secara manual.</p>
+            <button class="btn-invest" style="margin-top:20px; background: #25D366; color:white;">Hubungi WhatsApp Admin</button>
         </div>
     </div>
 </div>
@@ -297,7 +310,6 @@ auth.onAuthStateChanged(user => {
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Ambil Saldo dari Database Realtime
         db.ref("users/" + user.uid).on("value", (snapshot) => {
             const data = snapshot.val();
             if(data) {
@@ -324,7 +336,6 @@ function register(){
     document.getElementById('loading').style.display = "block";
     auth.createUserWithEmailAndPassword(email, pass)
     .then(userCred => {
-        // Set saldo awal Rp 0 saat daftar
         db.ref("users/" + userCred.user.uid).set({ 
             email: email,
             balance: 0 
@@ -401,14 +412,19 @@ function clearMenu(){
     document.getElementById('mNews').classList.remove('active');
     document.getElementById('mQuiz').classList.remove('active');
     document.getElementById('mInvest').classList.remove('active');
+    document.getElementById('mDepo').classList.remove('active'); // Clear status Depo
+    
     document.getElementById('newsBox').style.display = "none";
     document.getElementById('quizBox').style.display = "none";
     document.getElementById('investBox').style.display = "none";
+    document.getElementById('depoBox').style.display = "none"; // Sembunyikan box Depo
 }
 
 function showNews(){ clearMenu(); document.getElementById('mNews').classList.add('active'); document.getElementById('newsBox').style.display = "block"; }
 function showQuiz(){ clearMenu(); document.getElementById('mQuiz').classList.add('active'); document.getElementById('quizBox').style.display = "block"; }
 function showInvest(){ clearMenu(); document.getElementById('mInvest').classList.add('active'); document.getElementById('investBox').style.display = "block"; }
+function showDepo(){ clearMenu(); document.getElementById('mDepo').classList.add('active'); document.getElementById('depoBox').style.display = "block"; }
+
 </script>
 </body>
 </html>
