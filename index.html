@@ -56,7 +56,7 @@ color:white;
 outline: none;
 }
 
-button:not(#logoutBtn){
+button:not(#logoutBtn, .btn-invest){
 width:100%;
 padding:12px;
 margin-top:10px;
@@ -88,17 +88,15 @@ border-radius:50%;
 border:2px solid white;
 }
 
-/* BAGIAN SALDO (Ganti Halo) */
 #welcome{
-font-size:14px;
+font-size:16px;
 font-weight:bold;
-color: cyan; /* Warna biru seperti email sebelumnya */
+color: cyan;
 }
 
-/* BAGIAN EMAIL */
 #emailText{
 font-size:11px;
-color: white; /* Ganti jadi warna putih */
+color: white;
 }
 
 #logoutBtn{
@@ -151,6 +149,7 @@ color:black;
 padding:20px;
 margin-left:80px;
 height: calc(100% - 75px);
+overflow-y: auto;
 }
 
 .card{
@@ -160,6 +159,40 @@ padding:20px;
 border-radius:12px;
 margin-bottom:15px;
 font-weight: bold;
+}
+
+/* INVEST CARD STYLE */
+.invest-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 15px;
+    color: white;
+    text-align: left;
+}
+
+.invest-title {
+    color: cyan;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.invest-detail {
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: #bbb;
+}
+
+.btn-invest {
+    width: 100%;
+    padding: 10px;
+    background: cyan;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
 }
 </style>
 </head>
@@ -195,7 +228,7 @@ font-weight: bold;
         <div style="display:flex;align-items:center;gap:10px;">
             <img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
             <div>
-                <div id="welcome">Rp. 00.0</div> <!-- Teks Ganti Halo -->
+                <div id="welcome">Rp. 0</div>
                 <div id="emailText">Memuat email...</div>
             </div>
         </div>
@@ -218,9 +251,21 @@ font-weight: bold;
     </div>
 
     <div id="content">
-        <div id="newsBox" class="card">Halaman Berita</div>
+        <div id="newsBox" class="card">Halaman Berita - Selamat Datang!</div>
+        
         <div id="quizBox" class="card" style="display:none;">Halaman Soal Latihan</div>
-        <div id="investBox" class="card" style="display:none;">Halaman Investasi</div>
+        
+        <!-- INVEST BOX -->
+        <div id="investBox" style="display:none;">
+            <div class="invest-card">
+                <div class="invest-title">Paket Investasi A</div>
+                <div class="invest-detail">Depo : Rp 20.000</div>
+                <div class="invest-detail">Profit : Rp 30.000 (Total)</div>
+                <div class="invest-detail">Satu hari : Rp 500</div>
+                <div class="invest-detail">Sampai : 60 Hari</div>
+                <button class="btn-invest" onclick="buyInvest()">Beli Sekarang</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -242,19 +287,32 @@ const auth = firebase.auth();
 const db = firebase.database();
 
 let isRegistering = false; 
+let currentBalance = 0;
 
+// CEK STATUS LOGIN & UPDATE DATA
 auth.onAuthStateChanged(user => {
     if (user && !isRegistering) {
         document.getElementById('loginBox').style.display = "none";
         document.getElementById('registerBox').style.display = "none";
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
+
+        // Ambil Saldo dari Database Realtime
+        db.ref("users/" + user.uid).on("value", (snapshot) => {
+            const data = snapshot.val();
+            if(data) {
+                currentBalance = data.balance || 0;
+                document.getElementById('welcome').innerText = "Rp. " + currentBalance.toLocaleString('id-ID');
+            }
+        });
+
     } else if (!isRegistering) {
         document.getElementById('loginBox').style.display = "block";
         document.getElementById('dashboard').style.display = "none";
     }
 });
 
+/* FUNGSI REGISTER */
 function register(){
     const email = document.getElementById('regUser').value;
     const pass = document.getElementById('regPass').value;
@@ -266,7 +324,11 @@ function register(){
     document.getElementById('loading').style.display = "block";
     auth.createUserWithEmailAndPassword(email, pass)
     .then(userCred => {
-        db.ref("users/" + userCred.user.uid).set({ email: email });
+        // Set saldo awal Rp 0 saat daftar
+        db.ref("users/" + userCred.user.uid).set({ 
+            email: email,
+            balance: 0 
+        });
         auth.signOut().then(() => {
             isRegistering = false; 
             document.getElementById('loading').style.display = "none";
@@ -283,6 +345,27 @@ function register(){
     });
 }
 
+/* FUNGSI BELI INVESTASI */
+function buyInvest() {
+    const user = auth.currentUser;
+    const harga = 20000;
+
+    if (currentBalance < harga) {
+        alert("Saldo tidak cukup! Anda butuh Rp 20.000");
+        return;
+    }
+
+    if (confirm("Beli paket investasi seharga Rp 20.000?")) {
+        const newBalance = currentBalance - harga;
+        db.ref("users/" + user.uid).update({
+            balance: newBalance
+        }).then(() => {
+            alert("Berhasil membeli paket investasi!");
+        });
+    }
+}
+
+/* FUNGSI LOGIN */
 function login(){
     const email = document.getElementById('loginUser').value;
     const pass = document.getElementById('loginPass').value;
@@ -313,6 +396,7 @@ function showRegister(){
     document.getElementById('registerBox').style.display = "block";
 }
 
+/* MENU NAVIGASI */
 function clearMenu(){
     document.getElementById('mNews').classList.remove('active');
     document.getElementById('mQuiz').classList.remove('active');
