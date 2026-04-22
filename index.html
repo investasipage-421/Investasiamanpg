@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>investasi page421</title>
+<title>Investasi Page421 - Premium</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
 html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
@@ -35,9 +35,10 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 
 /* INVEST CARD STYLE */
 .invest-card { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 20px; color: white; }
-.invest-title { color: cyan; font-size: 20px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+.invest-title { color: cyan; font-size: 20px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; display: flex; align-items: center; justify-content: space-between; }
 .invest-note { background: rgba(0, 229, 255, 0.1); padding: 10px; border-radius: 8px; margin-top: 15px; font-size: 14px; color: cyan; border-left: 4px solid cyan; }
 .btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 15px; cursor: pointer; }
+.btn-invest:disabled { background: #444; color: #888; cursor: not-allowed; }
 
 /* DEPO BOX PREMIUM */
 .depo-container { background: #f1f1f1; border-radius: 15px; padding: 25px; text-align: center; border: 2px dashed #00b8d4; }
@@ -46,7 +47,6 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 
 #statusTopup { margin-top: 15px; padding: 12px; border-radius: 10px; font-size: 13px; display: none; text-align: center; }
 .pending-style { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-.selesai-style { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
 </style>
 </head>
 <body>
@@ -96,23 +96,25 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
     </div>
 
     <div id="content">
-        <div id="newsBox" class="card">Halaman Berita Utama.</div>
+        <div id="newsBox" class="card">Selamat Datang di Investasi Page421.</div>
         
-        <!-- HALAMAN SOAL -->
         <div id="quizBox" class="card" style="display:none;">
             <h3>Latihan Soal</h3>
-            <p style="font-weight:normal; margin-top:10px;">Silakan pilih materi soal yang ingin Anda kerjakan.</p>
+            <p style="font-weight:normal; margin-top:10px;">Materi akan segera tersedia.</p>
         </div>
 
         <!-- HALAMAN INVEST -->
         <div id="investBox" style="display:none;">
             <div class="invest-card">
-                <div class="invest-title">Paket Investasi A</div>
+                <div class="invest-title">
+                    <span>Paket Investasi A</span>
+                    <span id="checkPaketA" style="display:none; color:#00e5ff; font-size: 24px;">✓</span>
+                </div>
                 <div class="invest-detail">💰 Depo : Rp 20.000</div>
                 <div class="invest-detail">📈 Profit : Rp 30.000 (Total)</div>
-                <div class="invest-detail">📅 Sampai : 60 Hari</div>
-                <div class="invest-note">note : Satu hari : 500</div>
-                <button class="btn-invest" onclick="buyInvest()">Beli Sekarang</button>
+                <div class="invest-detail">📅 Durasi : 60 Hari</div>
+                <div class="invest-note">Sistem: Saldo bertambah Rp 500 setiap hari secara otomatis.</div>
+                <button id="btnBeliPaketA" class="btn-invest" onclick="buyInvest()">Beli Sekarang</button>
             </div>
         </div>
 
@@ -128,6 +130,7 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
     </div>
 </div>
 
+<!-- FIREBASE SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -136,7 +139,6 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 const firebaseConfig = {
     apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
     authDomain: "page421-b9a6c.firebaseapp.com",
-    // URL Regional Singapura (Asia-Southeast1)
     databaseURL: "https://page421-b9a6c-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "page421-b9a6c"
 };
@@ -146,6 +148,8 @@ const auth = firebase.auth();
 const db = firebase.database();
 
 let globalSaldo = 0;
+let userDepoTotal = 0;
+let userInvestData = null;
 
 auth.onAuthStateChanged(user => {
     if (user) {
@@ -154,24 +158,20 @@ auth.onAuthStateChanged(user => {
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Mendengarkan folder topup secara real-time
+        // Mendengarkan data Topup (Saldo Masuk)
         db.ref("topup").on("value", (snap) => {
-            let totalSaldo = 0;
+            userDepoTotal = 0;
             let adaPending = false;
-            let statusBox = document.getElementById('statusTopup');
             let btn = document.getElementById('btnKirimTopup');
+            let statusBox = document.getElementById('statusTopup');
 
             snap.forEach((child) => {
                 const data = child.val();
                 if (data.uid === user.uid) {
-                    let st = data.status ? data.status.toLowerCase().trim() : "";
-                    if (st === "selesai") totalSaldo += parseInt(data.nominal || 0);
-                    if (st === "pending") adaPending = true;
+                    if (data.status === "selesai") userDepoTotal += parseInt(data.nominal || 0);
+                    if (data.status === "pending") adaPending = true;
                 }
             });
-
-            globalSaldo = totalSaldo;
-            document.getElementById('welcome').innerText = "Rp. " + totalSaldo.toLocaleString('id-ID');
 
             if (adaPending) {
                 statusBox.style.display = "block";
@@ -183,18 +183,86 @@ auth.onAuthStateChanged(user => {
                 statusBox.style.display = "none";
                 btn.disabled = false;
                 btn.innerText = "REQUEST DEPO SEKARANG";
-                btn.style.background = "#000";
             }
+            hitungDanUpdateUI(user.uid);
         });
+
+        // Mendengarkan data Investasi
+        db.ref("investments/" + user.uid).on("value", (snap) => {
+            userInvestData = snap.val();
+            hitungDanUpdateUI(user.uid);
+        });
+
     } else {
         document.getElementById('loginBox').style.display = "block";
         document.getElementById('dashboard').style.display = "none";
     }
 });
 
+function hitungDanUpdateUI(uid) {
+    if (!uid) return;
+
+    let profitSekarang = 0;
+    let costInvest = 0;
+    const checkMark = document.getElementById('checkPaketA');
+    const btnInvest = document.getElementById('btnBeliPaketA');
+
+    if (userInvestData && userInvestData.paketA) {
+        const p = userInvestData.paketA;
+        costInvest = 20000; 
+
+        // Logika Hitung Hari (Profit 500/hari)
+        const tglBeli = p.tanggalBeli;
+        const tglSekarang = Date.now();
+        const selisihMilidetik = tglSekarang - tglBeli;
+        let jumlahHari = Math.floor(selisihMilidetik / (1000 * 60 * 60 * 24));
+
+        if (jumlahHari >= 60) {
+            // Jika sudah 60 hari, paket mati
+            jumlahHari = 60;
+            checkMark.style.display = "none";
+            btnInvest.innerText = "Beli Lagi (Expired)";
+            btnInvest.disabled = false;
+        } else {
+            // Paket Aktif
+            checkMark.style.display = "inline";
+            btnInvest.innerText = "Paket Aktif (" + (60 - jumlahHari) + " Hari Lagi)";
+            btnInvest.disabled = true;
+        }
+        profitSekarang = jumlahHari * 500;
+    }
+
+    // RUMUS: Saldo Akhir = Total Depo - Harga Paket + Profit Berjalan
+    globalSaldo = userDepoTotal - costInvest + profitSekarang;
+    document.getElementById('welcome').innerText = "Rp. " + globalSaldo.toLocaleString('id-ID');
+}
+
+function buyInvest() {
+    const user = auth.currentUser;
+    if (globalSaldo < 20000) {
+        alert("Saldo tidak cukup! Silahkan depo Rp 50.000 terlebih dahulu.");
+        showDepo();
+        return;
+    }
+
+    if (confirm("Beli Paket Investasi A seharga Rp 20.000?")) {
+        document.getElementById('loading').style.display = "block";
+        
+        db.ref("investments/" + user.uid + "/paketA").set({
+            nama: "Paket Investasi A",
+            harga: 20000,
+            profitHarian: 500,
+            tanggalBeli: Date.now()
+        }).then(() => {
+            document.getElementById('loading').style.display = "none";
+            alert("Berhasil membeli paket! Centang biru aktif dan profit mulai berjalan.");
+        }).catch(e => alert("Error: " + e.message));
+    }
+}
+
 function kirimDepo() {
     const user = auth.currentUser;
-    const orderID = Date.now().toString();
+    const orderID = "TRX" + Date.now();
     document.getElementById('loading').style.display = "block";
     db.ref("topup/" + orderID).set({
         uid: user.uid,
@@ -203,36 +271,25 @@ function kirimDepo() {
         status: "pending"
     }).then(() => { 
         document.getElementById('loading').style.display = "none";
-        alert("Berhasil Terkirim!"); 
-    }).catch(e => alert("Error: " + e.message));
+        alert("Permintaan Terkirim! Saldo akan bertambah setelah di-acc admin."); 
+    });
 }
 
-function buyInvest() {
-    if (globalSaldo < 20000) {
-        alert("Saldo tidak cukup, silahkan depo sekarang!");
-        showDepo();
-    } else {
-        alert("Aktivasi Berhasil! Silakan hubungi admin.");
-    }
-}
-
+// Navigasi & Auth
 function login(){
     const email = document.getElementById('loginUser').value;
     const pass = document.getElementById('loginPass').value;
-    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Gagal Login"));
+    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Login Gagal!"));
 }
-
 function register(){
     const email = document.getElementById('regUser').value;
     const pass = document.getElementById('regPass').value;
     if(pass.length < 6) return alert("Password minimal 6 digit");
-    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Registrasi Berhasil! Silakan Login."); showLogin(); });
+    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Registrasi Berhasil!"); showLogin(); });
 }
-
 function logout(){ auth.signOut().then(() => location.reload()); }
 function showLogin(){ document.getElementById('registerBox').style.display="none"; document.getElementById('loginBox').style.display="block"; }
 function showRegister(){ document.getElementById('loginBox').style.display="none"; document.getElementById('registerBox').style.display="block"; }
-
 function clearMenu(){
     ['newsBox','quizBox','investBox','depoBox'].forEach(id => document.getElementById(id).style.display = "none");
     ['mNews','mQuiz','mInvest','mDepo'].forEach(id => document.getElementById(id).classList.remove('active'));
