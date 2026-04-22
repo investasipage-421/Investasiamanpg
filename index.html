@@ -7,27 +7,43 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
 html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
+
+/* LOADING */
 #loading{display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);color:white;font-size:12px;z-index:1000;background:rgba(0,0,0,0.7);padding:5px 10px;border-radius:5px;}
+
+/* BOX LOGIN & REGISTER */
 .box{background:#111;padding:25px;border-radius:15px;width:90%;max-width:350px;text-align:center;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border: 1px solid #333;}
 input{width:100%;padding:12px;margin:8px 0;border:none;border-radius:8px;background:#222;color:white;outline:none;}
 button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px;font-weight:bold;background:white;color:black;cursor:pointer;}
+
+/* DASHBOARD */
 #dashboard{display:none;height:100%;}
 #topBar{display:flex;justify-content:space-between;align-items:center;padding:15px;background:#111;border-bottom:1px solid #333;}
 #welcome{font-size:18px;font-weight:bold;color: cyan;}
 #emailText{font-size:11px;color:white;}
 #logoutBtn{font-size:11px;padding:5px 10px;border:none;border-radius:5px;background:white;color:black;cursor:pointer;font-weight:bold;}
+
+/* SIDEBAR */
 #sidebar{position:fixed;left:0;top:75px;width:75px;background:#111;height:100%;padding-top:20px;border-right:1px solid #333;display:flex;flex-direction:column;align-items:center;gap:20px;}
-.menuItem{text-align:center;cursor:pointer;padding:8px;border-radius:10px;width:60px;}
+.menuItem{text-align:center;cursor:pointer;padding:8px;border-radius:10px;width:60px;transition:0.3s;}
 .menuItem img{width:30px;height:30px;}
 .menuItem.active{background:white;color:black;}
+
+/* CONTENT AREA */
 #content{padding:20px;margin-left:80px;height:calc(100% - 75px);overflow-y:auto;}
 .card{background:white;color:black;padding:20px;border-radius:15px;margin-bottom:15px;font-weight:bold;}
+
+/* INVEST CARD STYLE */
 .invest-card { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 20px; color: white; }
-.invest-title { color: cyan; font-size: 20px; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+.invest-title { color: cyan; font-size: 20px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; }
 .invest-note { background: rgba(0, 229, 255, 0.1); padding: 10px; border-radius: 8px; margin-top: 15px; font-size: 14px; color: cyan; border-left: 4px solid cyan; }
+.btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 15px; cursor: pointer; }
+
+/* DEPO BOX PREMIUM */
 .depo-container { background: #f1f1f1; border-radius: 15px; padding: 25px; text-align: center; border: 2px dashed #00b8d4; }
-.depo-title-bold { font-size: 20px; color: #000; font-weight: 900; display: block; margin-bottom: 10px; }
+.depo-nominal-bold { font-size: 20px; color: #000; font-weight: 900; display: block; margin-bottom: 10px; }
 .btn-depo { width: 100%; padding: 15px; background: #000; color: #00e5ff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
+
 #statusTopup { margin-top: 15px; padding: 12px; border-radius: 10px; font-size: 13px; display: none; text-align: center; }
 .pending-style { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
 .selesai-style { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
@@ -37,21 +53,29 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 
 <div id="loading">Memproses...</div>
 
+<!-- LOGIN BOX -->
 <div class="box" id="loginBox">
-    <h2>Login</h2>
+    <h2 style="margin-bottom:10px;">Login</h2>
     <input id="loginUser" type="email" placeholder="Email">
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">MASUK</button>
-    <p style="margin-top:15px; font-size:12px;">Belum akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Daftar</span></p>
+    <p style="margin-top:15px; font-size:13px;">
+        Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;font-weight:bold;">Registrasi sekarang</span>
+    </p>
 </div>
 
+<!-- REGISTER BOX -->
 <div class="box" id="registerBox" style="display:none;">
-    <h2>Daftar</h2>
-    <input id="regUser" type="email" placeholder="Email">
-    <input id="regPass" type="password" placeholder="Pass 6 Digit">
-    <button onclick="register()">DAFTAR</button>
+    <h2 style="margin-bottom:10px;">Registrasi</h2>
+    <input id="regUser" type="email" placeholder="Email Baru">
+    <input id="regPass" type="password" placeholder="Password (Min 6 Digit)">
+    <button onclick="register()">DAFTAR SEKARANG</button>
+    <p style="margin-top:15px; font-size:13px;">
+        Sudah registrasi? <span onclick="showLogin()" style="color:cyan;cursor:pointer;font-weight:bold;">Login sekarang</span>
+    </p>
 </div>
 
+<!-- DASHBOARD UI -->
 <div id="dashboard">
     <div id="topBar">
         <div style="display:flex;align-items:center;gap:10px;">
@@ -65,27 +89,37 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
     </div>
 
     <div id="sidebar">
-        <div class="menuItem active" id="mNews" onclick="showNews()"><img src="https://img.icons8.com/color/48/news.png"></div>
-        <div class="menuItem" id="mInvest" onclick="showInvest()"><img src="https://img.icons8.com/color/48/coins.png"></div>
-        <div class="menuItem" id="mDepo" onclick="showDepo()"><img src="https://img.icons8.com/color/48/request-money.png"></div>
+        <div class="menuItem active" id="mNews" onclick="showNews()"><img src="https://img.icons8.com/color/48/news.png"><div style="font-size:10px;">Berita</div></div>
+        <div class="menuItem" id="mQuiz" onclick="showQuiz()"><img src="https://img.icons8.com/color/48/book-shelf.png"><div style="font-size:10px;">Soal</div></div>
+        <div class="menuItem" id="mInvest" onclick="showInvest()"><img src="https://img.icons8.com/color/48/coins.png"><div style="font-size:10px;">Invest</div></div>
+        <div class="menuItem" id="mDepo" onclick="showDepo()"><img src="https://img.icons8.com/color/48/request-money.png"><div style="font-size:10px;">Depo</div></div>
     </div>
 
     <div id="content">
-        <div id="newsBox" class="card">Selamat Datang.</div>
+        <div id="newsBox" class="card">Halaman Berita Utama.</div>
+        
+        <!-- HALAMAN SOAL -->
+        <div id="quizBox" class="card" style="display:none;">
+            <h3>Latihan Soal</h3>
+            <p style="font-weight:normal; margin-top:10px;">Silakan pilih materi soal yang ingin Anda kerjakan.</p>
+        </div>
 
+        <!-- HALAMAN INVEST -->
         <div id="investBox" style="display:none;">
             <div class="invest-card">
                 <div class="invest-title">Paket Investasi A</div>
-                <p>💰 Depo: Rp 20.000</p>
-                <p>📈 Profit: Rp 30.000</p>
+                <div class="invest-detail">💰 Depo : Rp 20.000</div>
+                <div class="invest-detail">📈 Profit : Rp 30.000 (Total)</div>
+                <div class="invest-detail">📅 Sampai : 60 Hari</div>
                 <div class="invest-note">note : Satu hari : 500</div>
-                <button style="width:100%; padding:10px; margin-top:10px; background:cyan; border:none; border-radius:5px; font-weight:bold;" onclick="buyInvest()">Beli Sekarang</button>
+                <button class="btn-invest" onclick="buyInvest()">Beli Sekarang</button>
             </div>
         </div>
 
+        <!-- HALAMAN DEPO -->
         <div id="depoBox" class="card" style="display:none;">
             <div class="depo-container">
-                <b class="depo-title-bold">NOMINAL DEPO 50.000!!</b>
+                <b class="depo-nominal-bold">NOMINAL DEPO 50.000!!</b>
                 <h1 style="color: #000; margin-bottom: 20px;">Rp 50.000</h1>
                 <button id="btnKirimTopup" class="btn-depo" onclick="kirimDepo()">REQUEST DEPO SEKARANG</button>
             </div>
@@ -102,7 +136,7 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 const firebaseConfig = {
     apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
     authDomain: "page421-b9a6c.firebaseapp.com",
-    // Link Database yang Benar (Region Singapura)
+    // URL Regional Singapura (Asia-Southeast1)
     databaseURL: "https://page421-b9a6c-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "page421-b9a6c"
 };
@@ -120,7 +154,7 @@ auth.onAuthStateChanged(user => {
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Monitor folder 'topup'
+        // Mendengarkan folder topup secara real-time
         db.ref("topup").on("value", (snap) => {
             let totalSaldo = 0;
             let adaPending = false;
@@ -130,15 +164,9 @@ auth.onAuthStateChanged(user => {
             snap.forEach((child) => {
                 const data = child.val();
                 if (data.uid === user.uid) {
-                    // Bersihkan teks status (kecilkan huruf & buang spasi)
                     let st = data.status ? data.status.toLowerCase().trim() : "";
-                    
-                    if (st === "selesai") {
-                        totalSaldo += parseInt(data.nominal || 0);
-                    }
-                    if (st === "pending") {
-                        adaPending = true;
-                    }
+                    if (st === "selesai") totalSaldo += parseInt(data.nominal || 0);
+                    if (st === "pending") adaPending = true;
                 }
             });
 
@@ -150,7 +178,7 @@ auth.onAuthStateChanged(user => {
                 statusBox.className = "pending-style";
                 statusBox.innerHTML = "🕒 <b>STATUS:</b> Menunggu ACC Admin...";
                 btn.disabled = true;
-                btn.innerText = "DALAM PROSES...";
+                btn.innerText = "SEDANG DIPROSES...";
             } else {
                 statusBox.style.display = "none";
                 btn.disabled = false;
@@ -175,7 +203,7 @@ function kirimDepo() {
         status: "pending"
     }).then(() => { 
         document.getElementById('loading').style.display = "none";
-        alert("Permintaan Terkirim!"); 
+        alert("Berhasil Terkirim!"); 
     }).catch(e => alert("Error: " + e.message));
 }
 
@@ -184,7 +212,7 @@ function buyInvest() {
         alert("Saldo tidak cukup, silahkan depo sekarang!");
         showDepo();
     } else {
-        alert("Berhasil! Hubungi admin untuk aktivasi.");
+        alert("Aktivasi Berhasil! Silakan hubungi admin.");
     }
 }
 
@@ -197,16 +225,22 @@ function login(){
 function register(){
     const email = document.getElementById('regUser').value;
     const pass = document.getElementById('regPass').value;
-    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Sukses"); showLogin(); });
+    if(pass.length < 6) return alert("Password minimal 6 digit");
+    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Registrasi Berhasil! Silakan Login."); showLogin(); });
 }
 
 function logout(){ auth.signOut().then(() => location.reload()); }
 function showLogin(){ document.getElementById('registerBox').style.display="none"; document.getElementById('loginBox').style.display="block"; }
 function showRegister(){ document.getElementById('loginBox').style.display="none"; document.getElementById('registerBox').style.display="block"; }
-function clearMenu(){ ['newsBox','investBox','depoBox'].forEach(id => document.getElementById(id).style.display = "none"); }
-function showNews(){ clearMenu(); document.getElementById('newsBox').style.display = "block"; }
-function showInvest(){ clearMenu(); document.getElementById('investBox').style.display = "block"; }
-function showDepo(){ clearMenu(); document.getElementById('depoBox').style.display = "block"; }
+
+function clearMenu(){
+    ['newsBox','quizBox','investBox','depoBox'].forEach(id => document.getElementById(id).style.display = "none");
+    ['mNews','mQuiz','mInvest','mDepo'].forEach(id => document.getElementById(id).classList.remove('active'));
+}
+function showNews(){ clearMenu(); document.getElementById('newsBox').style.display = "block"; document.getElementById('mNews').classList.add('active'); }
+function showQuiz(){ clearMenu(); document.getElementById('quizBox').style.display = "block"; document.getElementById('mQuiz').classList.add('active'); }
+function showInvest(){ clearMenu(); document.getElementById('investBox').style.display = "block"; document.getElementById('mInvest').classList.add('active'); }
+function showDepo(){ clearMenu(); document.getElementById('depoBox').style.display = "block"; document.getElementById('mDepo').classList.add('active'); }
 </script>
 </body>
 </html>
