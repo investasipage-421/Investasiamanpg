@@ -8,14 +8,15 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
 html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
 
+/* LOADING */
 #loading{display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);color:white;font-size:12px;z-index:1000;background:rgba(0,0,0,0.7);padding:5px 10px;border-radius:5px;}
 
-/* BOX LOGIN & REGISTER */
-.box{background:#111;padding:25px;border-radius:15px;width:90%;max-width:350px;text-align:center;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border: 1px solid #333;}
+/* LOGIN & REGISTER BOX */
+.box{background:#111;padding:25px;border-radius:15px;width:90%;max-width:350px;text-align:center;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border:1px solid #333;}
 input{width:100%;padding:12px;margin:8px 0;border:none;border-radius:8px;background:#222;color:white;outline:none;}
 button:not(#logoutBtn, .btn-invest){width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px;font-weight:bold;background:white;color:black;cursor:pointer;}
 
-/* DASHBOARD */
+/* DASHBOARD LAYOUT */
 #dashboard{display:none;height:100%;}
 #topBar{display:flex;justify-content:space-between;align-items:center;padding:15px;background:#111;border-bottom:1px solid #333;}
 #welcome{font-size:18px;font-weight:bold;color: cyan;}
@@ -28,11 +29,11 @@ button:not(#logoutBtn, .btn-invest){width:100%;padding:12px;margin-top:10px;bord
 .menuItem img{width:30px;height:30px;}
 .menuItem.active{background:white;color:black;}
 
-/* CONTENT */
+/* CONTENT AREA */
 #content{padding:20px;margin-left:80px;height:calc(100% - 75px);overflow-y:auto;}
 .card{background:white;color:black;padding:20px;border-radius:12px;margin-bottom:15px;font-weight:bold;}
 
-/* INVEST STYLE */
+/* INVEST CARD STYLE */
 .invest-card { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 15px; color: white; text-align: left; }
 .invest-title { color: cyan; font-size: 18px; margin-bottom: 10px; }
 .invest-detail { font-size: 13px; margin-bottom: 5px; color: #bbb; }
@@ -48,25 +49,25 @@ button:not(#logoutBtn, .btn-invest){width:100%;padding:12px;margin-top:10px;bord
 
 <div id="loading">Memproses...</div>
 
-<!-- LOGIN -->
+<!-- LOGIN BOX -->
 <div class="box" id="loginBox">
-    <h2>Login</h2>
+    <h2 style="margin-bottom:10px;">Login</h2>
     <input id="loginUser" type="email" placeholder="Email">
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">Masuk</button>
     <p style="margin-top:15px; font-size:12px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Daftar</span></p>
 </div>
 
-<!-- REGISTER -->
+<!-- REGISTER BOX -->
 <div class="box" id="registerBox" style="display:none;">
-    <h2>Register</h2>
+    <h2 style="margin-bottom:10px;">Daftar</h2>
     <input id="regUser" type="email" placeholder="Email">
     <input id="regPass" type="password" placeholder="Pass 6 Digit">
-    <button onclick="register()">Daftar</button>
+    <button onclick="register()">Daftar Sekarang</button>
     <p style="margin-top:15px; font-size:12px;">Sudah akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;">Login</span></p>
 </div>
 
-<!-- DASHBOARD -->
+<!-- DASHBOARD UI -->
 <div id="dashboard">
     <div id="topBar">
         <div style="display:flex;align-items:center;gap:10px;">
@@ -95,13 +96,13 @@ button:not(#logoutBtn, .btn-invest){width:100%;padding:12px;margin-top:10px;bord
     </div>
 
     <div id="content">
-        <!-- BERITA -->
-        <div id="newsBox" class="card">Halaman Berita - Selamat Datang!</div>
+        <!-- HALAMAN BERITA -->
+        <div id="newsBox" class="card">Selamat Datang di Halaman Utama!</div>
 
-        <!-- SOAL -->
+        <!-- HALAMAN SOAL -->
         <div id="quizBox" class="card" style="display:none;">Halaman Soal Latihan</div>
 
-        <!-- INVEST (PAKET A) -->
+        <!-- HALAMAN INVEST (PAKET A) -->
         <div id="investBox" style="display:none;">
             <div class="invest-card">
                 <div class="invest-title">Paket Investasi A</div>
@@ -109,15 +110,15 @@ button:not(#logoutBtn, .btn-invest){width:100%;padding:12px;margin-top:10px;bord
                 <div class="invest-detail">Profit : Rp 30.000 (Total)</div>
                 <div class="invest-detail">Satu hari : Rp 500</div>
                 <div class="invest-detail">Sampai : 60 Hari</div>
-                <button class="btn-invest" onclick="alert('Saldo tidak cukup atau hubungi admin')">Beli Sekarang</button>
+                <button class="btn-invest" onclick="buyInvest()">Beli Sekarang</button>
             </div>
         </div>
 
-        <!-- DEPO (NOMINAL 50.000) -->
+        <!-- HALAMAN DEPO -->
         <div id="depoBox" class="card" style="display:none;">
             <h3 style="margin-bottom:15px; color:black;">Deposit Saldo</h3>
             <div style="background:#f1f1f1; padding:20px; border-radius:12px; text-align:center;">
-                <p style="font-weight:normal; font-size:13px; color:#333;">Nominal:</p>
+                <p style="font-weight:normal; font-size:13px; color:#333;">Nominal Deposit:</p>
                 <h1 style="color:black; margin:10px 0;">Rp 50.000</h1>
                 <button id="btnKirimTopup" class="btn-invest" onclick="kirimDepo()">Request Depo</button>
             </div>
@@ -126,6 +127,7 @@ button:not(#logoutBtn, .btn-invest){width:100%;padding:12px;margin-top:10px;bord
     </div>
 </div>
 
+<!-- FIREBASE SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -142,6 +144,8 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
+let globalSaldo = 0;
+
 auth.onAuthStateChanged(user => {
     if (user) {
         document.getElementById('loginBox').style.display = "none";
@@ -149,7 +153,7 @@ auth.onAuthStateChanged(user => {
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Logika Hitung Saldo dari status "selesai"
+        // Listener Saldo dari Folder Topup
         db.ref("topup").on("value", (snap) => {
             let totalSaldo = 0;
             let statusBox = document.getElementById('statusTopup');
@@ -166,13 +170,14 @@ auth.onAuthStateChanged(user => {
                         adaPending = true;
                         statusBox.style.display = "block";
                         statusBox.className = "pending-style";
-                        statusBox.innerHTML = "🕒 Menunggu ACC Admin...";
+                        statusBox.innerHTML = "🕒 Menunggu ACC Admin (Rp 50.000)";
                         btn.disabled = true;
                         btn.style.background = "#ccc";
                     }
                 }
             });
 
+            globalSaldo = totalSaldo;
             document.getElementById('welcome').innerText = "Rp. " + totalSaldo.toLocaleString('id-ID');
             if (!adaPending) {
                 statusBox.style.display = "none";
@@ -186,27 +191,43 @@ auth.onAuthStateChanged(user => {
     }
 });
 
+function buyInvest() {
+    if (globalSaldo < 20000) {
+        alert("Saldo tidak cukup, silahkan depo sekarang!");
+        showDepo();
+    } else {
+        if (confirm("Beli paket investasi seharga Rp 20.000?")) {
+            alert("Silahkan hubungi admin untuk konfirmasi aktivasi paket.");
+        }
+    }
+}
+
 function kirimDepo() {
     const user = auth.currentUser;
     const orderID = Date.now();
+    document.getElementById('loading').style.display = "block";
     db.ref("topup/" + orderID).set({
         uid: user.uid,
         email: user.email,
         nominal: 50000,
         status: "pending"
-    }).then(() => { alert("Permintaan terkirim!"); });
+    }).then(() => { 
+        document.getElementById('loading').style.display = "none";
+        alert("Permintaan Terkirim! Segera cek Firebase Console."); 
+    });
 }
 
 function login(){
     const email = document.getElementById('loginUser').value;
     const pass = document.getElementById('loginPass').value;
-    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Gagal"));
+    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Gagal Login"));
 }
 
 function register(){
     const email = document.getElementById('regUser').value;
     const pass = document.getElementById('regPass').value;
-    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Sukses"); showLogin(); });
+    if(pass.length < 6) return alert("Password minimal 6 digit");
+    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Sukses Daftar"); showLogin(); });
 }
 
 function logout(){ auth.signOut().then(() => location.reload()); }
