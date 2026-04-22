@@ -36,7 +36,7 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 /* INVEST CARD STYLE */
 .invest-card { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 20px; color: white; }
 .invest-title { color: cyan; font-size: 20px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; display: flex; align-items: center; justify-content: space-between; }
-.invest-note { background: rgba(0, 229, 255, 0.1); padding: 10px; border-radius: 8px; margin-top: 15px; font-size: 14px; color: cyan; border-left: 4px solid cyan; }
+.invest-detail { margin: 5px 0; font-size: 14px; color: #ccc; }
 .btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 15px; cursor: pointer; }
 .btn-invest:disabled { background: #444; color: #888; cursor: not-allowed; }
 
@@ -110,10 +110,10 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
                     <span>Paket Investasi A</span>
                     <span id="checkPaketA" style="display:none; color:#00e5ff; font-size: 24px;">✓</span>
                 </div>
-                <div class="invest-detail">💰 Depo : Rp 20.000</div>
-                <div class="invest-detail">📈 Profit : Rp 30.000 (Total)</div>
+                <div class="invest-detail">💰 Harga : Rp 20.000</div>
+                <div class="invest-detail">📈 Profit : Rp 500 / Hari</div>
                 <div class="invest-detail">📅 Durasi : 60 Hari</div>
-                <div class="invest-note">Sistem: Saldo bertambah Rp 500 setiap hari secara otomatis.</div>
+                <div id="infoAktif" style="font-size:12px; color:cyan; margin-top:10px;"></div>
                 <button id="btnBeliPaketA" class="btn-invest" onclick="buyInvest()">Beli Sekarang</button>
             </div>
         </div>
@@ -130,7 +130,6 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
     </div>
 </div>
 
-<!-- FIREBASE SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -147,9 +146,9 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
+let totalSelesaiDepo = 0;
+let historyInvestasi = [];
 let globalSaldo = 0;
-let userDepoTotal = 0;
-let userInvestData = null;
 
 auth.onAuthStateChanged(user => {
     if (user) {
@@ -158,39 +157,33 @@ auth.onAuthStateChanged(user => {
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Mendengarkan data Topup (Saldo Masuk)
+        // AMBIL DATA DEPO
         db.ref("topup").on("value", (snap) => {
-            userDepoTotal = 0;
+            totalSelesaiDepo = 0;
             let adaPending = false;
-            let btn = document.getElementById('btnKirimTopup');
-            let statusBox = document.getElementById('statusTopup');
-
             snap.forEach((child) => {
                 const data = child.val();
                 if (data.uid === user.uid) {
-                    if (data.status === "selesai") userDepoTotal += parseInt(data.nominal || 0);
+                    if (data.status === "selesai") totalSelesaiDepo += parseInt(data.nominal);
                     if (data.status === "pending") adaPending = true;
                 }
             });
-
-            if (adaPending) {
-                statusBox.style.display = "block";
-                statusBox.className = "pending-style";
-                statusBox.innerHTML = "🕒 <b>STATUS:</b> Menunggu ACC Admin...";
-                btn.disabled = true;
-                btn.innerText = "SEDANG DIPROSES...";
-            } else {
-                statusBox.style.display = "none";
-                btn.disabled = false;
-                btn.innerText = "REQUEST DEPO SEKARANG";
-            }
-            hitungDanUpdateUI(user.uid);
+            
+            document.getElementById('btnKirimTopup').disabled = adaPending;
+            document.getElementById('statusTopup').style.display = adaPending ? "block" : "none";
+            document.getElementById('statusTopup').innerHTML = "🕒 Menunggu Konfirmasi Admin...";
+            document.getElementById('statusTopup').className = "pending-style";
+            
+            hitungSemua();
         });
 
-        // Mendengarkan data Investasi
-        db.ref("investments/" + user.uid).on("value", (snap) => {
-            userInvestData = snap.val();
-            hitungDanUpdateUI(user.uid);
+        // AMBIL DATA INVESTASI
+        db.ref("invest_history/" + user.uid).on("value", (snap) => {
+            historyInvestasi = [];
+            snap.forEach((child) => {
+                historyInvestasi.push(child.val());
+            });
+            hitungSemua();
         });
 
     } else {
@@ -199,93 +192,108 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-function hitungDanUpdateUI(uid) {
-    if (!uid) return;
+function hitungSemua() {
+    let totalBiayaBeli = 0;
+    let totalProfitMasuk = 0;
+    let adaPaketAktif = false;
+    let sisaHariAktif = 0;
 
-    let profitSekarang = 0;
-    let costInvest = 0;
-    const checkMark = document.getElementById('checkPaketA');
-    const btnInvest = document.getElementById('btnBeliPaketA');
+    const sekarang = Date.now();
+    const satuHari = 1000 * 60 * 60 * 24;
 
-    if (userInvestData && userInvestData.paketA) {
-        const p = userInvestData.paketA;
-        costInvest = 20000; 
+    historyInvestasi.forEach(inv => {
+        // Kurangi Saldo (Biaya Beli)
+        totalBiayaBeli += parseInt(inv.harga);
 
-        // Logika Hitung Hari (Profit 500/hari)
-        const tglBeli = p.tanggalBeli;
-        const tglSekarang = Date.now();
-        const selisihMilidetik = tglSekarang - tglBeli;
-        let jumlahHari = Math.floor(selisihMilidetik / (1000 * 60 * 60 * 24));
+        // Hitung Profit
+        const selisihWaktu = sekarang - inv.tanggalBeli;
+        let jumlahHari = Math.floor(selisihWaktu / satuHari);
+        
+        // Batasi maksimal 60 hari
+        if (jumlahHari > 60) jumlahHari = 60;
+        if (jumlahHari < 0) jumlahHari = 0;
 
-        if (jumlahHari >= 60) {
-            // Jika sudah 60 hari, paket mati
-            jumlahHari = 60;
-            checkMark.style.display = "none";
-            btnInvest.innerText = "Beli Lagi (Expired)";
-            btnInvest.disabled = false;
-        } else {
-            // Paket Aktif
-            checkMark.style.display = "inline";
-            btnInvest.innerText = "Paket Aktif (" + (60 - jumlahHari) + " Hari Lagi)";
-            btnInvest.disabled = true;
+        totalProfitMasuk += (jumlahHari * 500);
+
+        // Cek apakah ini paket terbaru yang masih aktif
+        if (sekarang - inv.tanggalBeli < (60 * satuHari)) {
+            adaPaketAktif = true;
+            sisaHariAktif = 60 - jumlahHari;
         }
-        profitSekarang = jumlahHari * 500;
-    }
+    });
 
-    // RUMUS: Saldo Akhir = Total Depo - Harga Paket + Profit Berjalan
-    globalSaldo = userDepoTotal - costInvest + profitSekarang;
+    // RUMUS SALDO UTAMA
+    globalSaldo = totalSelesaiDepo - totalBiayaBeli + totalProfitMasuk;
+    
+    // UPDATE UI
     document.getElementById('welcome').innerText = "Rp. " + globalSaldo.toLocaleString('id-ID');
+    
+    const checkMark = document.getElementById('checkPaketA');
+    const btnBeli = document.getElementById('btnBeliPaketA');
+    const infoText = document.getElementById('infoAktif');
+
+    if (adaPaketAktif) {
+        checkMark.style.display = "inline";
+        btnBeli.disabled = true;
+        btnBeli.innerText = "PAKET SEDANG AKTIF";
+        infoText.innerText = "Masa aktif: " + sisaHariAktif + " Hari lagi";
+    } else {
+        checkMark.style.display = "none";
+        btnBeli.disabled = false;
+        btnBeli.innerText = "Beli Sekarang";
+        infoText.innerText = historyInvestasi.length > 0 ? "Paket sebelumnya sudah berakhir. Silakan beli lagi." : "";
+    }
 }
 
 function buyInvest() {
     const user = auth.currentUser;
     if (globalSaldo < 20000) {
-        alert("Saldo tidak cukup! Silahkan depo Rp 50.000 terlebih dahulu.");
+        alert("Saldo Anda Rp " + globalSaldo.toLocaleString() + ". Kurang Rp " + (20000 - globalSaldo).toLocaleString() + " lagi. Silakan Depo!");
         showDepo();
         return;
     }
 
-    if (confirm("Beli Paket Investasi A seharga Rp 20.000?")) {
+    if (confirm("Konfirmasi Pembelian:\nSaldo akan langsung terpotong Rp 20.000.\nProfit Rp 500/hari dimulai sekarang.")) {
         document.getElementById('loading').style.display = "block";
         
-        db.ref("investments/" + user.uid + "/paketA").set({
+        const newInvest = {
             nama: "Paket Investasi A",
             harga: 20000,
-            profitHarian: 500,
             tanggalBeli: Date.now()
-        }).then(() => {
+        };
+
+        db.ref("invest_history/" + user.uid).push(newInvest).then(() => {
             document.getElementById('loading').style.display = "none";
-            alert("Berhasil membeli paket! Centang biru aktif dan profit mulai berjalan.");
-        }).catch(e => alert("Error: " + e.message));
+            alert("Berhasil! Saldo terpotong dan paket aktif.");
+        });
     }
 }
 
 function kirimDepo() {
     const user = auth.currentUser;
-    const orderID = "TRX" + Date.now();
     document.getElementById('loading').style.display = "block";
-    db.ref("topup/" + orderID).set({
+    db.ref("topup").push({
         uid: user.uid,
         email: user.email,
         nominal: 50000,
         status: "pending"
     }).then(() => { 
         document.getElementById('loading').style.display = "none";
-        alert("Permintaan Terkirim! Saldo akan bertambah setelah di-acc admin."); 
+        alert("Request Depo Berhasil!"); 
     });
 }
 
-// Navigasi & Auth
+// FUNGSI AUTH STANDAR
 function login(){
     const email = document.getElementById('loginUser').value;
     const pass = document.getElementById('loginPass').value;
-    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Login Gagal!"));
+    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Login Gagal"));
 }
 function register(){
     const email = document.getElementById('regUser').value;
     const pass = document.getElementById('regPass').value;
-    if(pass.length < 6) return alert("Password minimal 6 digit");
-    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Registrasi Berhasil!"); showLogin(); });
+    if(pass.length < 6) return alert("Min 6 karakter");
+    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Sukses! Silakan Login"); showLogin(); });
 }
 function logout(){ auth.signOut().then(() => location.reload()); }
 function showLogin(){ document.getElementById('registerBox').style.display="none"; document.getElementById('loginBox').style.display="block"; }
