@@ -29,51 +29,36 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 .menuItem img{width:30px;height:30px;}
 .menuItem.active{background:white;color:black;}
 
-/* CONTENT */
+/* CONTENT AREA */
 #content{padding:20px;margin-left:80px;height:calc(100% - 75px);overflow-y:auto;}
-.card{background:white;color:black;padding:20px;border-radius:15px;margin-bottom:15px;font-weight:bold;box-shadow: 0 4px 10px rgba(255,255,255,0.1);}
+.card{background:white;color:black;padding:20px;border-radius:15px;margin-bottom:15px;font-weight:bold;}
 
-/* INVEST CARD */
-.invest-card { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 15px; color: white; }
-.invest-title { color: cyan; font-size: 18px; margin-bottom: 10px; }
-.invest-detail { font-size: 13px; margin-bottom: 5px; color: #bbb; }
-.btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 10px; cursor: pointer; }
+/* INVEST CARD STYLE */
+.invest-card { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 20px; color: white; }
+.invest-title { color: cyan; font-size: 20px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+.invest-detail { font-size: 14px; margin-bottom: 6px; color: #ddd; }
+.invest-detail b { color: cyan; }
 
-/* DEPO PAGE STYLING */
-.depo-container {
-    background: #f9f9f9;
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    border: 2px dashed #00e5ff;
-}
-.depo-label {
+/* NOTE/CATATAN STYLE */
+.invest-note {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
     font-size: 14px;
-    color: #666;
-    margin-bottom: 5px;
-    font-weight: normal;
+    color: cyan;
+    border-left: 4px solid cyan;
 }
-.depo-nominal-text {
-    font-size: 24px;
-    color: #000;
-    margin-bottom: 15px;
-    display: block;
-}
-.btn-depo {
-    width: 100%;
-    padding: 15px;
-    background: #000;
-    color: #00e5ff;
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3);
-}
-.btn-depo:disabled { background: #ccc; color: #666; box-shadow: none; }
 
-#statusTopup { margin-top: 15px; padding: 12px; border-radius: 10px; font-size: 13px; display: none; }
+.btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 15px; cursor: pointer; font-size: 15px; }
+
+/* DEPO BOX */
+.depo-container { background: #f1f1f1; border-radius: 15px; padding: 20px; text-align: center; border: 2px dashed cyan; }
+.depo-label { font-size: 14px; color: #555; font-weight: normal; }
+.depo-nominal-bold { font-size: 22px; color: #000; display: block; margin: 10px 0; }
+.btn-depo { width: 100%; padding: 15px; background: #000; color: cyan; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
+
+#statusTopup { margin-top: 15px; padding: 12px; border-radius: 10px; font-size: 13px; display: none; text-align: center; }
 .pending-style { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
 .selesai-style { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
 </style>
@@ -82,20 +67,19 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 
 <div id="loading">Memproses...</div>
 
-<!-- LOGIN -->
+<!-- LOGIN/REGISTER -->
 <div class="box" id="loginBox">
-    <h2 style="margin-bottom:10px;">Login</h2>
+    <h2>Login</h2>
     <input id="loginUser" type="email" placeholder="Email">
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">MASUK</button>
     <p style="margin-top:15px; font-size:12px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Daftar</span></p>
 </div>
 
-<!-- REGISTER -->
 <div class="box" id="registerBox" style="display:none;">
-    <h2 style="margin-bottom:10px;">Daftar</h2>
+    <h2>Daftar</h2>
     <input id="regUser" type="email" placeholder="Email">
-    <input id="regPass" type="password" placeholder="Pass 6 Karakter">
+    <input id="regPass" type="password" placeholder="Pass 6 Digit">
     <button onclick="register()">DAFTAR SEKARANG</button>
     <p style="margin-top:15px; font-size:12px;">Sudah punya akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;">Login</span></p>
 </div>
@@ -121,36 +105,36 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
     </div>
 
     <div id="content">
-        <div id="newsBox" class="card">Selamat Datang di Dashboard.</div>
+        <div id="newsBox" class="card">Halaman Berita - Selamat Datang!</div>
         <div id="quizBox" class="card" style="display:none;">Halaman Soal Latihan.</div>
 
         <!-- INVEST BOX -->
         <div id="investBox" style="display:none;">
             <div class="invest-card">
                 <div class="invest-title">Paket Investasi A</div>
-                <div class="invest-detail">Harga : Rp 20.000</div>
-                <div class="invest-detail">Profit : Rp 30.000</div>
-                <div class="invest-detail">Durasi : 60 Hari</div>
+                <div class="invest-detail">💰 Depo : <b>Rp 20.000</b></div>
+                <div class="invest-detail">📈 Profit : <b>Rp 30.000 (Total)</b></div>
+                <div class="invest-detail">📅 Sampai : <b>60 Hari</b></div>
+                
+                <!-- NOTE SESUAI PERMINTAAN -->
+                <div class="invest-note">
+                    note : Satu hari : 500
+                </div>
+                
                 <button class="btn-invest" onclick="buyInvest()">Beli Sekarang</button>
             </div>
         </div>
 
-        <!-- DEPO BOX (NEW DESIGN) -->
+        <!-- DEPO BOX -->
         <div id="depoBox" class="card" style="display:none;">
-            <h3 style="margin-bottom:15px; text-align:center;">Halaman Isi Saldo</h3>
+            <h3 style="margin-bottom:15px; text-align:center;">Halaman Depo</h3>
             <div class="depo-container">
-                <p class="depo-label">SILAHKAN KONFIRMASI PEMBAYARAN</p>
-                <b class="depo-nominal-text">NOMINAL DEPO 50.000!!</b>
-                <h1 style="color: #000; margin-bottom: 20px;">Rp 50.000</h1>
-                
+                <p class="depo-label">KONFIRMASI PEMBAYARAN</p>
+                <b class="depo-nominal-bold">NOMINAL DEPO 50.000!!</b>
+                <h1 style="color:black; margin-bottom:15px;">Rp 50.000</h1>
                 <button id="btnKirimTopup" class="btn-depo" onclick="kirimDepo()">REQUEST DEPO SEKARANG</button>
             </div>
-            
             <div id="statusTopup"></div>
-            
-            <p style="font-size:11px; color:gray; font-weight:normal; margin-top:15px; text-align:center;">
-                *Klik tombol di atas untuk mengirim permintaan ke Admin.<br>Status akan berubah otomatis setelah di-ACC.
-            </p>
         </div>
     </div>
 </div>
@@ -180,34 +164,37 @@ auth.onAuthStateChanged(user => {
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Hitung Saldo dari status "selesai"
+        // Hitung Saldo dari status "selesai" di folder topup
         db.ref("topup").on("value", (snap) => {
             let totalSaldo = 0;
+            let adaPending = false;
             let statusBox = document.getElementById('statusTopup');
             let btn = document.getElementById('btnKirimTopup');
-            let adaPending = false;
 
             snap.forEach((child) => {
                 const data = child.val();
                 if (data.uid === user.uid) {
-                    if (data.status === "selesai") totalSaldo += parseInt(data.nominal);
-                    if (data.status === "pending") {
-                        adaPending = true;
-                        statusBox.style.display = "block";
-                        statusBox.className = "pending-style";
-                        statusBox.innerHTML = "🕒 <b>STATUS PENDING:</b> Menunggu ACC Admin (50.000)";
-                        btn.disabled = true;
-                        btn.innerText = "MENUNGGU PROSES...";
-                    }
+                    let st = data.status ? data.status.toLowerCase().trim() : "";
+                    if (st === "selesai") totalSaldo += parseInt(data.nominal || 0);
+                    if (st === "pending") adaPending = true;
                 }
             });
 
             globalSaldo = totalSaldo;
             document.getElementById('welcome').innerText = "Rp. " + totalSaldo.toLocaleString('id-ID');
-            if (!adaPending) {
+
+            if (adaPending) {
+                statusBox.style.display = "block";
+                statusBox.className = "pending-style";
+                statusBox.innerHTML = "🕒 <b>STATUS:</b> Menunggu ACC Admin...";
+                btn.disabled = true;
+                btn.innerText = "DALAM PROSES...";
+                btn.style.background = "#ccc";
+            } else {
                 statusBox.style.display = "none";
                 btn.disabled = false;
                 btn.innerText = "REQUEST DEPO SEKARANG";
+                btn.style.background = "#000";
             }
         });
     } else {
@@ -221,8 +208,8 @@ function buyInvest() {
         alert("Saldo tidak cukup, silahkan depo sekarang!");
         showDepo();
     } else {
-        if (confirm("Beli paket seharga Rp 20.000?")) {
-            alert("Silahkan hubungi admin untuk aktivasi manual.");
+        if (confirm("Beli Paket Investasi A seharga Rp 20.000?")) {
+            alert("Berhasil! Silahkan hubungi admin untuk aktivasi manual.");
         }
     }
 }
@@ -234,25 +221,25 @@ function kirimDepo() {
     db.ref("topup/" + orderID).set({
         uid: user.uid,
         email: user.email,
-        nominal: 50000, // Otomatis isi 50.000
+        nominal: 50000,
         status: "pending"
     }).then(() => { 
         document.getElementById('loading').style.display = "none";
-        alert("Permintaan Rp 50.000 Terkirim!"); 
+        alert("Permintaan Terkirim!"); 
     });
 }
 
 function login(){
     const email = document.getElementById('loginUser').value;
     const pass = document.getElementById('loginPass').value;
-    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Gagal Login"));
+    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Login Gagal"));
 }
 
 function register(){
     const email = document.getElementById('regUser').value;
     const pass = document.getElementById('regPass').value;
     if(pass.length < 6) return alert("Password minimal 6 angka");
-    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Sukses Daftar"); showLogin(); });
+    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Daftar Sukses"); showLogin(); });
 }
 
 function logout(){ auth.signOut().then(() => location.reload()); }
