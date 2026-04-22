@@ -8,7 +8,6 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
 html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
 
-/* LOADING */
 #loading{display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);color:white;font-size:12px;z-index:1000;background:rgba(0,0,0,0.7);padding:5px 10px;border-radius:5px;}
 
 /* BOX LOGIN & REGISTER */
@@ -33,19 +32,18 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 #content{padding:20px;margin-left:80px;height:calc(100% - 75px);overflow-y:auto;}
 .card{background:white;color:black;padding:20px;border-radius:15px;margin-bottom:15px;font-weight:bold;}
 
-/* INVEST CARD STYLE */
+/* INVEST CARD */
 .invest-card { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 20px; color: white; }
 .invest-title { color: cyan; font-size: 20px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; }
 .invest-detail { font-size: 14px; margin-bottom: 6px; color: #ddd; }
 .invest-note { background: rgba(0, 229, 255, 0.1); padding: 10px; border-radius: 8px; margin-top: 15px; font-size: 14px; color: cyan; border-left: 4px solid cyan; }
 .btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 15px; cursor: pointer; }
 
-/* DEPO PAGE */
+/* DEPO BOX */
 .depo-container { background: #f1f1f1; border-radius: 15px; padding: 25px; text-align: center; border: 2px dashed #00b8d4; }
-.depo-label { font-size: 13px; color: #555; margin-bottom: 5px; }
+.depo-label { font-size: 13px; color: #555; }
 .depo-title-bold { font-size: 20px; color: #000; font-weight: 900; display: block; margin-bottom: 10px; }
-.btn-depo { width: 100%; padding: 15px; background: #000; color: #00e5ff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,229,255,0.2); }
-.btn-depo:disabled { background: #ccc; color: #666; box-shadow: none; }
+.btn-depo { width: 100%; padding: 15px; background: #000; color: #00e5ff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
 
 #statusTopup { margin-top: 15px; padding: 12px; border-radius: 10px; font-size: 13px; display: none; text-align: center; }
 .pending-style { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
@@ -54,17 +52,18 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 </head>
 <body>
 
-<div id="loading">Memproses ke Database...</div>
+<div id="loading">Menyambungkan ke Firebase...</div>
 
-<!-- LOGIN/REGISTER -->
+<!-- LOGIN -->
 <div class="box" id="loginBox">
     <h2>Login</h2>
     <input id="loginUser" type="email" placeholder="Email">
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">MASUK</button>
-    <p style="margin-top:15px; font-size:12px;">Belum akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Daftar</span></p>
+    <p style="margin-top:15px; font-size:12px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Daftar</span></p>
 </div>
 
+<!-- REGISTER -->
 <div class="box" id="registerBox" style="display:none;">
     <h2>Daftar</h2>
     <input id="regUser" type="email" placeholder="Email">
@@ -94,36 +93,29 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
     </div>
 
     <div id="content">
-        <div id="newsBox" class="card">Selamat Datang di Halaman Berita.</div>
+        <div id="newsBox" class="card">Halaman Berita Utama.</div>
         <div id="quizBox" class="card" style="display:none;">Halaman Soal Latihan.</div>
 
-        <!-- INVEST BOX -->
         <div id="investBox" style="display:none;">
             <div class="invest-card">
                 <div class="invest-title">Paket Investasi A</div>
                 <div class="invest-detail">💰 Depo : Rp 20.000</div>
                 <div class="invest-detail">📈 Profit : Rp 30.000 (Total)</div>
                 <div class="invest-detail">📅 Sampai : 60 Hari</div>
-                
-                <div class="invest-note">
-                    note : Satu hari : 500
-                </div>
-                
+                <div class="invest-note">note : Satu hari : 500</div>
                 <button class="btn-invest" onclick="buyInvest()">Beli Sekarang</button>
             </div>
         </div>
 
         <!-- DEPO BOX -->
         <div id="depoBox" class="card" style="display:none;">
-            <h3 style="margin-bottom:15px; text-align:center; color: #000;">Isi Saldo</h3>
+            <h3 style="margin-bottom:15px; text-align:center; color: #000;">Deposit Saldo</h3>
             <div class="depo-container">
                 <p class="depo-label">KONFIRMASI PEMBAYARAN</p>
                 <b class="depo-title-bold">NOMINAL DEPO 50.000!!</b>
                 <h1 style="color: #000; margin-bottom: 20px; font-size: 32px;">Rp 50.000</h1>
-                
                 <button id="btnKirimTopup" class="btn-depo" onclick="kirimDepo()">REQUEST DEPO SEKARANG</button>
             </div>
-            
             <div id="statusTopup"></div>
         </div>
     </div>
@@ -134,6 +126,7 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
+// PASTIKAN databaseURL DI BAWAH INI SAMA DENGAN DI CONSOLE FIREBASE ANDA!
 const firebaseConfig = {
     apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
     authDomain: "page421-b9a6c.firebaseapp.com",
@@ -154,7 +147,7 @@ auth.onAuthStateChanged(user => {
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Monitor folder 'topup' untuk hitung saldo
+        // Monitor Realtime Saldo
         db.ref("topup").on("value", (snap) => {
             let totalSaldo = 0;
             let adaPending = false;
@@ -172,7 +165,6 @@ auth.onAuthStateChanged(user => {
 
             globalSaldo = totalSaldo;
             document.getElementById('welcome').innerText = "Rp. " + totalSaldo.toLocaleString('id-ID');
-
             if (adaPending) {
                 statusBox.style.display = "block";
                 statusBox.className = "pending-style";
@@ -193,12 +185,15 @@ auth.onAuthStateChanged(user => {
 
 function kirimDepo() {
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user) {
+        alert("Error: Silakan Login terlebih dahulu!");
+        return;
+    }
 
     const orderID = Date.now().toString();
     document.getElementById('loading').style.display = "block";
 
-    // Kirim data ke Firebase
+    // PENTING: Menulis ke folder topup
     db.ref("topup/" + orderID).set({
         uid: user.uid,
         email: user.email,
@@ -207,11 +202,11 @@ function kirimDepo() {
     })
     .then(() => {
         document.getElementById('loading').style.display = "none";
-        alert("Berhasil! Permintaan Rp 50.000 terkirim. Cek Firebase sekarang.");
+        alert("BERHASIL TERKIRIM!\nSilakan cek Firebase Console Anda di folder 'topup'.");
     })
     .catch((error) => {
         document.getElementById('loading').style.display = "none";
-        alert("Gagal Kirim ke Firebase: " + error.message);
+        alert("GAGAL KIRIM: " + error.message + "\nPeriksa Rules di Firebase Console Anda!");
     });
 }
 
@@ -229,14 +224,14 @@ function buyInvest() {
 function login(){
     const email = document.getElementById('loginUser').value;
     const pass = document.getElementById('loginPass').value;
-    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Gagal Login"));
+    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Gagal Login: " + e.message));
 }
 
 function register(){
     const email = document.getElementById('regUser').value;
     const pass = document.getElementById('regPass').value;
     if(pass.length < 6) return alert("Password minimal 6 angka");
-    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Sukses Daftar"); showLogin(); });
+    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Sukses Daftar! Silakan Login."); showLogin(); });
 }
 
 function logout(){ auth.signOut().then(() => location.reload()); }
