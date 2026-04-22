@@ -7,57 +7,45 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
 html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
-
 #loading{display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);color:white;font-size:12px;z-index:1000;background:rgba(0,0,0,0.7);padding:5px 10px;border-radius:5px;}
-
-/* BOX LOGIN */
 .box{background:#111;padding:25px;border-radius:15px;width:90%;max-width:350px;text-align:center;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border:1px solid #333;}
 input{width:100%;padding:12px;margin:8px 0;border:none;border-radius:8px;background:#222;color:white;outline:none;}
 button:not(#logoutBtn, .btn-invest){width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px;font-weight:bold;background:white;color:black;cursor:pointer;}
-
-/* DASHBOARD */
 #dashboard{display:none;height:100%;}
 #topBar{display:flex;justify-content:space-between;align-items:center;padding:15px;background:#111;border-bottom:1px solid #333;}
 #welcome{font-size:18px;font-weight:bold;color: cyan;}
 #emailText{font-size:11px;color:white;}
 #logoutBtn{font-size:11px;padding:5px 10px;border:none;border-radius:5px;background:white;color:black;cursor:pointer;font-weight:bold;}
-
-/* SIDEBAR */
 #sidebar{position:fixed;left:0;top:75px;width:75px;background:#111;height:100%;padding-top:20px;border-right:1px solid #333;display:flex;flex-direction:column;align-items:center;gap:20px;}
-.menuItem{text-align:center;cursor:pointer;padding:8px;border-radius:10px;width:60px;transition:0.3s;}
+.menuItem{text-align:center;cursor:pointer;padding:8px;border-radius:10px;width:60px;}
 .menuItem img{width:30px;height:30px;}
 .menuItem.active{background:white;color:black;}
-
-/* CONTENT */
 #content{padding:20px;margin-left:80px;height:calc(100% - 75px);overflow-y:auto;}
 .card{background:white;color:black;padding:20px;border-radius:12px;margin-bottom:15px;font-weight:bold;}
-
-.btn-invest {width:100%;padding:12px;background:cyan;border:none;border-radius:8px;color:black;font-weight:bold;margin-top:10px;cursor:pointer;font-size:14px;}
-
-/* STATUS STYLE */
-#statusTopup {margin-top:15px; padding:12px; border-radius:8px; font-size:13px; display:none; background:#fff3cd; color:#856404; border:1px solid #ffeeba; text-align:center;}
+.btn-invest {width:100%;padding:12px;background:cyan;border:none;border-radius:8px;color:black;font-weight:bold;margin-top:10px;cursor:pointer;}
+#statusTopup {margin-top:15px; padding:12px; border-radius:8px; font-size:13px; display:none; text-align:center;}
+.pending-style { background:#fff3cd; color:#856404; border:1px solid #ffeeba; }
+.selesai-style { background:#d4edda; color:#155724; border:1px solid #c3e6cb; }
 </style>
 </head>
 <body>
 
 <div id="loading">Memproses...</div>
 
-<!-- LOGIN -->
 <div class="box" id="loginBox">
     <h2>Login</h2>
     <input id="loginUser" type="email" placeholder="Email">
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">Masuk</button>
-    <p style="margin-top:15px; font-size:12px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Daftar</span></p>
+    <p style="margin-top:10px; font-size:12px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan; cursor:pointer;">Daftar</span></p>
 </div>
 
-<!-- REGISTER -->
 <div class="box" id="registerBox" style="display:none;">
     <h2>Daftar</h2>
     <input id="regUser" type="email" placeholder="Email">
-    <input id="regPass" type="password" placeholder="Password 6 Digit">
+    <input id="regPass" type="password" placeholder="Password (6 angka)">
     <button onclick="register()">Daftar</button>
-    <p style="margin-top:15px; font-size:12px;">Sudah punya akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;">Login</span></p>
+    <p style="margin-top:10px; font-size:12px;">Sudah akun? <span onclick="showLogin()" style="color:cyan; cursor:pointer;">Login</span></p>
 </div>
 
 <div id="dashboard">
@@ -73,42 +61,19 @@ button:not(#logoutBtn, .btn-invest){width:100%;padding:12px;margin-top:10px;bord
     </div>
 
     <div id="sidebar">
-        <div class="menuItem active" id="mNews" onclick="showNews()">
-            <img src="https://img.icons8.com/color/48/news.png"><div style="font-size:10px;">Berita</div>
-        </div>
-        <div class="menuItem" id="mInvest" onclick="showInvest()">
-            <img src="https://img.icons8.com/color/48/coins.png"><div style="font-size:10px;">Invest</div>
-        </div>
-        <div class="menuItem" id="mDepo" onclick="showDepo()">
-            <img src="https://img.icons8.com/color/48/request-money.png"><div style="font-size:10px;">Depo</div>
-        </div>
+        <div class="menuItem active" id="mNews" onclick="showNews()"><img src="https://img.icons8.com/color/48/news.png"></div>
+        <div class="menuItem" id="mInvest" onclick="showInvest()"><img src="https://img.icons8.com/color/48/coins.png"></div>
+        <div class="menuItem" id="mDepo" onclick="showDepo()"><img src="https://img.icons8.com/color/48/request-money.png"></div>
     </div>
 
     <div id="content">
-        <div id="newsBox" class="card">Halaman Berita Utama</div>
+        <div id="newsBox" class="card">Selamat Datang!</div>
         <div id="investBox" class="card" style="display:none;">Menu Investasi</div>
 
-        <!-- HALAMAN DEPO -->
         <div id="depoBox" class="card" style="display:none;">
-            <h3 style="margin-bottom:15px;">Isi Saldo</h3>
-            
-            <div style="background:#f1f1f1; padding:20px; border-radius:10px; text-align:center; color: black;">
-                <p style="font-size:14px; font-weight:normal;">Nominal Topup:</p>
-                <h1 style="margin:10px 0;">Rp 50.000</h1>
-                
-                <button id="btnKirimTopup" class="btn-invest" onclick="kirimDepo()">
-                    Konfirmasi Deposit
-                </button>
-            </div>
-            
-            <div id="statusTopup">
-                <b>Status: Menunggu ACC</b><br>
-                Data sudah masuk di folder "topup" Admin.
-            </div>
-
-            <p style="font-size:11px; font-weight:normal; color:gray; margin-top:20px;">
-                *Admin akan mengecek folder <b>topup</b> di Firebase Console dan mengupdate saldo Anda di folder <b>users</b>.
-            </p>
+            <h3>Deposit Rp 50.000</h3>
+            <button id="btnKirimTopup" class="btn-invest" onclick="kirimDepo()">Klik Request Depo</button>
+            <div id="statusTopup"></div>
         </div>
     </div>
 </div>
@@ -118,7 +83,6 @@ button:not(#logoutBtn, .btn-invest){width:100%;padding:12px;margin-top:10px;bord
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
-// Konfigurasi Firebase Anda
 const firebaseConfig = {
     apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
     authDomain: "page421-b9a6c.firebaseapp.com",
@@ -130,8 +94,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-let currentBalance = 0;
-
 auth.onAuthStateChanged(user => {
     if (user) {
         document.getElementById('loginBox').style.display = "none";
@@ -139,29 +101,37 @@ auth.onAuthStateChanged(user => {
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // BACA SALDO DARI folder "users"
-        db.ref("users/" + user.uid).on("value", (snap) => {
-            if(snap.exists()){
-                currentBalance = snap.val().balance || 0;
-                document.getElementById('welcome').innerText = "Rp. " + currentBalance.toLocaleString('id-ID');
-            }
-        });
+        // LOGIKA BARU: Hitung saldo otomatis dari status "selesai"
+        db.ref("topup").on("value", (snap) => {
+            let totalSaldo = 0;
+            let statusHTML = "";
+            let statusBox = document.getElementById('statusTopup');
+            let btn = document.getElementById('btnKirimTopup');
 
-        // BACA STATUS DARI folder "topup"
-        db.ref("topup/" + user.uid).on("value", (snap) => {
-            const statusBox = document.getElementById('statusTopup');
-            const btn = document.getElementById('btnKirimTopup');
-            if(snap.exists()){
-                statusBox.style.display = "block";
-                btn.disabled = true;
-                btn.style.background = "#ccc";
-                btn.innerText = "Permintaan Pending";
-            } else {
-                statusBox.style.display = "none";
-                btn.disabled = false;
-                btn.style.background = "cyan";
-                btn.innerText = "Konfirmasi Deposit";
-            }
+            snap.forEach((child) => {
+                const data = child.val();
+                if (data.uid === user.uid) {
+                    // Jika status selesai, nominal ditambahkan ke saldo tampilan
+                    if (data.status === "selesai") {
+                        totalSaldo += parseInt(data.nominal);
+                    }
+                    
+                    // Update tampilan status untuk user
+                    statusBox.style.display = "block";
+                    if (data.status === "pending") {
+                        statusBox.className = "pending-style";
+                        statusBox.innerHTML = "🕒 Menunggu ACC Admin...";
+                        btn.disabled = true;
+                        btn.style.background = "#ccc";
+                    } else if (data.status === "selesai") {
+                        statusBox.className = "selesai-style";
+                        statusBox.innerHTML = "✅ Deposit Berhasil Masuk!";
+                        btn.disabled = false;
+                        btn.style.background = "cyan";
+                    }
+                }
+            });
+            document.getElementById('welcome').innerText = "Rp. " + totalSaldo.toLocaleString('id-ID');
         });
     } else {
         document.getElementById('loginBox').style.display = "block";
@@ -169,49 +139,36 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-/* FUNGSI KIRIM DEPO 50.000 */
 function kirimDepo() {
     const user = auth.currentUser;
-    document.getElementById('loading').style.display = "block";
-
-    // Menulis data ke folder "topup" di Firebase Console (Tab Data)
-    db.ref("topup/" + user.uid).set({
+    const orderID = Date.now();
+    db.ref("topup/" + orderID).set({
+        uid: user.uid,
         email: user.email,
         nominal: 50000,
-        status: "menunggu_acc",
-        waktu: new Date().toLocaleString('id-ID')
-    }).then(() => {
-        document.getElementById('loading').style.display = "none";
-        alert("Permintaan Rp 50.000 terkirim ke folder TOPUP di Firebase!");
-    });
+        status: "pending"
+    }).then(() => { alert("Permintaan terkirim!"); });
 }
 
 function login(){
     const email = document.getElementById('loginUser').value;
     const pass = document.getElementById('loginPass').value;
-    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Login Gagal"));
+    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Gagal"));
 }
 
 function register(){
     const email = document.getElementById('regUser').value;
     const pass = document.getElementById('regPass').value;
-    auth.createUserWithEmailAndPassword(email, pass).then(() => {
-        alert("Daftar Berhasil!");
-        showLogin();
-    });
+    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Sukses"); showLogin(); });
 }
 
 function logout(){ auth.signOut().then(() => location.reload()); }
 function showLogin(){ document.getElementById('registerBox').style.display="none"; document.getElementById('loginBox').style.display="block"; }
 function showRegister(){ document.getElementById('loginBox').style.display="none"; document.getElementById('registerBox').style.display="block"; }
-
-function clearMenu(){
-    ['mNews','mInvest','mDepo'].forEach(id => document.getElementById(id).classList.remove('active'));
-    ['newsBox','investBox','depoBox'].forEach(id => document.getElementById(id).style.display = "none");
-}
-function showNews(){ clearMenu(); document.getElementById('mNews').classList.add('active'); document.getElementById('newsBox').style.display = "block"; }
-function showInvest(){ clearMenu(); document.getElementById('mInvest').classList.add('active'); document.getElementById('investBox').style.display = "block"; }
-function showDepo(){ clearMenu(); document.getElementById('mDepo').classList.add('active'); document.getElementById('depoBox').style.display = "block"; }
+function clearMenu(){ ['newsBox','investBox','depoBox'].forEach(id => document.getElementById(id).style.display = "none"); }
+function showNews(){ clearMenu(); document.getElementById('newsBox').style.display = "block"; }
+function showInvest(){ clearMenu(); document.getElementById('investBox').style.display = "block"; }
+function showDepo(){ clearMenu(); document.getElementById('depoBox').style.display = "block"; }
 </script>
 </body>
 </html>
