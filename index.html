@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investasi Page421 - Fast</title>
+<title>Investasi Page421 - Fixed</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
 html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
@@ -20,24 +20,26 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 #emailText{font-size:11px;color:white;}
 #logoutBtn{font-size:11px;padding:5px 10px;border:none;border-radius:5px;background:white;color:black;cursor:pointer;font-weight:bold;}
 
-/* SIDEBAR */
-#sidebar{position:fixed;left:0;top:75px;width:75px;background:#111;height:100%;padding-top:20px;border-right:1px solid #333;display:flex;flex-direction:column;align-items:center;gap:20px;}
-.menuItem{text-align:center;cursor:pointer;padding:8px;border-radius:10px;width:60px;transition:0.3s;}
-.menuItem img{width:30px;height:30px;}
-.menuItem.active{background:white;color:black;}
+/* SIDEBAR DENGAN TULISAN */
+#sidebar{position:fixed;left:0;top:75px;width:80px;background:#111;height:100%;padding-top:20px;border-right:1px solid #333;display:flex;flex-direction:column;align-items:center;gap:15px;}
+.menuItem{text-align:center;cursor:pointer;padding:10px;border-radius:10px;width:70px;transition:0.3s;}
+.menuItem img{width:28px;height:28px;}
+.menuItem span{display:block;font-size:10px;margin-top:5px;color: #ccc;}
+.menuItem.active{background:white;}
+.menuItem.active span, .menuItem.active img{filter: invert(1);}
 
 /* CONTENT AREA */
-#content{padding:20px;margin-left:80px;height:calc(100% - 75px);overflow-y:auto;}
+#content{padding:20px;margin-left:85px;height:calc(100% - 75px);overflow-y:auto;}
 .card{background:white;color:black;padding:20px;border-radius:15px;margin-bottom:15px;font-weight:bold;}
 
-/* INVEST CARD STYLE */
+/* INVEST CARD */
 .invest-card { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 20px; color: white; }
 .invest-title { color: cyan; font-size: 20px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; display: flex; align-items: center; justify-content: space-between; }
 .invest-detail { margin: 5px 0; font-size: 14px; color: #ccc; }
 .btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 15px; cursor: pointer; }
 .btn-invest:disabled { background: #333; color: #666; cursor: not-allowed; }
 
-/* DEPO BOX PREMIUM */
+/* DEPO BOX */
 .depo-container { background: #f1f1f1; border-radius: 15px; padding: 25px; text-align: center; border: 2px dashed #00b8d4; }
 .btn-depo { width: 100%; padding: 15px; background: #000; color: #00e5ff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
 #statusTopup { margin-top: 10px; font-size: 12px; color: #856404; background: #fff3cd; padding: 10px; border-radius: 5px; display: none; }
@@ -51,44 +53,63 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
     <input id="loginUser" type="email" placeholder="Email">
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">MASUK</button>
-    <p style="margin-top:15px; font-size:13px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Registrasi</span></p>
+    <p style="margin-top:15px; font-size:13px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;font-weight:bold;">Registrasi</span></p>
 </div>
 
 <div class="box" id="registerBox" style="display:none;">
     <h2>Registrasi</h2>
     <input id="regUser" type="email" placeholder="Email Baru">
-    <input id="regPass" type="password" placeholder="Password">
-    <button onclick="register()">DAFTAR</button>
-    <p style="margin-top:15px; font-size:13px;">Sudah punya akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;">Login</span></p>
+    <input id="regPass" type="password" placeholder="Password (Min 6 Digit)">
+    <button onclick="register()">DAFTAR SEKARANG</button>
+    <p style="margin-top:15px; font-size:13px;">Sudah punya akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;font-weight:bold;">Login</span></p>
 </div>
 
-<!-- DASHBOARD -->
+<!-- DASHBOARD UI -->
 <div id="dashboard">
     <div id="topBar">
         <div style="display:flex;align-items:center;gap:10px;">
             <img src="https://i.imgur.com/8Km9tLL.png" width="40">
             <div>
                 <div id="welcome">Rp. 0</div>
-                <div id="emailText">User</div>
+                <div id="emailText">User@mail.com</div>
             </div>
         </div>
         <button id="logoutBtn" onclick="logout()">Logout</button>
     </div>
 
+    <!-- SIDEBAR DENGAN TULISAN -->
     <div id="sidebar">
-        <div class="menuItem active" id="mNews" onclick="showNews()"><img src="https://img.icons8.com/color/48/news.png"></div>
-        <div class="menuItem" id="mInvest" onclick="showInvest()"><img src="https://img.icons8.com/color/48/coins.png"></div>
-        <div class="menuItem" id="mDepo" onclick="showDepo()"><img src="https://img.icons8.com/color/48/request-money.png"></div>
+        <div class="menuItem active" id="mNews" onclick="showNews()">
+            <img src="https://img.icons8.com/color/48/news.png">
+            <span>Berita</span>
+        </div>
+        <div class="menuItem" id="mQuiz" onclick="showQuiz()">
+            <img src="https://img.icons8.com/color/48/book-shelf.png">
+            <span>Soal</span>
+        </div>
+        <div class="menuItem" id="mInvest" onclick="showInvest()">
+            <img src="https://img.icons8.com/color/48/coins.png">
+            <span>Invest</span>
+        </div>
+        <div class="menuItem" id="mDepo" onclick="showDepo()">
+            <img src="https://img.icons8.com/color/48/request-money.png">
+            <span>Depo</span>
+        </div>
     </div>
 
     <div id="content">
-        <div id="newsBox" class="card">Selamat Datang!</div>
+        <div id="newsBox" class="card">Selamat Datang di Investasi Page421!</div>
+
+        <div id="quizBox" class="card" style="display:none;">
+            <h3>Daftar Soal</h3>
+            <p style="font-weight:normal; font-size:14px; margin-top:10px;">Materi soal akan segera diupdate oleh admin.</p>
+        </div>
 
         <div id="investBox" style="display:none;">
             <div class="invest-card">
                 <div class="invest-title">
                     <span>Paket Investasi A</span>
-                    <span id="checkPaketA" style="display:none; color:#00e5ff; font-weight:bold;">✓ Aktif</span>
+                    <span id="checkPaketA" style="display:none; color:#00e5ff;">✓ Biru</span>
                 </div>
                 <div class="invest-detail">💰 Harga: Rp 20.000</div>
                 <div class="invest-detail">📈 Profit: Rp 500 / Hari</div>
@@ -100,10 +121,10 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 
         <div id="depoBox" style="display:none;" class="card">
             <div class="depo-container">
-                <p style="color:black">Depo Nominal Tetap:</p>
+                <p style="color:black">Nominal Depo:</p>
                 <h1 style="color:black; margin:10px 0;">Rp 50.000</h1>
-                <button id="btnKirimDepo" class="btn-depo" onclick="kirimDepo()">KIRIM PERMINTAAN</button>
-                <div id="statusTopup">Menunggu Admin...</div>
+                <button id="btnKirimDepo" class="btn-depo" onclick="kirimDepo()">REQUEST DEPO SEKARANG</button>
+                <div id="statusTopup">Menunggu Konfirmasi Admin...</div>
             </div>
         </div>
     </div>
@@ -114,6 +135,7 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
+// KONFIGURASI FIREBASE
 const firebaseConfig = {
     apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
     authDomain: "page421-b9a6c.firebaseapp.com",
@@ -124,8 +146,8 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-let saldoDepo = 0;
-let myInvestments = [];
+let totalDepoSelesai = 0;
+let historyInvestasi = [];
 let currentBalance = 0;
 
 auth.onAuthStateChanged(user => {
@@ -135,27 +157,27 @@ auth.onAuthStateChanged(user => {
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Ambil Data Depo (Realtime)
+        // Ambil Data Depo
         db.ref("topup").on("value", snap => {
-            saldoDepo = 0;
+            totalDepoSelesai = 0;
             let pending = false;
             snap.forEach(c => {
                 const d = c.val();
                 if(d.uid === user.uid) {
-                    if(d.status === "selesai") saldoDepo += parseInt(d.nominal);
+                    if(d.status === "selesai") totalDepoSelesai += parseInt(d.nominal);
                     if(d.status === "pending") pending = true;
                 }
             });
             document.getElementById('statusTopup').style.display = pending ? "block" : "none";
             document.getElementById('btnKirimDepo').disabled = pending;
-            hitungLaba();
+            hitungSistem();
         });
 
-        // Ambil Data Investasi (Realtime)
+        // Ambil Data Investasi
         db.ref("invest_history/" + user.uid).on("value", snap => {
-            myInvestments = [];
-            snap.forEach(c => { myInvestments.push(c.val()); });
-            hitungLaba();
+            historyInvestasi = [];
+            snap.forEach(c => { historyInvestasi.push(c.val()); });
+            hitungSistem();
         });
     } else {
         document.getElementById('loginBox').style.display = "block";
@@ -163,43 +185,50 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-function hitungLaba() {
-    let totalBayar = 0;
-    let totalProfit = 0;
+function hitungSistem() {
+    let totalBiayaBeli = 0;
+    let totalProfitLaba = 0;
     let adaAktif = false;
     const sekarang = Date.now();
 
-    myInvestments.forEach(inv => {
-        totalBayar += 20000;
-        let hari = Math.floor((sekarang - inv.tanggalBeli) / (1000 * 60 * 60 * 24));
-        if (hari > 60) hari = 60; 
-        if (hari < 0) hari = 0;
-        totalProfit += (hari * 500);
+    historyInvestasi.forEach(inv => {
+        totalBiayaBeli += 20000; // Harga paket dikurangi dari saldo
+        
+        let diffHari = Math.floor((sekarang - inv.tanggalBeli) / (1000 * 60 * 60 * 24));
+        if (diffHari > 60) diffHari = 60; // Max 60 hari
+        if (diffHari < 0) diffHari = 0;
+        
+        totalProfitLaba += (diffHari * 500); // Laba Rp 500 per hari
 
+        // Cek jika durasi masih di bawah 60 hari (86400000 ms * 60)
         if ((sekarang - inv.tanggalBeli) < (60 * 86400000)) {
             adaAktif = true;
-            document.getElementById('timerInfo').innerText = "Sisa Durasi: " + (60 - hari) + " Hari";
+            document.getElementById('timerInfo').innerText = "Paket Aktif: " + (60 - diffHari) + " Hari lagi";
         }
     });
 
-    currentBalance = saldoDepo - totalBayar + totalProfit;
-    document.getElementById('welcome').innerText = "Rp. " + currentBalance.toLocaleString();
+    // RUMUS: Saldo = Depo - Beli + Laba
+    currentBalance = totalDepoSelesai - totalBiayaBeli + totalProfitLaba;
+    document.getElementById('welcome').innerText = "Rp. " + currentBalance.toLocaleString('id-ID');
     
-    // Update Tombol & Centang Biru
+    // Update Tombol & Centang
     document.getElementById('checkPaketA').style.display = adaAktif ? "inline" : "none";
     document.getElementById('btnBeliA').disabled = adaAktif;
     document.getElementById('btnBeliA').innerText = adaAktif ? "PAKET AKTIF" : "BELI SEKARANG";
+    if(!adaAktif) document.getElementById('timerInfo').innerText = "";
 }
 
 function buyInvest() {
     const user = auth.currentUser;
-    if (currentBalance < 20000) return alert("Saldo tidak cukup!");
+    if (currentBalance < 20000) return alert("Saldo tidak cukup! Silakan Depo Rp 50.000");
 
-    // Proses Instan: Langsung simpan ke DB tanpa loading screen yang lama
-    db.ref("invest_history/" + user.uid).push({
-        tanggalBeli: Date.now(),
-        harga: 20000
-    });
+    if(confirm("Beli paket seharga Rp 20.000? Saldo akan langsung terpotong.")){
+        // Push ke firebase (UI akan update otomatis karena listener .on("value") )
+        db.ref("invest_history/" + user.uid).push({
+            tanggalBeli: Date.now(),
+            harga: 20000
+        });
+    }
 }
 
 function kirimDepo() {
@@ -210,17 +239,30 @@ function kirimDepo() {
         nominal: 50000,
         status: "pending"
     });
+    alert("Permintaan Terkirim!");
 }
 
-// Navigasi Dasar
-function login() { auth.signInWithEmailAndPassword(loginUser.value, loginPass.value).catch(e => alert("Gagal Login")); }
-function register() { auth.createUserWithEmailAndPassword(regUser.value, regPass.value).then(() => showLogin()); }
+// Navigasi Dasar & Auth
+function login() { 
+    auth.signInWithEmailAndPassword(loginUser.value, loginPass.value).catch(e => alert("Gagal Login!")); 
+}
+function register() { 
+    if(regPass.value.length < 6) return alert("Password Minimal 6 Karakter!");
+    auth.createUserWithEmailAndPassword(regUser.value, regPass.value).then(() => {
+        alert("Berhasil Daftar!");
+        showLogin();
+    }).catch(e => alert(e.message)); 
+}
 function logout() { auth.signOut().then(() => location.reload()); }
 function showRegister() { loginBox.style.display="none"; registerBox.style.display="block"; }
 function showLogin() { registerBox.style.display="none"; loginBox.style.display="block"; }
-function clear() { newsBox.style.display=investBox.style.display=depoBox.style.display="none"; 
-                   mNews.classList.remove('active'); mInvest.classList.remove('active'); mDepo.classList.remove('active');}
+
+function clear() { 
+    newsBox.style.display=quizBox.style.display=investBox.style.display=depoBox.style.display="none"; 
+    mNews.classList.remove('active'); mQuiz.classList.remove('active'); mInvest.classList.remove('active'); mDepo.classList.remove('active');
+}
 function showNews() { clear(); newsBox.style.display="block"; mNews.classList.add('active'); }
+function showQuiz() { clear(); quizBox.style.display="block"; mQuiz.classList.add('active'); }
 function showInvest() { clear(); investBox.style.display="block"; mInvest.classList.add('active'); }
 function showDepo() { clear(); depoBox.style.display="block"; mDepo.classList.add('active'); }
 </script>
