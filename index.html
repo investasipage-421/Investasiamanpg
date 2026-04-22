@@ -3,154 +3,438 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investasi Page421</title>
-
+<title>investasi page421</title>
 <style>
-body{background:black;color:white;font-family:Arial;margin:0}
-.box{padding:20px;text-align:center}
-input{padding:10px;margin:5px;width:80%}
-button{padding:10px;margin:5px}
-#dashboard{display:none}
-</style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
 
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+background:black;
+color:white;
+}
+
+/* LOADING */
+#loading{
+display:none;
+position:fixed;
+top:10px;
+left:50%;
+transform:translateX(-50%);
+color:white;
+font-size:12px;
+z-index: 1000;
+background: rgba(0,0,0,0.7);
+padding: 5px 10px;
+border-radius: 5px;
+}
+
+/* BOX LOGIN & REGISTER */
+.box{
+background:#111;
+padding:25px;
+border-radius:15px;
+width:90%;
+max-width:350px;
+text-align:center;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+border: 1px solid #333;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:8px 0;
+border:none;
+border-radius:8px;
+background:#222;
+color:white;
+outline: none;
+}
+
+button:not(#logoutBtn, .btn-invest){
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+font-weight:bold;
+background:white;
+color:black;
+cursor:pointer;
+}
+
+/* DASHBOARD */
+#dashboard{display:none;height:100%;}
+
+/* TOP BAR */
+#topBar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+background: #111;
+border-bottom: 1px solid #333;
+}
+
+#profilePic{
+width:40px;
+height:40px;
+border-radius:50%;
+border:2px solid white;
+}
+
+#welcome{
+font-size:16px;
+font-weight:bold;
+color: cyan;
+}
+
+#emailText{
+font-size:11px;
+color: white;
+}
+
+#logoutBtn{
+font-size:11px;
+padding:5px 10px;
+border:none;
+border-radius:5px;
+background:white;
+color: black;
+cursor:pointer;
+font-weight: bold;
+}
+
+/* SIDEBAR */
+#sidebar{
+position:fixed;
+left:0;
+top:75px;
+width:75px;
+background:#111;
+height:100%;
+padding-top:20px;
+border-right:1px solid #333;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:20px;
+}
+
+.menuItem{
+text-align:center;
+cursor:pointer;
+padding:8px;
+border-radius:10px;
+width: 60px;
+transition: 0.3s;
+}
+
+.menuItem img{
+width:30px;
+height:30px;
+}
+
+.menuItem.active{
+background:white;
+color:black;
+}
+
+/* CONTENT */
+#content{
+padding:20px;
+margin-left:80px;
+height: calc(100% - 75px);
+overflow-y: auto;
+}
+
+.card{
+background:white;
+color:black;
+padding:20px;
+border-radius:12px;
+margin-bottom:15px;
+font-weight: bold;
+}
+
+/* INVEST CARD STYLE */
+.invest-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 15px;
+    color: white;
+    text-align: left;
+}
+
+.invest-title {
+    color: cyan;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.invest-detail {
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: #bbb;
+}
+
+.btn-invest {
+    width: 100%;
+    padding: 10px;
+    background: cyan;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+/* INPUT DEPO KHUSUS */
+.input-depo {
+    background: #f0f0f0 !important;
+    color: black !important;
+    border: 1px solid #ccc !important;
+    margin-bottom: 10px;
+}
+</style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="loginBox" class="box">
-<h2>Login</h2>
-<input id="loginUser" type="email" placeholder="Email"><br>
-<input id="loginPass" type="password" placeholder="Password"><br>
-<button onclick="login()">Login</button>
-<button onclick="showRegister()">Register</button>
+<div id="loading">Mohon tunggu...</div>
+
+<!-- LOGIN BOX -->
+<div class="box" id="loginBox">
+    <h2>Login</h2>
+    <input id="loginUser" type="email" placeholder="Email">
+    <input id="loginPass" type="password" placeholder="Password">
+    <button onclick="login()">Masuk</button>
+    <p style="margin-top:15px; font-size:13px;">
+        Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Daftar di sini</span>
+    </p>
 </div>
 
-<!-- REGISTER -->
-<div id="registerBox" class="box" style="display:none">
-<h2>Register</h2>
-<input id="regUser" type="email" placeholder="Email"><br>
-<input id="regPass" type="password" placeholder="Password"><br>
-<button onclick="register()">Daftar</button>
-<button onclick="showLogin()">Login</button>
+<!-- REGISTER BOX -->
+<div class="box" id="registerBox" style="display:none;">
+    <h2>Register</h2>
+    <input id="regUser" type="email" placeholder="Email">
+    <input id="regPass" type="password" placeholder="Password 6 Character">
+    <button onclick="register()">Daftar</button>
+    <p style="margin-top:15px; font-size:13px;">
+        Sudah punya akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;">Login di sini</span>
+    </p>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard" class="box">
-<h3 id="emailText"></h3>
-<h2 id="saldo">Rp 0</h2>
+<!-- DASHBOARD UI -->
+<div id="dashboard">
+    <div id="topBar">
+        <div style="display:flex;align-items:center;gap:10px;">
+            <img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
+            <div>
+                <div id="welcome">Rp. 0</div>
+                <div id="emailText">Memuat email...</div>
+            </div>
+        </div>
+        <button id="logoutBtn" onclick="logout()">Logout</button>
+    </div>
 
-<h3>Topup Saldo</h3>
-<input type="number" id="nominalTopup" placeholder="Masukkan nominal"><br>
-<button onclick="kirimTopup()">Kirim Topup</button>
+    <div id="sidebar">
+        <div class="menuItem active" id="mNews" onclick="showNews()">
+            <img src="https://img.icons8.com/color/48/news.png">
+            <div style="font-size:10px;">Berita</div>
+        </div>
+        <div class="menuItem" id="mQuiz" onclick="showQuiz()">
+            <img src="https://img.icons8.com/color/48/book-shelf.png">
+            <div style="font-size:10px;">Soal</div>
+        </div>
+        <div class="menuItem" id="mInvest" onclick="showInvest()">
+            <img src="https://img.icons8.com/color/48/coins.png">
+            <div style="font-size:10px;">Invest</div>
+        </div>
+        <div class="menuItem" id="mDepo" onclick="showDepo()">
+            <img src="https://img.icons8.com/color/48/request-money.png">
+            <div style="font-size:10px;">Depo</div>
+        </div>
+    </div>
 
-<br><br>
-<button onclick="logout()">Logout</button>
+    <div id="content">
+        <div id="newsBox" class="card">Halaman Berita - Selamat Datang!</div>
+        
+        <div id="quizBox" class="card" style="display:none;">Halaman Soal Latihan</div>
+        
+        <!-- INVEST BOX -->
+        <div id="investBox" style="display:none;">
+            <div class="invest-card">
+                <div class="invest-title">Paket Investasi A</div>
+                <div class="invest-detail">Depo : Rp 20.000</div>
+                <div class="invest-detail">Profit : Rp 30.000 (Total)</div>
+                <div class="invest-detail">Satu hari : Rp 500</div>
+                <div class="invest-detail">Sampai : 60 Hari</div>
+                <button class="btn-invest" onclick="buyInvest()">Beli Sekarang</button>
+            </div>
+        </div>
+
+        <!-- DEPO BOX (UPDATE) -->
+        <div id="depoBox" class="card" style="display:none;">
+            <h3 style="margin-bottom:10px;">Deposit Saldo</h3>
+            <p style="font-size:13px; font-weight:normal; margin-bottom:10px;">Masukkan nominal saldo yang ingin Anda tambahkan:</p>
+            
+            <input id="inputNominalDepo" class="input-depo" type="number" placeholder="Contoh: 50000">
+            
+            <button class="btn-invest" onclick="prosesDepo()">Isi Saldo Sekarang</button>
+            
+            <p style="font-size:11px; font-weight:normal; color:gray; margin-top:15px;">
+                *Saldo akan langsung bertambah ke akun Anda.
+            </p>
+        </div>
+    </div>
 </div>
 
-<!-- FIREBASE -->
+<!-- FIREBASE SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
-
-// CONFIG FIREBASE (PUNYA KAMU)
 const firebaseConfig = {
-  apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
-  authDomain: "page421-b9a6c.firebaseapp.com",
-  databaseURL: "https://page421-b9a6c-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "page421-b9a6c"
+    apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
+    authDomain: "page421-b9a6c.firebaseapp.com",
+    databaseURL: "https://page421-b9a6c-default-rtdb.firebaseio.com",
+    projectId: "page421-b9a6c"
 };
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-let saldo = 0;
+let isRegistering = false; 
+let currentBalance = 0;
 
-// CEK LOGIN
 auth.onAuthStateChanged(user => {
-  if(user){
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById("registerBox").style.display="none";
-    document.getElementById("dashboard").style.display="block";
+    if (user && !isRegistering) {
+        document.getElementById('loginBox').style.display = "none";
+        document.getElementById('registerBox').style.display = "none";
+        document.getElementById('dashboard').style.display = "block";
+        document.getElementById('emailText').innerText = user.email;
 
-    document.getElementById("emailText").innerText = user.email;
+        db.ref("users/" + user.uid).on("value", (snapshot) => {
+            const data = snapshot.val();
+            if(data) {
+                currentBalance = data.balance || 0;
+                document.getElementById('welcome').innerText = "Rp. " + currentBalance.toLocaleString('id-ID');
+            }
+        });
 
-    db.ref("users/"+user.uid).on("value", snap=>{
-      let data = snap.val();
-      if(data){
-        saldo = data.balance || 0;
-        document.getElementById("saldo").innerText = "Rp "+saldo;
-      }
-    });
-
-  }else{
-    document.getElementById("loginBox").style.display="block";
-    document.getElementById("dashboard").style.display="none";
-  }
+    } else if (!isRegistering) {
+        document.getElementById('loginBox').style.display = "block";
+        document.getElementById('dashboard').style.display = "none";
+    }
 });
 
-// REGISTER
-function register(){
-  let email = regUser.value;
-  let pass = regPass.value;
+/* FUNGSI DEPOSIT OTOMATIS */
+function prosesDepo() {
+    const user = auth.currentUser;
+    const nominal = parseInt(document.getElementById('inputNominalDepo').value);
 
-  auth.createUserWithEmailAndPassword(email,pass)
-  .then(res=>{
-    db.ref("users/"+res.user.uid).set({
-      email: email,
-      balance: 0
+    if (!nominal || nominal <= 0) {
+        alert("Masukkan nominal yang valid!");
+        return;
+    }
+
+    document.getElementById('loading').style.display = "block";
+    
+    // Tambahkan nominal ke saldo saat ini
+    const saldoBaru = currentBalance + nominal;
+
+    db.ref("users/" + user.uid).update({
+        balance: saldoBaru
+    }).then(() => {
+        document.getElementById('loading').style.display = "none";
+        alert("Berhasil! Saldo Rp " + nominal.toLocaleString('id-ID') + " telah ditambahkan.");
+        document.getElementById('inputNominalDepo').value = ""; // Reset input
+    }).catch(e => {
+        document.getElementById('loading').style.display = "none";
+        alert("Gagal update saldo: " + e.message);
     });
-    alert("Berhasil daftar");
-  })
-  .catch(e=>alert(e.message));
 }
 
-// LOGIN
+function register(){
+    const email = document.getElementById('regUser').value;
+    const pass = document.getElementById('regPass').value;
+    if(pass.length !== 6){
+        alert("Gagal: Password harus 6 character!");
+        return;
+    }
+    isRegistering = true; 
+    document.getElementById('loading').style.display = "block";
+    auth.createUserWithEmailAndPassword(email, pass)
+    .then(userCred => {
+        db.ref("users/" + userCred.user.uid).set({ 
+            email: email,
+            balance: 0 
+        });
+        auth.signOut().then(() => {
+            isRegistering = false; 
+            document.getElementById('loading').style.display = "none";
+            alert("Registrasi Berhasil!"); 
+            showLogin();
+        });
+    })
+    .catch(e => {
+        isRegistering = false; 
+        document.getElementById('loading').style.display = "none";
+        alert(e.message);
+    });
+}
+
+function buyInvest() {
+    const user = auth.currentUser;
+    const harga = 20000;
+    if (currentBalance < harga) {
+        alert("Saldo tidak cukup!");
+        return;
+    }
+    if (confirm("Beli paket seharga Rp 20.000?")) {
+        db.ref("users/" + user.uid).update({
+            balance: currentBalance - harga
+        }).then(() => { alert("Investasi Berhasil!"); });
+    }
+}
+
 function login(){
-  auth.signInWithEmailAndPassword(loginUser.value,loginPass.value)
-  .catch(e=>alert(e.message));
+    const email = document.getElementById('loginUser').value;
+    const pass = document.getElementById('loginPass').value;
+    document.getElementById('loading').style.display = "block";
+    auth.signInWithEmailAndPassword(email, pass)
+    .then(() => { document.getElementById('loading').style.display = "none"; })
+    .catch(e => { document.getElementById('loading').style.display = "none"; alert("Login Gagal"); });
 }
 
-// LOGOUT
-function logout(){
-  auth.signOut();
+function logout(){ auth.signOut().then(() => { location.reload(); }); }
+function showLogin(){ document.getElementById('registerBox').style.display = "none"; document.getElementById('loginBox').style.display = "block"; }
+function showRegister(){ document.getElementById('loginBox').style.display = "none"; document.getElementById('registerBox').style.display = "block"; }
+
+function clearMenu(){
+    document.getElementById('mNews').classList.remove('active');
+    document.getElementById('mQuiz').classList.remove('active');
+    document.getElementById('mInvest').classList.remove('active');
+    document.getElementById('mDepo').classList.remove('active');
+    document.getElementById('newsBox').style.display = "none";
+    document.getElementById('quizBox').style.display = "none";
+    document.getElementById('investBox').style.display = "none";
+    document.getElementById('depoBox').style.display = "none";
 }
 
-// TOPUP
-function kirimTopup(){
-  let user = auth.currentUser;
-  let nominal = nominalTopup.value;
-
-  if(!nominal){
-    alert("Isi nominal!");
-    return;
-  }
-
-  let id = Date.now();
-
-  db.ref("topup/"+id).set({
-    uid: user.uid,
-    email: user.email,
-    nominal: parseInt(nominal),
-    status: "pending"
-  });
-
-  alert("Topup dikirim!");
-}
-
-// UI
-function showRegister(){
-  loginBox.style.display="none";
-  registerBox.style.display="block";
-}
-function showLogin(){
-  registerBox.style.display="none";
-  loginBox.style.display="block";
-}
-
+function showNews(){ clearMenu(); document.getElementById('mNews').classList.add('active'); document.getElementById('newsBox').style.display = "block"; }
+function showQuiz(){ clearMenu(); document.getElementById('mQuiz').classList.add('active'); document.getElementById('quizBox').style.display = "block"; }
+function showInvest(){ clearMenu(); document.getElementById('mInvest').classList.add('active'); document.getElementById('investBox').style.display = "block"; }
+function showDepo(){ clearMenu(); document.getElementById('mDepo').classList.add('active'); document.getElementById('depoBox').style.display = "block"; }
 </script>
-
 </body>
 </html>
