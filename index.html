@@ -8,6 +8,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
 html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
 
+/* LOADING */
 #loading{display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);color:white;font-size:12px;z-index:1000;background:rgba(0,0,0,0.7);padding:5px 10px;border-radius:5px;}
 
 /* BOX LOGIN & REGISTER */
@@ -32,14 +33,14 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 #content{padding:20px;margin-left:80px;height:calc(100% - 75px);overflow-y:auto;}
 .card{background:white;color:black;padding:20px;border-radius:15px;margin-bottom:15px;font-weight:bold;}
 
-/* INVEST CARD */
+/* INVEST CARD STYLE */
 .invest-card { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 20px; color: white; }
 .invest-title { color: cyan; font-size: 20px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; }
 .invest-detail { font-size: 14px; margin-bottom: 6px; color: #ddd; }
 .invest-note { background: rgba(0, 229, 255, 0.1); padding: 10px; border-radius: 8px; margin-top: 15px; font-size: 14px; color: cyan; border-left: 4px solid cyan; }
 .btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 15px; cursor: pointer; }
 
-/* DEPO BOX */
+/* DEPO PAGE */
 .depo-container { background: #f1f1f1; border-radius: 15px; padding: 25px; text-align: center; border: 2px dashed #00b8d4; }
 .depo-label { font-size: 13px; color: #555; }
 .depo-title-bold { font-size: 20px; color: #000; font-weight: 900; display: block; margin-bottom: 10px; }
@@ -52,18 +53,17 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 </head>
 <body>
 
-<div id="loading">Menyambungkan ke Firebase...</div>
+<div id="loading">Memproses...</div>
 
-<!-- LOGIN -->
+<!-- LOGIN & REGISTER -->
 <div class="box" id="loginBox">
     <h2>Login</h2>
     <input id="loginUser" type="email" placeholder="Email">
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">MASUK</button>
-    <p style="margin-top:15px; font-size:12px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Daftar</span></p>
+    <p style="margin-top:15px; font-size:12px;">Belum akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;">Daftar</span></p>
 </div>
 
-<!-- REGISTER -->
 <div class="box" id="registerBox" style="display:none;">
     <h2>Daftar</h2>
     <input id="regUser" type="email" placeholder="Email">
@@ -93,9 +93,10 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
     </div>
 
     <div id="content">
-        <div id="newsBox" class="card">Halaman Berita Utama.</div>
-        <div id="quizBox" class="card" style="display:none;">Halaman Soal Latihan.</div>
+        <div id="newsBox" class="card">Selamat Datang di Berita Page421.</div>
+        <div id="quizBox" class="card" style="display:none;">Halaman Latihan Soal.</div>
 
+        <!-- INVEST BOX -->
         <div id="investBox" style="display:none;">
             <div class="invest-card">
                 <div class="invest-title">Paket Investasi A</div>
@@ -109,7 +110,7 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 
         <!-- DEPO BOX -->
         <div id="depoBox" class="card" style="display:none;">
-            <h3 style="margin-bottom:15px; text-align:center; color: #000;">Deposit Saldo</h3>
+            <h3 style="margin-bottom:15px; text-align:center; color: #000;">Isi Saldo</h3>
             <div class="depo-container">
                 <p class="depo-label">KONFIRMASI PEMBAYARAN</p>
                 <b class="depo-title-bold">NOMINAL DEPO 50.000!!</b>
@@ -126,11 +127,11 @@ button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-to
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
-// PASTIKAN databaseURL DI BAWAH INI SAMA DENGAN DI CONSOLE FIREBASE ANDA!
 const firebaseConfig = {
     apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
     authDomain: "page421-b9a6c.firebaseapp.com",
-    databaseURL: "https://page421-b9a6c-default-rtdb.firebaseio.com",
+    // UPDATE DATABASE URL SESUAI REGION SINGAPURA ANDA
+    databaseURL: "https://page421-b9a6c-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "page421-b9a6c"
 };
 
@@ -147,7 +148,7 @@ auth.onAuthStateChanged(user => {
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Monitor Realtime Saldo
+        // Hitung saldo real-time dari folder topup
         db.ref("topup").on("value", (snap) => {
             let totalSaldo = 0;
             let adaPending = false;
@@ -165,10 +166,11 @@ auth.onAuthStateChanged(user => {
 
             globalSaldo = totalSaldo;
             document.getElementById('welcome').innerText = "Rp. " + totalSaldo.toLocaleString('id-ID');
+
             if (adaPending) {
                 statusBox.style.display = "block";
                 statusBox.className = "pending-style";
-                statusBox.innerHTML = "🕒 <b>STATUS PENDING:</b> Menunggu ACC Admin...";
+                statusBox.innerHTML = "🕒 <b>STATUS:</b> Menunggu ACC Admin (50.000)";
                 btn.disabled = true;
                 btn.innerText = "SEDANG DIPROSES...";
             } else {
@@ -185,15 +187,12 @@ auth.onAuthStateChanged(user => {
 
 function kirimDepo() {
     const user = auth.currentUser;
-    if (!user) {
-        alert("Error: Silakan Login terlebih dahulu!");
-        return;
-    }
+    if (!user) return;
 
     const orderID = Date.now().toString();
     document.getElementById('loading').style.display = "block";
 
-    // PENTING: Menulis ke folder topup
+    // Kirim data ke folder 'topup' di Firebase
     db.ref("topup/" + orderID).set({
         uid: user.uid,
         email: user.email,
@@ -202,11 +201,11 @@ function kirimDepo() {
     })
     .then(() => {
         document.getElementById('loading').style.display = "none";
-        alert("BERHASIL TERKIRIM!\nSilakan cek Firebase Console Anda di folder 'topup'.");
+        alert("BERHASIL!\nData depo sudah masuk ke Firebase Console Anda.");
     })
     .catch((error) => {
         document.getElementById('loading').style.display = "none";
-        alert("GAGAL KIRIM: " + error.message + "\nPeriksa Rules di Firebase Console Anda!");
+        alert("GAGAL: " + error.message);
     });
 }
 
@@ -216,7 +215,7 @@ function buyInvest() {
         showDepo();
     } else {
         if (confirm("Beli paket seharga Rp 20.000?")) {
-            alert("Berhasil! Silahkan hubungi admin untuk aktivasi.");
+            alert("Aktivasi Berhasil! Silakan hubungi admin.");
         }
     }
 }
@@ -224,14 +223,14 @@ function buyInvest() {
 function login(){
     const email = document.getElementById('loginUser').value;
     const pass = document.getElementById('loginPass').value;
-    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Gagal Login: " + e.message));
+    auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Gagal Login"));
 }
 
 function register(){
     const email = document.getElementById('regUser').value;
     const pass = document.getElementById('regPass').value;
     if(pass.length < 6) return alert("Password minimal 6 angka");
-    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Sukses Daftar! Silakan Login."); showLogin(); });
+    auth.createUserWithEmailAndPassword(email, pass).then(() => { alert("Sukses Daftar"); showLogin(); });
 }
 
 function logout(){ auth.signOut().then(() => location.reload()); }
