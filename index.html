@@ -88,14 +88,17 @@ border-radius:50%;
 border:2px solid white;
 }
 
+/* BAGIAN SALDO (Ganti Halo) */
 #welcome{
 font-size:14px;
 font-weight:bold;
+color: cyan; /* Warna biru seperti email sebelumnya */
 }
 
+/* BAGIAN EMAIL */
 #emailText{
 font-size:11px;
-color: cyan;
+color: white; /* Ganti jadi warna putih */
 }
 
 #logoutBtn{
@@ -192,7 +195,7 @@ font-weight: bold;
         <div style="display:flex;align-items:center;gap:10px;">
             <img id="profilePic" src="https://i.imgur.com/8Km9tLL.png">
             <div>
-                <div id="welcome">Halo 👋</div>
+                <div id="welcome">Rp. 00.0</div> <!-- Teks Ganti Halo -->
                 <div id="emailText">Memuat email...</div>
             </div>
         </div>
@@ -252,30 +255,22 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-/* FUNGSI REGISTER */
 function register(){
     const email = document.getElementById('regUser').value;
     const pass = document.getElementById('regPass').value;
-
     if(pass.length !== 6){
         alert("Gagal: Password harus 6 character!");
         return;
     }
-
     isRegistering = true; 
     document.getElementById('loading').style.display = "block";
-
     auth.createUserWithEmailAndPassword(email, pass)
     .then(userCred => {
         db.ref("users/" + userCred.user.uid).set({ email: email });
-
         auth.signOut().then(() => {
             isRegistering = false; 
             document.getElementById('loading').style.display = "none";
-            
-            // PERUBAHAN DISINI: Pesan diperingkas sesuai permintaan
             alert("Registrasi Berhasil!"); 
-            
             showLogin();
             document.getElementById('regUser').value = "";
             document.getElementById('regPass').value = "";
@@ -288,11 +283,9 @@ function register(){
     });
 }
 
-/* FUNGSI LOGIN */
 function login(){
     const email = document.getElementById('loginUser').value;
     const pass = document.getElementById('loginPass').value;
-
     document.getElementById('loading').style.display = "block";
     auth.signInWithEmailAndPassword(email, pass)
     .then(() => {
@@ -304,7 +297,6 @@ function login(){
     });
 }
 
-/* FUNGSI LOGOUT */
 function logout(){
     auth.signOut().then(() => {
         location.reload();
@@ -321,7 +313,6 @@ function showRegister(){
     document.getElementById('registerBox').style.display = "block";
 }
 
-/* MENU NAVIGASI */
 function clearMenu(){
     document.getElementById('mNews').classList.remove('active');
     document.getElementById('mQuiz').classList.remove('active');
