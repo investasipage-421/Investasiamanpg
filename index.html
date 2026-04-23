@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investasi Page421 - Fixed Registration</title>
+    <title>Investasi Page421 - Final Fixed</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
         html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
 
         /* BOX LOGIN & REGISTER */
-        .box{background:#111;padding:25px;border-radius:15px;width:90%;max-width:350px;text-align:center;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border: 1px solid #333;}
+        .box{background:#111;padding:25px;border-radius:15px;width:90%;max-width:350px;text-align:center;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border: 1px solid #333; z-index: 100;}
         input{width:100%;padding:12px;margin:8px 0;border:none;border-radius:8px;background:#222;color:white;outline:none;}
         button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px;font-weight:bold;background:white;color:black;cursor:pointer;}
 
-        /* DASHBOARD */
+        /* DASHBOARD UI */
         #dashboard{display:none;height:100%;}
         #topBar{display:flex;justify-content:space-between;align-items:center;padding:15px;background:#111;border-bottom:1px solid #333;}
         #welcome{font-size:18px;font-weight:bold;color: cyan;}
@@ -47,7 +47,7 @@
 </head>
 <body>
 
-<!-- LOGIN & REGISTER -->
+<!-- LOGIN BOX -->
 <div class="box" id="loginBox">
     <h2>Login</h2>
     <input id="loginUser" type="email" placeholder="Email">
@@ -56,6 +56,7 @@
     <p style="margin-top:15px; font-size:13px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;font-weight:bold;">Registrasi</span></p>
 </div>
 
+<!-- REGISTER BOX -->
 <div class="box" id="registerBox" style="display:none;">
     <h2>Registrasi</h2>
     <input id="regUser" type="email" placeholder="Email Baru">
@@ -64,7 +65,7 @@
     <p style="margin-top:15px; font-size:13px;">Sudah punya akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;font-weight:bold;">Login</span></p>
 </div>
 
-<!-- DASHBOARD UI -->
+<!-- DASHBOARD UI (Sembunyi secara default) -->
 <div id="dashboard">
     <div id="topBar">
         <div style="display:flex;align-items:center;gap:10px;">
@@ -151,16 +152,18 @@ const db = firebase.database();
 let totalDepoSelesai = 0;
 let historyInvestasi = [];
 let currentBalance = 0;
+let sedangDaftar = false; // Flag penghalang agar dashboard tidak muncul saat daftar
 
-// 2. CEK LOGIN USER
+// 2. CEK LOGIN USER (LOGIKA UTAMA)
 auth.onAuthStateChanged(user => {
-    if (user) {
+    // Dashboard hanya muncul jika ADA user DAN TIDAK sedang dalam proses daftar
+    if (user && !sedangDaftar) {
         document.getElementById('loginBox').style.display = "none";
         document.getElementById('registerBox').style.display = "none";
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Ambil Data Depo secara Realtime
+        // Ambil Data Depo
         db.ref("topup").on("value", snap => {
             totalDepoSelesai = 0;
             let pending = false;
@@ -176,19 +179,53 @@ auth.onAuthStateChanged(user => {
             hitungSistem(); 
         });
 
-        // Ambil Data Investasi secara Realtime
+        // Ambil Data Investasi
         db.ref("invest_history/" + user.uid).on("value", snap => {
             historyInvestasi = [];
             snap.forEach(c => { historyInvestasi.push(c.val()); });
             hitungSistem(); 
         });
     } else {
-        document.getElementById('loginBox').style.display = "block";
-        document.getElementById('dashboard').style.display = "none";
+        // Jika sedang daftar, JANGAN paksa pindah ke loginBox agar alert sukses bisa terlihat tenang
+        if (!sedangDaftar) {
+            document.getElementById('loginBox').style.display = "block";
+            document.getElementById('dashboard').style.display = "none";
+        }
     }
 });
 
-// 3. LOGIKA HITUNG SALDO
+// 3. FUNGSI REGISTRASI (DIPERBAIKI)
+function register() { 
+    const email = document.getElementById('regUser').value;
+    const pass = document.getElementById('regPass').value;
+
+    if(!email || pass.length < 6) return alert("Email valid & Password Minimal 6 Karakter!");
+
+    // AKTIFKAN PENGHALANG
+    sedangDaftar = true; 
+
+    auth.createUserWithEmailAndPassword(email, pass)
+    .then(() => {
+        // Firebase otomatis login, langsung kita keluarkan/logout
+        return auth.signOut();
+    })
+    .then(() => {
+        // Munculkan pesan sukses
+        alert("Berhasil Daftar! Silakan Login menggunakan akun baru Anda.");
+        
+        // Selesai alert, baru matikan penghalang dan pindah halaman
+        sedangDaftar = false; 
+        document.getElementById('regUser').value = "";
+        document.getElementById('regPass').value = "";
+        showLogin(); 
+    })
+    .catch(e => {
+        sedangDaftar = false; 
+        alert("Gagal Registrasi: " + e.message);
+    }); 
+}
+
+// 4. LOGIKA SALDO
 function hitungSistem() {
     let totalBiayaBeli = 0;
     let totalProfitLaba = 0;
@@ -213,65 +250,28 @@ function hitungSistem() {
     document.getElementById('checkPaketA').style.display = adaAktif ? "inline" : "none";
     document.getElementById('btnBeliA').disabled = adaAktif;
     document.getElementById('btnBeliA').innerText = adaAktif ? "PAKET AKTIF" : "BELI SEKARANG";
-    if(!adaAktif) document.getElementById('timerInfo').innerText = "";
 }
 
-// 4. FUNGSI REGISTRASI (UPDATE: LOGOUT SETELAH DAFTAR)
-function register() { 
-    const email = document.getElementById('regUser').value;
-    const pass = document.getElementById('regPass').value;
-
-    if(pass.length < 6) return alert("Password Minimal 6 Karakter!");
-
-    auth.createUserWithEmailAndPassword(email, pass)
-    .then(() => {
-        // Setelah berhasil buat akun, Firebase otomatis login. 
-        // Kita paksa logout supaya user harus login manual.
-        return auth.signOut();
-    })
-    .then(() => {
-        alert("Berhasil Daftar! Silakan Login menggunakan akun baru Anda.");
-        // Kosongkan input
-        document.getElementById('regUser').value = "";
-        document.getElementById('regPass').value = "";
-        // Pindah ke tampilan login
-        showLogin();
-    })
-    .catch(e => {
-        alert("Gagal Registrasi: " + e.message);
-    }); 
-}
-
-// 5. FUNGSI LAINNYA
+// 5. NAVIGASI
 function login() { 
     auth.signInWithEmailAndPassword(loginUser.value, loginPass.value).catch(e => alert("Login Gagal: " + e.message)); 
 }
-
-function buyInvest() {
-    const user = auth.currentUser;
-    if (currentBalance < 20000) return alert("Saldo tidak cukup! Minimal saldo harus Rp 20.000");
-    if(confirm("Beli paket seharga Rp 20.000?")){
-        db.ref("invest_history/" + user.uid).push({
-            tanggalBeli: Date.now(),
-            harga: 20000
-        }).then(() => alert("Pembelian Berhasil!")).catch(err => alert(err.message));
-    }
-}
-
-function kirimDepo() {
-    const user = auth.currentUser;
-    db.ref("topup").push({
-        uid: user.uid,
-        email: user.email,
-        nominal: 50000,
-        status: "pending"
-    });
-    alert("Permintaan Depo Terkirim!");
-}
-
 function logout() { auth.signOut().then(() => location.reload()); }
 function showRegister() { loginBox.style.display="none"; registerBox.style.display="block"; }
 function showLogin() { registerBox.style.display="none"; loginBox.style.display="block"; }
+
+function buyInvest() {
+    const user = auth.currentUser;
+    if (currentBalance < 20000) return alert("Saldo tidak cukup!");
+    if(confirm("Beli paket seharga Rp 20.000?")){
+        db.ref("invest_history/" + user.uid).push({ tanggalBeli: Date.now(), harga: 20000 })
+        .then(() => alert("Pembelian Berhasil!"));
+    }
+}
+function kirimDepo() {
+    db.ref("topup").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: 50000, status: "pending" });
+    alert("Permintaan Depo Terkirim!");
+}
 
 function clear() { 
     newsBox.style.display=quizBox.style.display=investBox.style.display=depoBox.style.display="none"; 
