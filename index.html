@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investasi Page421 - Fixed</title>
+    <title>Investasi Page421 - Fixed Registration</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
         html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
@@ -135,7 +135,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
-// 1. KONFIGURASI FIREBASE (GANTI DENGAN PUNYA ANDA)
+// 1. KONFIGURASI FIREBASE
 const firebaseConfig = {
     apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
     authDomain: "page421-b9a6c.firebaseapp.com",
@@ -173,14 +173,14 @@ auth.onAuthStateChanged(user => {
             });
             document.getElementById('statusTopup').style.display = pending ? "block" : "none";
             document.getElementById('btnKirimDepo').disabled = pending;
-            hitungSistem(); // Hitung ulang saldo setiap ada perubahan depo
+            hitungSistem(); 
         });
 
         // Ambil Data Investasi secara Realtime
         db.ref("invest_history/" + user.uid).on("value", snap => {
             historyInvestasi = [];
             snap.forEach(c => { historyInvestasi.push(c.val()); });
-            hitungSistem(); // Hitung ulang saldo setiap ada pembelian baru
+            hitungSistem(); 
         });
     } else {
         document.getElementById('loginBox').style.display = "block";
@@ -188,7 +188,7 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-// 3. LOGIKA HITUNG SALDO (RUMUS UTAMA)
+// 3. LOGIKA HITUNG SALDO
 function hitungSistem() {
     let totalBiayaBeli = 0;
     let totalProfitLaba = 0;
@@ -197,26 +197,18 @@ function hitungSistem() {
 
     historyInvestasi.forEach(inv => {
         const harga = inv.harga || 20000;
-        totalBiayaBeli += harga; // Saldo berkurang sebesar harga paket
-        
-        // Hitung Profit Harian
+        totalBiayaBeli += harga;
         let diffHari = Math.floor((sekarang - inv.tanggalBeli) / (1000 * 60 * 60 * 24));
         if (diffHari > 60) diffHari = 60; 
         if (diffHari < 0) diffHari = 0;
-        
-        totalProfitLaba += (diffHari * 500); // Laba bertambah Rp 500/hari
-
-        // Cek jika masih aktif (durasi 60 hari)
+        totalProfitLaba += (diffHari * 500);
         if ((sekarang - inv.tanggalBeli) < (60 * 86400000)) {
             adaAktif = true;
             document.getElementById('timerInfo').innerText = "Paket Aktif: " + (60 - diffHari) + " Hari lagi";
         }
     });
 
-    // RUMUS: SALDO = (DEPO SELESAI) - (TOTAL HARGA BELI) + (TOTAL PROFIT)
     currentBalance = totalDepoSelesai - totalBiayaBeli + totalProfitLaba;
-    
-    // Update Tampilan UI
     document.getElementById('welcome').innerText = "Rp. " + currentBalance.toLocaleString('id-ID');
     document.getElementById('checkPaketA').style.display = adaAktif ? "inline" : "none";
     document.getElementById('btnBeliA').disabled = adaAktif;
@@ -224,22 +216,48 @@ function hitungSistem() {
     if(!adaAktif) document.getElementById('timerInfo').innerText = "";
 }
 
-// 4. FUNGSI BELI PAKET
+// 4. FUNGSI REGISTRASI (UPDATE: LOGOUT SETELAH DAFTAR)
+function register() { 
+    const email = document.getElementById('regUser').value;
+    const pass = document.getElementById('regPass').value;
+
+    if(pass.length < 6) return alert("Password Minimal 6 Karakter!");
+
+    auth.createUserWithEmailAndPassword(email, pass)
+    .then(() => {
+        // Setelah berhasil buat akun, Firebase otomatis login. 
+        // Kita paksa logout supaya user harus login manual.
+        return auth.signOut();
+    })
+    .then(() => {
+        alert("Berhasil Daftar! Silakan Login menggunakan akun baru Anda.");
+        // Kosongkan input
+        document.getElementById('regUser').value = "";
+        document.getElementById('regPass').value = "";
+        // Pindah ke tampilan login
+        showLogin();
+    })
+    .catch(e => {
+        alert("Gagal Registrasi: " + e.message);
+    }); 
+}
+
+// 5. FUNGSI LAINNYA
+function login() { 
+    auth.signInWithEmailAndPassword(loginUser.value, loginPass.value).catch(e => alert("Login Gagal: " + e.message)); 
+}
+
 function buyInvest() {
     const user = auth.currentUser;
     if (currentBalance < 20000) return alert("Saldo tidak cukup! Minimal saldo harus Rp 20.000");
-
-    if(confirm("Beli paket seharga Rp 20.000? Saldo Anda akan langsung terpotong.")){
+    if(confirm("Beli paket seharga Rp 20.000?")){
         db.ref("invest_history/" + user.uid).push({
             tanggalBeli: Date.now(),
             harga: 20000
-        }).then(() => {
-            alert("Pembelian Berhasil!");
-        }).catch(err => alert("Gagal menulis ke database: " + err.message));
+        }).then(() => alert("Pembelian Berhasil!")).catch(err => alert(err.message));
     }
 }
 
-// 5. FUNGSI DEPO
 function kirimDepo() {
     const user = auth.currentUser;
     db.ref("topup").push({
@@ -248,20 +266,9 @@ function kirimDepo() {
         nominal: 50000,
         status: "pending"
     });
-    alert("Permintaan Depo Terkirim! Hubungi Admin untuk konfirmasi.");
+    alert("Permintaan Depo Terkirim!");
 }
 
-// NAVIGASI & AUTH UMUM
-function login() { 
-    auth.signInWithEmailAndPassword(loginUser.value, loginPass.value).catch(e => alert("Login Gagal: " + e.message)); 
-}
-function register() { 
-    if(regPass.value.length < 6) return alert("Password Minimal 6 Karakter!");
-    auth.createUserWithEmailAndPassword(regUser.value, regPass.value).then(() => {
-        alert("Berhasil Daftar! Silakan Login.");
-        showLogin();
-    }).catch(e => alert(e.message)); 
-}
 function logout() { auth.signOut().then(() => location.reload()); }
 function showRegister() { loginBox.style.display="none"; registerBox.style.display="block"; }
 function showLogin() { registerBox.style.display="none"; loginBox.style.display="block"; }
