@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investasi Page421 - Final Fixed</title>
+    <title>Investasi Page421</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
         html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
@@ -47,7 +47,7 @@
 </head>
 <body>
 
-<!-- LOGIN BOX -->
+<!-- BOX LOGIN -->
 <div class="box" id="loginBox">
     <h2>Login</h2>
     <input id="loginUser" type="email" placeholder="Email">
@@ -56,7 +56,7 @@
     <p style="margin-top:15px; font-size:13px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;font-weight:bold;">Registrasi</span></p>
 </div>
 
-<!-- REGISTER BOX -->
+<!-- BOX REGISTRASI -->
 <div class="box" id="registerBox" style="display:none;">
     <h2>Registrasi</h2>
     <input id="regUser" type="email" placeholder="Email Baru">
@@ -65,14 +65,14 @@
     <p style="margin-top:15px; font-size:13px;">Sudah punya akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;font-weight:bold;">Login</span></p>
 </div>
 
-<!-- DASHBOARD UI (Sembunyi secara default) -->
+<!-- DASHBOARD UI -->
 <div id="dashboard">
     <div id="topBar">
         <div style="display:flex;align-items:center;gap:10px;">
-            <img src="https://i.imgur.com/8Km9tLL.png" width="40">
+            <img src="https://i.imgur.com/8Km9tLL.png" width="40" style="border-radius: 50%;">
             <div>
                 <div id="welcome">Rp. 0</div>
-                <div id="emailText">User@mail.com</div>
+                <div id="emailText">Memuat...</div>
             </div>
         </div>
         <button id="logoutBtn" onclick="logout()">Logout</button>
@@ -152,18 +152,20 @@ const db = firebase.database();
 let totalDepoSelesai = 0;
 let historyInvestasi = [];
 let currentBalance = 0;
-let sedangDaftar = false; // Flag penghalang agar dashboard tidak muncul saat daftar
+let sedangDaftar = false; 
 
-// 2. CEK LOGIN USER (LOGIKA UTAMA)
+// 2. CEK STATUS LOGIN (LOGIKA UTAMA)
 auth.onAuthStateChanged(user => {
-    // Dashboard hanya muncul jika ADA user DAN TIDAK sedang dalam proses daftar
-    if (user && !sedangDaftar) {
+    // Jika sedang daftar, JANGAN jalankan logika dashboard
+    if (sedangDaftar) return;
+
+    if (user) {
         document.getElementById('loginBox').style.display = "none";
         document.getElementById('registerBox').style.display = "none";
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Ambil Data Depo
+        // Load Data Saldo & Investasi
         db.ref("topup").on("value", snap => {
             totalDepoSelesai = 0;
             let pending = false;
@@ -179,18 +181,15 @@ auth.onAuthStateChanged(user => {
             hitungSistem(); 
         });
 
-        // Ambil Data Investasi
         db.ref("invest_history/" + user.uid).on("value", snap => {
             historyInvestasi = [];
             snap.forEach(c => { historyInvestasi.push(c.val()); });
             hitungSistem(); 
         });
     } else {
-        // Jika sedang daftar, JANGAN paksa pindah ke loginBox agar alert sukses bisa terlihat tenang
-        if (!sedangDaftar) {
-            document.getElementById('loginBox').style.display = "block";
-            document.getElementById('dashboard').style.display = "none";
-        }
+        document.getElementById('dashboard').style.display = "none";
+        // Pastikan kembali ke login jika tidak ada user
+        if(!sedangDaftar) document.getElementById('loginBox').style.display = "block";
     }
 });
 
@@ -203,25 +202,23 @@ function register() {
 
     // AKTIFKAN PENGHALANG
     sedangDaftar = true; 
+    document.getElementById('dashboard').style.display = "none";
 
     auth.createUserWithEmailAndPassword(email, pass)
     .then(() => {
-        // Firebase otomatis login, langsung kita keluarkan/logout
+        // Langsung Logout agar tidak masuk ke dashboard
         return auth.signOut();
     })
     .then(() => {
-        // Munculkan pesan sukses
-        alert("Berhasil Daftar! Silakan Login menggunakan akun baru Anda.");
-        
-        // Selesai alert, baru matikan penghalang dan pindah halaman
-        sedangDaftar = false; 
+        alert("Registrasi Berhasil! Silakan Login.");
+        sedangDaftar = false; // Matikan penghalang setelah logout selesai
         document.getElementById('regUser').value = "";
         document.getElementById('regPass').value = "";
         showLogin(); 
     })
     .catch(e => {
         sedangDaftar = false; 
-        alert("Gagal Registrasi: " + e.message);
+        alert("Gagal: " + e.message);
     }); 
 }
 
@@ -252,19 +249,26 @@ function hitungSistem() {
     document.getElementById('btnBeliA').innerText = adaAktif ? "PAKET AKTIF" : "BELI SEKARANG";
 }
 
-// 5. NAVIGASI
+// 5. FUNGSI UI & NAVIGASI
 function login() { 
-    auth.signInWithEmailAndPassword(loginUser.value, loginPass.value).catch(e => alert("Login Gagal: " + e.message)); 
+    const u = document.getElementById('loginUser').value;
+    const p = document.getElementById('loginPass').value;
+    auth.signInWithEmailAndPassword(u, p).catch(e => alert("Login Gagal: " + e.message)); 
 }
 function logout() { auth.signOut().then(() => location.reload()); }
-function showRegister() { loginBox.style.display="none"; registerBox.style.display="block"; }
-function showLogin() { registerBox.style.display="none"; loginBox.style.display="block"; }
+function showRegister() { 
+    document.getElementById('loginBox').style.display="none"; 
+    document.getElementById('registerBox').style.display="block"; 
+}
+function showLogin() { 
+    document.getElementById('registerBox').style.display="none"; 
+    document.getElementById('loginBox').style.display="block"; 
+}
 
 function buyInvest() {
-    const user = auth.currentUser;
     if (currentBalance < 20000) return alert("Saldo tidak cukup!");
     if(confirm("Beli paket seharga Rp 20.000?")){
-        db.ref("invest_history/" + user.uid).push({ tanggalBeli: Date.now(), harga: 20000 })
+        db.ref("invest_history/" + auth.currentUser.uid).push({ tanggalBeli: Date.now(), harga: 20000 })
         .then(() => alert("Pembelian Berhasil!"));
     }
 }
@@ -273,14 +277,20 @@ function kirimDepo() {
     alert("Permintaan Depo Terkirim!");
 }
 
-function clear() { 
-    newsBox.style.display=quizBox.style.display=investBox.style.display=depoBox.style.display="none"; 
-    mNews.classList.remove('active'); mQuiz.classList.remove('active'); mInvest.classList.remove('active'); mDepo.classList.remove('active');
+function clearMenu() { 
+    document.getElementById('newsBox').style.display="none";
+    document.getElementById('quizBox').style.display="none";
+    document.getElementById('investBox').style.display="none";
+    document.getElementById('depoBox').style.display="none";
+    document.getElementById('mNews').classList.remove('active'); 
+    document.getElementById('mQuiz').classList.remove('active'); 
+    document.getElementById('mInvest').classList.remove('active'); 
+    document.getElementById('mDepo').classList.remove('active');
 }
-function showNews() { clear(); newsBox.style.display="block"; mNews.classList.add('active'); }
-function showQuiz() { clear(); quizBox.style.display="block"; mQuiz.classList.add('active'); }
-function showInvest() { clear(); investBox.style.display="block"; mInvest.classList.add('active'); }
-function showDepo() { clear(); depoBox.style.display="block"; mDepo.classList.add('active'); }
+function showNews() { clearMenu(); document.getElementById('newsBox').style.display="block"; document.getElementById('mNews').classList.add('active'); }
+function showQuiz() { clearMenu(); document.getElementById('quizBox').style.display="block"; document.getElementById('mQuiz').classList.add('active'); }
+function showInvest() { clearMenu(); document.getElementById('investBox').style.display="block"; document.getElementById('mInvest').classList.add('active'); }
+function showDepo() { clearMenu(); document.getElementById('depoBox').style.display="block"; document.getElementById('mDepo').classList.add('active'); }
 </script>
 </body>
 </html>
