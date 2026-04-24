@@ -10,7 +10,7 @@
 
         /* BOX LOGIN & REGISTER */
         .box{background:#111;padding:25px;border-radius:15px;width:90%;max-width:350px;text-align:center;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border: 1px solid #333; z-index: 100;}
-        input{width:100%;padding:12px;margin:8px 0;border:none;border-radius:8px;background:#222;color:white;outline:none;}
+        input:not([type="file"]){width:100%;padding:12px;margin:8px 0;border:none;border-radius:8px;background:#222;color:white;outline:none;}
         button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px;font-weight:bold;background:white;color:black;cursor:pointer;}
 
         /* DASHBOARD UI */
@@ -21,9 +21,9 @@
         #logoutBtn{font-size:11px;padding:5px 10px;border:none;border-radius:5px;background:white;color:black;cursor:pointer;font-weight:bold;}
         
         /* Profile Image Style */
-        .profile-container { position: relative; cursor: pointer; }
-        .profile-container img { border-radius: 50%; width: 45px; height: 45px; object-fit: cover; border: 2px solid #333; }
-        .profile-container:hover::after { content: "Edit"; position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.6); font-size: 9px; text-align: center; border-bottom-left-radius: 50%; border-bottom-right-radius: 50%; }
+        .profile-container { position: relative; cursor: pointer; width: 45px; height: 45px; }
+        .profile-container img { border-radius: 50%; width: 100%; height: 100%; object-fit: cover; border: 2px solid cyan; }
+        .profile-container::after { content: "+"; position: absolute; bottom: 0; right: 0; background: cyan; color: black; width: 15px; height: 15px; border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 
         /* SIDEBAR */
         #sidebar{position:fixed;left:0;top:75px;width:80px;background:#111;height:100%;padding-top:20px;border-right:1px solid #333;display:flex;flex-direction:column;align-items:center;gap:15px;}
@@ -74,9 +74,13 @@
 <div id="dashboard">
     <div id="topBar">
         <div style="display:flex;align-items:center;gap:10px;">
-            <div class="profile-container" onclick="changeProfilePic()">
+            <!-- Klik Foto Ini untuk Buka Galeri -->
+            <div class="profile-container" onclick="openGallery()">
                 <img id="userImg" src="https://i.imgur.com/8Km9tLL.png">
             </div>
+            <!-- Input File Tersembunyi -->
+            <input type="file" id="fileInput" style="display:none;" accept="image/*" onchange="uploadFoto()">
+            
             <div>
                 <div id="welcome">Rp. 0</div>
                 <div id="emailText">Memuat...</div>
@@ -105,19 +109,11 @@
     </div>
 
     <div id="content">
-        <div id="newsBox" class="card">Selamat Datang di Investasi Page421! <br><br> <span style="font-weight:normal; font-size:12px;">Tips: Klik foto profil Anda untuk menggantinya.</span></div>
-
-        <div id="quizBox" class="card" style="display:none;">
-            <h3>Daftar Soal</h3>
-            <p style="font-weight:normal; font-size:14px; margin-top:10px;">Materi soal akan segera diupdate oleh admin.</p>
-        </div>
-
+        <div id="newsBox" class="card">Selamat Datang di Investasi Page421!<br><small style="font-weight:normal;">Klik foto profil untuk ganti foto dari galeri.</small></div>
+        <div id="quizBox" class="card" style="display:none;"><h3>Daftar Soal</h3><p style="font-weight:normal; font-size:14px;">Materi soal akan segera diupdate.</p></div>
         <div id="investBox" style="display:none;">
             <div class="invest-card">
-                <div class="invest-title">
-                    <span>Paket Investasi A</span>
-                    <span id="checkPaketA" style="display:none; color:#00e5ff;">✓ Aktif</span>
-                </div>
+                <div class="invest-title"><span>Paket Investasi A</span><span id="checkPaketA" style="display:none; color:#00e5ff;">✓ Aktif</span></div>
                 <div class="invest-detail">💰 Harga: Rp 20.000</div>
                 <div class="invest-detail">📈 Profit: Rp 500 / Hari</div>
                 <div class="invest-detail">📅 Durasi: 60 Hari</div>
@@ -125,7 +121,6 @@
                 <button id="btnBeliA" class="btn-invest" onclick="buyInvest()">BELI SEKARANG</button>
             </div>
         </div>
-
         <div id="depoBox" style="display:none;" class="card">
             <div class="depo-container">
                 <p style="color:black">Nominal Depo:</p>
@@ -137,13 +132,11 @@
     </div>
 </div>
 
-<!-- FIREBASE SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
-// 1. KONFIGURASI FIREBASE
 const firebaseConfig = {
     apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
     authDomain: "page421-b9a6c.firebaseapp.com",
@@ -155,34 +148,24 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-// Variabel Global
-let totalDepoSelesai = 0;
-let historyInvestasi = [];
-let currentBalance = 0;
-let sedangDaftar = false; 
+let totalDepoSelesai = 0, historyInvestasi = [], currentBalance = 0, sedangDaftar = false;
 
-// 2. CEK STATUS LOGIN
+// CEK LOGIN & AMBIL FOTO PROFIL
 auth.onAuthStateChanged(user => {
     if (sedangDaftar) return;
-
     if (user) {
         document.getElementById('loginBox').style.display = "none";
         document.getElementById('registerBox').style.display = "none";
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
 
-        // Ambil Foto Profil dari Database
-        db.ref("users/" + user.uid + "/profile").on("value", snap => {
-            const data = snap.val();
-            if (data && data.photo) {
-                document.getElementById('userImg').src = data.photo;
-            }
+        // AMBIL FOTO DARI DATABASE (PERSISTENCE)
+        db.ref("users/" + user.uid + "/photo").on("value", snap => {
+            if (snap.val()) document.getElementById('userImg').src = snap.val();
         });
 
-        // Load Data Saldo & Investasi
         db.ref("topup").on("value", snap => {
-            totalDepoSelesai = 0;
-            let pending = false;
+            totalDepoSelesai = 0; let pending = false;
             snap.forEach(c => {
                 const d = c.val();
                 if(d.uid === user.uid) {
@@ -206,69 +189,53 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-// 3. FUNGSI GANTI FOTO PROFIL
-function changeProfilePic() {
-    const newPicUrl = prompt("Masukkan Link/URL Foto Profil Baru (Contoh: https://link-foto.com/gambar.jpg):");
-    
-    if (newPicUrl && newPicUrl.trim() !== "") {
+// FUNGSI GANTI FOTO (BUKA GALERI)
+function openGallery() {
+    document.getElementById('fileInput').click();
+}
+
+// FUNGSI UPLOAD KE DATABASE
+function uploadFoto() {
+    const file = document.getElementById('fileInput').files[0];
+    if (!file) return;
+
+    // Perkecil ukuran (Max 500KB agar database tidak berat)
+    if (file.size > 500000) return alert("File terlalu besar! Gunakan foto di bawah 500KB.");
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const base64Image = e.target.result;
         const user = auth.currentUser;
-        db.ref("users/" + user.uid + "/profile").update({
-            photo: newPicUrl
-        }).then(() => {
-            alert("Foto Profil Berhasil Diperbarui!");
-        }).catch(e => {
-            alert("Gagal memperbarui foto: " + e.message);
-        });
-    }
+        
+        // Simpan ke Firebase
+        db.ref("users/" + user.uid).update({
+            photo: base64Image
+        }).then(() => alert("Foto berhasil diperbarui!"));
+    };
+    reader.readAsDataURL(file);
 }
 
-// 4. FUNGSI REGISTRASI
 function register() { 
-    const email = document.getElementById('regUser').value;
-    const pass = document.getElementById('regPass').value;
-
+    const email = document.getElementById('regUser').value, pass = document.getElementById('regPass').value;
     if(!email || pass.length < 6) return alert("Email valid & Password Minimal 6 Karakter!");
-
     sedangDaftar = true; 
-    document.getElementById('dashboard').style.display = "none";
-
-    auth.createUserWithEmailAndPassword(email, pass)
-    .then(() => {
-        return auth.signOut();
-    })
-    .then(() => {
-        alert("Registrasi Berhasil! Silakan Login.");
-        sedangDaftar = false; 
-        document.getElementById('regUser').value = "";
-        document.getElementById('regPass').value = "";
-        showLogin(); 
-    })
-    .catch(e => {
-        sedangDaftar = false; 
-        alert("Gagal: " + e.message);
-    }); 
+    auth.createUserWithEmailAndPassword(email, pass).then(() => auth.signOut())
+    .then(() => { alert("Registrasi Berhasil! Silakan Login."); sedangDaftar = false; showLogin(); })
+    .catch(e => { sedangDaftar = false; alert(e.message); }); 
 }
 
-// 5. LOGIKA SALDO
 function hitungSistem() {
-    let totalBiayaBeli = 0;
-    let totalProfitLaba = 0;
-    let adaAktif = false;
-    const sekarang = Date.now();
-
+    let totalBiayaBeli = 0, totalProfitLaba = 0, adaAktif = false, sekarang = Date.now();
     historyInvestasi.forEach(inv => {
-        const harga = inv.harga || 20000;
-        totalBiayaBeli += harga;
-        let diffHari = Math.floor((sekarang - inv.tanggalBeli) / (1000 * 60 * 60 * 24));
-        if (diffHari > 60) diffHari = 60; 
-        if (diffHari < 0) diffHari = 0;
+        totalBiayaBeli += (inv.harga || 20000);
+        let diffHari = Math.floor((sekarang - inv.tanggalBeli) / 86400000);
+        if (diffHari > 60) diffHari = 60;
         totalProfitLaba += (diffHari * 500);
-        if ((sekarang - inv.tanggalBeli) < (60 * 86400000)) {
+        if ((sekarang - inv.tanggalBeli) < 5184000000) {
             adaAktif = true;
             document.getElementById('timerInfo').innerText = "Paket Aktif: " + (60 - diffHari) + " Hari lagi";
         }
     });
-
     currentBalance = totalDepoSelesai - totalBiayaBeli + totalProfitLaba;
     document.getElementById('welcome').innerText = "Rp. " + currentBalance.toLocaleString('id-ID');
     document.getElementById('checkPaketA').style.display = adaAktif ? "inline" : "none";
@@ -276,43 +243,26 @@ function hitungSistem() {
     document.getElementById('btnBeliA').innerText = adaAktif ? "PAKET AKTIF" : "BELI SEKARANG";
 }
 
-// 6. FUNGSI UI & NAVIGASI
 function login() { 
-    const u = document.getElementById('loginUser').value;
-    const p = document.getElementById('loginPass').value;
-    auth.signInWithEmailAndPassword(u, p).catch(e => alert("Login Gagal: " + e.message)); 
+    auth.signInWithEmailAndPassword(document.getElementById('loginUser').value, document.getElementById('loginPass').value)
+    .catch(e => alert("Login Gagal: " + e.message)); 
 }
 function logout() { auth.signOut().then(() => location.reload()); }
-function showRegister() { 
-    document.getElementById('loginBox').style.display="none"; 
-    document.getElementById('registerBox').style.display="block"; 
-}
-function showLogin() { 
-    document.getElementById('registerBox').style.display="none"; 
-    document.getElementById('loginBox').style.display="block"; 
-}
-
+function showRegister() { document.getElementById('loginBox').style.display="none"; document.getElementById('registerBox').style.display="block"; }
+function showLogin() { document.getElementById('registerBox').style.display="none"; document.getElementById('loginBox').style.display="block"; }
 function buyInvest() {
     if (currentBalance < 20000) return alert("Saldo tidak cukup!");
     if(confirm("Beli paket seharga Rp 20.000?")){
-        db.ref("invest_history/" + auth.currentUser.uid).push({ tanggalBeli: Date.now(), harga: 20000 })
-        .then(() => alert("Pembelian Berhasil!"));
+        db.ref("invest_history/" + auth.currentUser.uid).push({ tanggalBeli: Date.now(), harga: 20000 }).then(() => alert("Berhasil!"));
     }
 }
 function kirimDepo() {
     db.ref("topup").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: 50000, status: "pending" });
-    alert("Permintaan Depo Terkirim!");
+    alert("Request Terkirim!");
 }
-
 function clearMenu() { 
-    document.getElementById('newsBox').style.display="none";
-    document.getElementById('quizBox').style.display="none";
-    document.getElementById('investBox').style.display="none";
-    document.getElementById('depoBox').style.display="none";
-    document.getElementById('mNews').classList.remove('active'); 
-    document.getElementById('mQuiz').classList.remove('active'); 
-    document.getElementById('mInvest').classList.remove('active'); 
-    document.getElementById('mDepo').classList.remove('active');
+    document.querySelectorAll('.card, #investBox').forEach(el => el.style.display="none");
+    document.querySelectorAll('.menuItem').forEach(el => el.classList.remove('active'));
 }
 function showNews() { clearMenu(); document.getElementById('newsBox').style.display="block"; document.getElementById('mNews').classList.add('active'); }
 function showQuiz() { clearMenu(); document.getElementById('quizBox').style.display="block"; document.getElementById('mQuiz').classList.add('active'); }
