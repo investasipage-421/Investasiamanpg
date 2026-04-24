@@ -8,7 +8,7 @@
         *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
         html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
 
-        /* STYLE LOGO SVG (PERSIS GAMBAR) */
+        /* STYLE LOGO SVG */
         .logo-wrapper {
             width: 100px;
             height: 100px;
@@ -57,10 +57,13 @@
         .btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 15px; cursor: pointer; }
         .btn-invest:disabled { background: #333; color: #666; cursor: not-allowed; }
 
-        /* DEPO BOX */
+        /* DEPO & TARIK BOX */
         .depo-container { background: #f1f1f1; border-radius: 15px; padding: 25px; text-align: center; border: 2px dashed #00b8d4; }
         .btn-depo { width: 100%; padding: 15px; background: #000; color: #00e5ff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        #statusTopup { margin-top: 10px; font-size: 12px; color: #856404; background: #fff3cd; padding: 10px; border-radius: 5px; display: none; }
+        .btn-depo:disabled { background: #ccc; color: #666; cursor: not-allowed; }
+        #statusTopup, #statusTarik { margin-top: 10px; font-size: 12px; padding: 10px; border-radius: 5px; display: none; }
+        #statusTopup { color: #856404; background: #fff3cd; }
+        #statusTarik { color: #721c24; background: #f8d7da; }
     </style>
 </head>
 <body>
@@ -130,6 +133,10 @@
             <img src="https://img.icons8.com/color/48/request-money.png">
             <span>Depo</span>
         </div>
+        <div class="menuItem" id="mTarik" onclick="showTarik()">
+            <img src="https://img.icons8.com/color/48/atm.png">
+            <span>Tarik</span>
+        </div>
     </div>
 
     <div id="content">
@@ -162,6 +169,16 @@
                 <div id="statusTopup">Menunggu Konfirmasi Admin...</div>
             </div>
         </div>
+
+        <!-- MENU PENARIKAN -->
+        <div id="tarikBox" style="display:none;" class="card">
+            <div class="depo-container" style="border-color: #ff4757;">
+                <p style="color:black">Nominal Penarikan:</p>
+                <h1 style="color:black; margin:10px 0;">Rp 50.000</h1>
+                <button id="btnKirimTarik" class="btn-depo" style="background:#ff4757; color:white;" onclick="kirimTarik()">REQUEST TARIK SEKARANG</button>
+                <div id="statusTarik">Menunggu Konfirmasi Admin...</div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -181,7 +198,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-let totalDepoSelesai = 0, historyInvestasi = [], currentBalance = 0, sedangDaftar = false;
+let totalDepoSelesai = 0, totalTarikSelesai = 0, historyInvestasi = [], currentBalance = 0, sedangDaftar = false;
 
 // AUTH & PERSISTENCE LOAD
 auth.onAuthStateChanged(user => {
@@ -197,7 +214,7 @@ auth.onAuthStateChanged(user => {
             if (snap.val()) document.getElementById('userImg').src = snap.val();
         });
 
-        // Load Saldo & Investasi
+        // Load Data Topup
         db.ref("topup").on("value", snap => {
             totalDepoSelesai = 0; let pending = false;
             snap.forEach(c => {
@@ -212,6 +229,22 @@ auth.onAuthStateChanged(user => {
             hitungSistem(); 
         });
 
+        // Load Data Penarikan
+        db.ref("penarikan").on("value", snap => {
+            totalTarikSelesai = 0; let pendingTarik = false;
+            snap.forEach(c => {
+                const d = c.val();
+                if(d.uid === user.uid) {
+                    if(d.status === "selesai") totalTarikSelesai += parseInt(d.nominal);
+                    if(d.status === "pending") pendingTarik = true;
+                }
+            });
+            document.getElementById('statusTarik').style.display = pendingTarik ? "block" : "none";
+            document.getElementById('btnKirimTarik').disabled = pendingTarik;
+            hitungSistem();
+        });
+
+        // Load History Invest
         db.ref("invest_history/" + user.uid).on("value", snap => {
             historyInvestasi = [];
             snap.forEach(c => { historyInvestasi.push(c.val()); });
@@ -251,7 +284,8 @@ function hitungSistem() {
             document.getElementById('timerInfo').innerText = "Paket Aktif: " + (60 - diffHari) + " Hari lagi";
         }
     });
-    currentBalance = totalDepoSelesai - totalBiayaBeli + totalProfitLaba;
+    // RUMUS: Total Depo - Total Beli Paket + Total Profit - Total Tarik
+    currentBalance = totalDepoSelesai - totalBiayaBeli + totalProfitLaba - totalTarikSelesai;
     document.getElementById('welcome').innerText = "Rp. " + currentBalance.toLocaleString('id-ID');
     document.getElementById('checkPaketA').style.display = adaAktif ? "inline" : "none";
     document.getElementById('btnBeliA').disabled = adaAktif;
@@ -278,12 +312,14 @@ function clearMenu() {
     document.getElementById('quizBox').style.display="none";
     document.getElementById('investBox').style.display="none";
     document.getElementById('depoBox').style.display="none";
+    document.getElementById('tarikBox').style.display="none";
     document.querySelectorAll('.menuItem').forEach(m => m.classList.remove('active'));
 }
 function showNews() { clearMenu(); document.getElementById('newsBox').style.display="block"; document.getElementById('mNews').classList.add('active'); }
 function showQuiz() { clearMenu(); document.getElementById('quizBox').style.display="block"; document.getElementById('mQuiz').classList.add('active'); }
 function showInvest() { clearMenu(); document.getElementById('investBox').style.display="block"; document.getElementById('mInvest').classList.add('active'); }
 function showDepo() { clearMenu(); document.getElementById('depoBox').style.display="block"; document.getElementById('mDepo').classList.add('active'); }
+function showTarik() { clearMenu(); document.getElementById('tarikBox').style.display="block"; document.getElementById('mTarik').classList.add('active'); }
 
 function buyInvest() {
     if (currentBalance < 20000) return alert("Saldo tidak cukup!");
@@ -294,6 +330,13 @@ function buyInvest() {
 function kirimDepo() {
     db.ref("topup").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: 50000, status: "pending" });
     alert("Request depo terkirim!");
+}
+function kirimTarik() {
+    if (currentBalance < 50000) return alert("Saldo Anda tidak cukup untuk melakukan penarikan Rp 50.000!");
+    if(confirm("Yakin ingin melakukan penarikan Rp 50.000?")){
+        db.ref("penarikan").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: 50000, status: "pending" });
+        alert("Request penarikan terkirim! Silakan tunggu konfirmasi admin.");
+    }
 }
 </script>
 </body>
