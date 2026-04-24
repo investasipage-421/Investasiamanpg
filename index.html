@@ -19,6 +19,11 @@
         #welcome{font-size:18px;font-weight:bold;color: cyan;}
         #emailText{font-size:11px;color:white;}
         #logoutBtn{font-size:11px;padding:5px 10px;border:none;border-radius:5px;background:white;color:black;cursor:pointer;font-weight:bold;}
+        
+        /* Profile Image Style */
+        .profile-container { position: relative; cursor: pointer; }
+        .profile-container img { border-radius: 50%; width: 45px; height: 45px; object-fit: cover; border: 2px solid #333; }
+        .profile-container:hover::after { content: "Edit"; position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.6); font-size: 9px; text-align: center; border-bottom-left-radius: 50%; border-bottom-right-radius: 50%; }
 
         /* SIDEBAR */
         #sidebar{position:fixed;left:0;top:75px;width:80px;background:#111;height:100%;padding-top:20px;border-right:1px solid #333;display:flex;flex-direction:column;align-items:center;gap:15px;}
@@ -69,7 +74,9 @@
 <div id="dashboard">
     <div id="topBar">
         <div style="display:flex;align-items:center;gap:10px;">
-            <img src="https://i.imgur.com/8Km9tLL.png" width="40" style="border-radius: 50%;">
+            <div class="profile-container" onclick="changeProfilePic()">
+                <img id="userImg" src="https://i.imgur.com/8Km9tLL.png">
+            </div>
             <div>
                 <div id="welcome">Rp. 0</div>
                 <div id="emailText">Memuat...</div>
@@ -98,7 +105,7 @@
     </div>
 
     <div id="content">
-        <div id="newsBox" class="card">Selamat Datang di Investasi Page421!</div>
+        <div id="newsBox" class="card">Selamat Datang di Investasi Page421! <br><br> <span style="font-weight:normal; font-size:12px;">Tips: Klik foto profil Anda untuk menggantinya.</span></div>
 
         <div id="quizBox" class="card" style="display:none;">
             <h3>Daftar Soal</h3>
@@ -154,9 +161,8 @@ let historyInvestasi = [];
 let currentBalance = 0;
 let sedangDaftar = false; 
 
-// 2. CEK STATUS LOGIN (LOGIKA UTAMA)
+// 2. CEK STATUS LOGIN
 auth.onAuthStateChanged(user => {
-    // Jika sedang daftar, JANGAN jalankan logika dashboard
     if (sedangDaftar) return;
 
     if (user) {
@@ -164,6 +170,14 @@ auth.onAuthStateChanged(user => {
         document.getElementById('registerBox').style.display = "none";
         document.getElementById('dashboard').style.display = "block";
         document.getElementById('emailText').innerText = user.email;
+
+        // Ambil Foto Profil dari Database
+        db.ref("users/" + user.uid + "/profile").on("value", snap => {
+            const data = snap.val();
+            if (data && data.photo) {
+                document.getElementById('userImg').src = data.photo;
+            }
+        });
 
         // Load Data Saldo & Investasi
         db.ref("topup").on("value", snap => {
@@ -188,30 +202,43 @@ auth.onAuthStateChanged(user => {
         });
     } else {
         document.getElementById('dashboard').style.display = "none";
-        // Pastikan kembali ke login jika tidak ada user
         if(!sedangDaftar) document.getElementById('loginBox').style.display = "block";
     }
 });
 
-// 3. FUNGSI REGISTRASI (DIPERBAIKI)
+// 3. FUNGSI GANTI FOTO PROFIL
+function changeProfilePic() {
+    const newPicUrl = prompt("Masukkan Link/URL Foto Profil Baru (Contoh: https://link-foto.com/gambar.jpg):");
+    
+    if (newPicUrl && newPicUrl.trim() !== "") {
+        const user = auth.currentUser;
+        db.ref("users/" + user.uid + "/profile").update({
+            photo: newPicUrl
+        }).then(() => {
+            alert("Foto Profil Berhasil Diperbarui!");
+        }).catch(e => {
+            alert("Gagal memperbarui foto: " + e.message);
+        });
+    }
+}
+
+// 4. FUNGSI REGISTRASI
 function register() { 
     const email = document.getElementById('regUser').value;
     const pass = document.getElementById('regPass').value;
 
     if(!email || pass.length < 6) return alert("Email valid & Password Minimal 6 Karakter!");
 
-    // AKTIFKAN PENGHALANG
     sedangDaftar = true; 
     document.getElementById('dashboard').style.display = "none";
 
     auth.createUserWithEmailAndPassword(email, pass)
     .then(() => {
-        // Langsung Logout agar tidak masuk ke dashboard
         return auth.signOut();
     })
     .then(() => {
         alert("Registrasi Berhasil! Silakan Login.");
-        sedangDaftar = false; // Matikan penghalang setelah logout selesai
+        sedangDaftar = false; 
         document.getElementById('regUser').value = "";
         document.getElementById('regPass').value = "";
         showLogin(); 
@@ -222,7 +249,7 @@ function register() {
     }); 
 }
 
-// 4. LOGIKA SALDO
+// 5. LOGIKA SALDO
 function hitungSistem() {
     let totalBiayaBeli = 0;
     let totalProfitLaba = 0;
@@ -249,7 +276,7 @@ function hitungSistem() {
     document.getElementById('btnBeliA').innerText = adaAktif ? "PAKET AKTIF" : "BELI SEKARANG";
 }
 
-// 5. FUNGSI UI & NAVIGASI
+// 6. FUNGSI UI & NAVIGASI
 function login() { 
     const u = document.getElementById('loginUser').value;
     const p = document.getElementById('loginPass').value;
