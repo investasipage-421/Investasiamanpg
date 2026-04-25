@@ -3,32 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investasi Page421 - Official</title>
+    <title>Investasi Page421 - Produksi</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #000; color: #fff; margin: 0; }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        .active-menu { background-color: #fff; color: #000; }
-        .active-menu span { color: #000; }
+        body { font-family: 'Inter', sans-serif; background-color: #000; color: #fff; margin: 0; min-height: 100vh; }
+        .active-menu { background-color: #fff !important; color: #000 !important; }
+        .active-menu img { filter: invert(1); }
+        .active-menu span { color: #000 !important; }
+        input::placeholder { color: #555; }
+        /* Prevent scroll bounce */
+        html, body { overflow: hidden; height: 100%; }
+        #content::-webkit-scrollbar { width: 4px; }
+        #content::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     </style>
 </head>
-<body class="overflow-hidden h-screen w-screen bg-black">
+<body class="bg-black">
 
     <!-- POPUP PENGUMUMAN -->
     <div id="announcementPopup" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/90 px-4">
-        <div class="relative w-full max-w-sm rounded-[24px] border-2 border-cyan-400 bg-black p-10 text-center">
+        <div class="relative w-full max-w-sm rounded-[24px] border-2 border-cyan-400 bg-black p-10 text-center shadow-[0_0_30px_rgba(34,211,238,0.3)]">
             <span class="absolute top-4 right-6 text-3xl text-gray-500 cursor-pointer hover:text-cyan-400" onclick="closePopup()">&times;</span>
             <h2 class="mb-4 text-2xl font-bold text-cyan-400">📢 Pengumuman</h2>
             <p class="leading-relaxed text-gray-200">Selamat datang di Investasi Page421! Pantau terus paket investasi Anda dan kumpulkan profit setiap harinya.</p>
         </div>
     </div>
 
-    <!-- LOGIN -->
-    <div id="loginBox" class="fixed inset-0 z-[100] flex items-center justify-center bg-black px-6">
+    <!-- AUTH BOX (Login & Register) -->
+    <div id="authContainer" class="fixed inset-0 z-[100] flex items-center justify-center bg-black px-6">
+        <!-- Main Box -->
         <div class="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111] p-8 text-center shadow-2xl">
             <div class="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-xl bg-white p-2">
                 <svg viewBox="0 0 100 100" class="h-full w-full">
@@ -37,139 +41,144 @@
                     <text x="48" y="65" font-family="Arial" font-weight="bold" font-size="20" fill="black">Age</text>
                 </svg>
             </div>
-            <h2 class="mb-6 text-2xl font-bold text-white">Login</h2>
-            <input id="loginUser" type="email" placeholder="Email" class="w-full mb-4 rounded-lg bg-[#222] p-3 text-white outline-none ring-1 ring-white/5 focus:ring-cyan-400 transition">
-            <input id="loginPass" type="password" placeholder="Password" class="w-full mb-6 rounded-lg bg-[#222] p-3 text-white outline-none ring-1 ring-white/5 focus:ring-cyan-400 transition">
-            <button onclick="login()" class="w-full rounded-lg bg-white py-3 font-bold text-black active:scale-95 transition">MASUK</button>
-            <p class="mt-6 text-sm text-gray-400">Belum punya akun? <span onclick="showRegister()" class="cursor-pointer font-bold text-cyan-400">Registrasi</span></p>
-        </div>
-    </div>
 
-    <!-- REGISTER -->
-    <div id="registerBox" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black px-6">
-        <div class="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111] p-8 text-center shadow-2xl">
-            <div class="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-xl bg-white p-2">
-                <svg viewBox="0 0 100 100" class="h-full w-full">
-                    <rect x="5" y="5" width="90" height="90" rx="8" fill="none" stroke="black" stroke-width="4"/>
-                    <path d="M25 25 v50 M25 25 h20 c15 0 15 20 0 20 h-20" fill="none" stroke="black" stroke-width="8" stroke-linecap="round"/>
-                    <text x="48" y="65" font-family="Arial" font-weight="bold" font-size="20" fill="black">Age</text>
-                </svg>
+            <!-- Login View -->
+            <div id="loginView">
+                <h2 class="mb-6 text-2xl font-bold text-white">Login</h2>
+                <input id="loginEmail" type="email" placeholder="Email" class="w-full mb-4 rounded-lg bg-[#222] p-3 text-white outline-none ring-1 ring-white/5 focus:ring-cyan-400 transition">
+                <input id="loginPass" type="password" placeholder="Password" class="w-full mb-6 rounded-lg bg-[#222] p-3 text-white outline-none ring-1 ring-white/5 focus:ring-cyan-400 transition">
+                <button onclick="handleLogin()" class="w-full rounded-lg bg-white py-3 font-bold text-black active:scale-95 transition">MASUK</button>
+                <p class="mt-6 text-sm text-gray-400">Belum punya akun? <span onclick="toggleAuth(true)" class="cursor-pointer font-bold text-cyan-400">Registrasi</span></p>
             </div>
-            <h2 class="mb-6 text-2xl font-bold text-white">Registrasi</h2>
-            <input id="regUser" type="email" placeholder="Email Baru" class="w-full mb-4 rounded-lg bg-[#222] p-3 text-white outline-none ring-1 ring-white/5 focus:ring-cyan-400 transition">
-            <input id="regPass" type="password" placeholder="Password (Min 6 Digit)" class="w-full mb-6 rounded-lg bg-[#222] p-3 text-white outline-none ring-1 ring-white/5 focus:ring-cyan-400 transition">
-            <button onclick="register()" class="w-full rounded-lg bg-white py-3 font-bold text-black active:scale-95 transition">DAFTAR SEKARANG</button>
-            <p class="mt-6 text-sm text-gray-400">Sudah punya akun? <span onclick="showLogin()" class="cursor-pointer font-bold text-cyan-400">Login</span></p>
+
+            <!-- Register View -->
+            <div id="registerView" class="hidden">
+                <h2 class="mb-6 text-2xl font-bold text-white">Registrasi</h2>
+                <input id="regEmail" type="email" placeholder="Email Baru" class="w-full mb-4 rounded-lg bg-[#222] p-3 text-white outline-none ring-1 ring-white/5 focus:ring-cyan-400 transition">
+                <input id="regPass" type="password" placeholder="Password (Min 6 Karakter)" class="w-full mb-6 rounded-lg bg-[#222] p-3 text-white outline-none ring-1 ring-white/5 focus:ring-cyan-400 transition">
+                <button onclick="handleRegister()" class="w-full rounded-lg bg-white py-3 font-bold text-black active:scale-95 transition">DAFTAR SEKARANG</button>
+                <p class="mt-6 text-sm text-gray-400">Sudah punya akun? <span onclick="toggleAuth(false)" class="cursor-pointer font-bold text-cyan-400">Login</span></p>
+            </div>
         </div>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- MAIN DASHBOARD -->
     <div id="dashboard" class="hidden flex-col h-full w-full">
-        <!-- TOPBAR -->
-        <div class="flex h-20 items-center justify-between border-b border-white/10 bg-[#111] px-6">
+        <!-- Top Bar -->
+        <div class="flex h-20 items-center justify-between border-b border-white/10 bg-[#111] px-6 shrink-0">
             <div class="flex items-center gap-4">
-                <div class="relative h-12 w-12 cursor-pointer overflow-hidden rounded-full border-2 border-cyan-400" onclick="openGallery()">
+                <div class="relative h-12 w-12 cursor-pointer overflow-hidden rounded-full border-2 border-cyan-400 bg-gray-900" onclick="openGallery()">
                     <img id="userImg" src="https://i.imgur.com/8Km9tLL.png" class="h-full w-full object-cover">
                     <div class="absolute bottom-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-cyan-400 text-[10px] font-bold text-black border border-black">+</div>
                 </div>
                 <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="uploadFoto()">
                 <div>
-                    <div id="welcomeBalance" class="text-lg font-bold text-cyan-400 text-shadow-glow">Rp. 0</div>
-                    <div id="emailText" class="text-[11px] text-gray-400">Memuat...</div>
+                    <div id="balanceTop" class="text-lg font-bold text-cyan-400">Rp 0</div>
+                    <div id="userEmailText" class="text-[10px] text-gray-500">Memuat...</div>
                 </div>
             </div>
-            <button onclick="logout()" class="rounded-lg bg-white px-4 py-1.5 text-xs font-bold text-black hover:bg-gray-200 transition active:scale-95">Logout</button>
+            <button onclick="handleLogout()" class="rounded-lg bg-white px-4 py-1.5 text-xs font-bold text-black hover:bg-gray-200 transition active:scale-95">Logout</button>
         </div>
 
         <div class="flex flex-1 overflow-hidden">
-            <!-- SIDEBAR -->
-            <div class="flex w-20 flex-col items-center gap-6 border-r border-white/10 bg-[#111] pt-8">
-                <div class="flex flex-col items-center gap-1 cursor-pointer p-2 w-16 rounded-xl transition active-menu" id="mNews" onclick="showSub('news')">
-                    <img src="https://img.icons8.com/ios-filled/50/000000/news.png" class="w-7 h-7">
-                    <span class="text-[9px] font-medium">Berita</span>
+            <!-- Sidebar -->
+            <div class="flex w-20 flex-col items-center gap-6 border-r border-white/10 bg-[#111] pt-8 shrink-0">
+                <div class="menu-item active-menu w-16 h-16 rounded-xl flex flex-col items-center justify-center cursor-pointer" id="m-news" onclick="showSection('news')">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/news.png" class="w-7 h-7">
+                    <span class="text-[9px] font-medium mt-1">Berita</span>
                 </div>
-                <div class="flex flex-col items-center gap-1 cursor-pointer p-2 w-16 rounded-xl transition text-gray-400" id="mQuiz" onclick="showSub('quiz')">
-                    <img src="https://img.icons8.com/ios-filled/50/ffffff/book.png" class="w-7 h-7 filter opacity-50">
-                    <span class="text-[9px] font-medium">Soal</span>
+                <div class="menu-item text-gray-400 w-16 h-16 rounded-xl flex flex-col items-center justify-center cursor-pointer" id="m-quiz" onclick="showSection('quiz')">
+                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/book.png" class="w-7 h-7">
+                    <span class="text-[9px] font-medium mt-1">Soal</span>
                 </div>
-                <div class="flex flex-col items-center gap-1 cursor-pointer p-2 w-16 rounded-xl transition text-gray-400" id="mInvest" onclick="showSub('invest')">
-                    <img src="https://img.icons8.com/ios-filled/50/ffffff/money-bag.png" class="w-7 h-7 filter opacity-50">
-                    <span class="text-[9px] font-medium">Invest</span>
+                <div class="menu-item text-gray-400 w-16 h-16 rounded-xl flex flex-col items-center justify-center cursor-pointer" id="m-invest" onclick="showSection('invest')">
+                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/money-bag.png" class="w-7 h-7">
+                    <span class="text-[9px] font-medium mt-1">Invest</span>
                 </div>
-                <div class="flex flex-col items-center gap-1 cursor-pointer p-2 w-16 rounded-xl transition text-gray-400" id="mDepo" onclick="showSub('depo')">
-                    <img src="https://img.icons8.com/ios-filled/50/ffffff/request-money.png" class="w-7 h-7 filter opacity-50">
-                    <span class="text-[9px] font-medium">Depo</span>
+                <div class="menu-item text-gray-400 w-16 h-16 rounded-xl flex flex-col items-center justify-center cursor-pointer" id="m-depo" onclick="showSection('depo')">
+                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/request-money.png" class="w-7 h-7">
+                    <span class="text-[9px] font-medium mt-1">Depo</span>
                 </div>
-                <div class="flex flex-col items-center gap-1 cursor-pointer p-2 w-16 rounded-xl transition text-gray-400" id="mTarik" onclick="showSub('tarik')">
-                    <img src="https://img.icons8.com/ios-filled/50/ffffff/atm.png" class="w-7 h-7 filter opacity-50">
-                    <span class="text-[9px] font-medium">Tarik</span>
+                <div class="menu-item text-gray-400 w-16 h-16 rounded-xl flex flex-col items-center justify-center cursor-pointer" id="m-tarik" onclick="showSection('tarik')">
+                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/atm.png" class="w-7 h-7">
+                    <span class="text-[9px] font-medium mt-1">Tarik</span>
                 </div>
-                <div class="flex flex-col items-center gap-1 cursor-pointer p-2 w-16 rounded-xl transition text-gray-400" id="mHistory" onclick="showSub('history')">
-                    <img src="https://img.icons8.com/ios-filled/50/ffffff/time-machine.png" class="w-7 h-7 filter opacity-50">
-                    <span class="text-[9px] font-medium">Riwayat</span>
+                <div class="menu-item text-gray-400 w-16 h-16 rounded-xl flex flex-col items-center justify-center cursor-pointer" id="m-history" onclick="showSection('history')">
+                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/time-machine.png" class="w-7 h-7">
+                    <span class="text-[9px] font-medium mt-1">Riwayat</span>
                 </div>
             </div>
 
-            <!-- CONTENT -->
-            <div id="content" class="flex-1 overflow-y-auto p-6 bg-black">
-                <div id="sub-news" class="rounded-2xl bg-white p-6 font-bold text-black shadow-lg">Selamat Datang di Investasi Page421!</div>
-                <div id="sub-quiz" class="hidden rounded-2xl bg-white p-6 text-black shadow-lg"><h3 class="mb-2 text-xl font-bold">Materi & Soal</h3><p class="text-gray-600">Segera hadir.</p></div>
+            <!-- Content Area -->
+            <div id="content" class="flex-1 overflow-y-auto p-6 bg-black relative">
+                <!-- News -->
+                <div id="sec-news" class="section block rounded-2xl bg-white p-6 font-bold text-black shadow-lg">
+                    Selamat Datang di Investasi Page421!
+                </div>
+
+                <!-- Quiz -->
+                <div id="sec-quiz" class="section hidden rounded-2xl bg-white p-6 text-black shadow-lg">
+                    <h3 class="mb-2 text-xl font-bold">Materi & Soal</h3>
+                    <p class="text-gray-600 italic">Segera hadir.</p>
+                </div>
 
                 <!-- Invest -->
-                <div id="sub-invest" class="hidden rounded-2xl border border-white/10 bg-[#1a1a1a] p-6 shadow-xl">
+                <div id="sec-invest" class="section hidden rounded-2xl border border-white/10 bg-[#1a1a1a] p-6 shadow-xl">
                     <div class="mb-4 flex items-center justify-between border-b border-white/5 pb-2 text-xl font-bold text-cyan-400">
                         <span>Paket Investasi A</span>
-                        <span id="checkPaketA" class="hidden text-sm italic">✓ Aktif</span>
+                        <span id="activeBadge" class="hidden text-sm italic">✓ Aktif</span>
                     </div>
                     <div class="space-y-2 text-sm text-gray-300">
                         <p>💰 Harga: Rp 20.000</p>
                         <p>📈 Profit: Rp 500 / Hari</p>
                         <p>📅 Durasi: 60 Hari</p>
                     </div>
-                    <div id="timerInfo" class="mt-4 text-sm font-bold text-cyan-400"></div>
-                    <button id="btnBeliA" onclick="buyInvest()" class="mt-6 w-full rounded-lg bg-cyan-400 py-3 font-bold text-black active:scale-95 transition">BELI SEKARANG</button>
+                    <div id="investTimer" class="mt-4 text-sm font-bold text-cyan-400"></div>
+                    <button id="btnBuy" onclick="handleBuy()" class="mt-6 w-full rounded-lg bg-cyan-400 py-3 font-bold text-black active:scale-95 transition">BELI SEKARANG</button>
                 </div>
 
                 <!-- Depo -->
-                <div id="sub-depo" class="hidden rounded-2xl bg-white p-8 text-center text-black">
-                    <div class="rounded-2xl border-2 border-dashed border-cyan-400 bg-cyan-50/20 p-6">
+                <div id="sec-depo" class="section hidden rounded-2xl bg-white p-8 text-center text-black shadow-lg">
+                    <div class="rounded-2xl border-2 border-dashed border-cyan-400 bg-cyan-50/50 p-6">
                         <p class="text-sm text-gray-500">Nominal Depo:</p>
                         <h1 class="my-2 text-3xl font-black">Rp 50.000</h1>
-                        <button onclick="kirimDepo()" class="mt-4 w-full rounded-xl bg-black py-4 font-bold text-cyan-400 active:scale-95 transition">REQUEST DEPO</button>
+                        <button onclick="handleDepo()" class="mt-4 w-full rounded-xl bg-black py-4 font-bold text-cyan-400 active:scale-95 transition">REQUEST DEPO</button>
                     </div>
                 </div>
 
-                <!-- Tarik (UI Login Style) -->
-                <div id="sub-tarik" class="hidden flex justify-center p-2">
+                <!-- Tarik -->
+                <div id="sec-tarik" class="section hidden flex justify-center p-2">
                     <div class="w-full max-w-sm rounded-[24px] border border-white/10 bg-[#111] p-8 text-center shadow-2xl">
                         <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-xl bg-red-500/10 p-2 text-red-500">
                             <img src="https://img.icons8.com/ios-filled/100/ff4757/atm.png" class="w-12 h-12">
                         </div>
                         <h2 class="mb-2 text-2xl font-bold text-white">Penarikan</h2>
-                        <p id="tarikBalanceText" class="mb-6 text-xs text-gray-500">Saldo Tersedia: Rp 0</p>
+                        <p id="tarikBalanceInfo" class="mb-6 text-[10px] text-gray-500 uppercase tracking-widest font-bold">Saldo: Rp 0</p>
                         <div class="space-y-4">
                             <div class="relative">
-                                <input id="tarikNominal" type="text" value="50.000" onfocus="this.value=''" class="w-full rounded-lg bg-[#222] p-4 text-center text-xl font-black text-white outline-none ring-1 ring-white/5 focus:ring-red-500 transition">
-                                <span class="absolute top-0 right-4 flex h-full items-center text-xs font-bold text-gray-600">IDR</span>
+                                <input id="tarikInput" type="text" value="50.000" onfocus="if(this.value=='50.000')this.value=''" class="w-full rounded-lg bg-[#222] p-4 text-center text-xl font-black text-white outline-none ring-1 ring-white/5 focus:ring-red-500 transition">
+                                <div class="absolute top-0 right-4 flex h-full items-center text-[10px] font-bold text-gray-600">IDR</div>
                             </div>
-                            <button onclick="kirimTarik()" class="w-full rounded-lg bg-[#ff4757] py-4 font-bold text-white shadow-lg active:scale-95 transition">REQUEST TARIK</button>
+                            <button onclick="handleTarik()" class="w-full rounded-lg bg-[#ff4757] py-4 font-bold text-white shadow-lg active:scale-95 transition">REQUEST TARIK</button>
                         </div>
-                        <p class="mt-4 text-[10px] text-gray-500 italic">Minimal penarikan Rp 50.000</p>
                     </div>
                 </div>
 
                 <!-- History -->
-                <div id="sub-history" class="hidden space-y-4">
-                    <h2 class="mb-4 text-xl font-bold text-cyan-400">Riwayat Transaksi</h2>
-                    <div id="historyList" class="space-y-3">
-                        <!-- Loaded by JS -->
+                <div id="sec-history" class="section hidden space-y-4">
+                    <h2 class="mb-4 text-xl font-bold text-cyan-400 flex items-center gap-2">
+                        <img src="https://img.icons8.com/ios-filled/50/22d3ee/time-machine.png" class="w-6 h-6">
+                        Riwayat
+                    </h2>
+                    <div id="historyContainer" class="space-y-3">
+                        <!-- History Items -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SDKs -->
+    <!-- FIREBASE COMPAT SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -185,133 +194,157 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
-    let currentBalance = 0, userUID = null, regProcessing = false;
 
+    let currentBalance = 0;
+    let currentUser = null;
+
+    // --- AUTH ---
     auth.onAuthStateChanged(user => {
-        if (regProcessing) return;
         if (user) {
-            userUID = user.uid;
-            document.getElementById('loginBox').classList.add('hidden');
-            document.getElementById('registerBox').classList.add('hidden');
+            currentUser = user;
+            document.getElementById('authContainer').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
-            document.getElementById('emailText').innerText = user.email;
+            document.getElementById('userEmailText').innerText = user.email;
             showPopup();
-            loadUserData(user.uid);
+            loadRealtimeData(user.uid);
         } else {
+            currentUser = null;
             document.getElementById('dashboard').classList.add('hidden');
-            if(!regProcessing) document.getElementById('loginBox').classList.remove('hidden');
+            document.getElementById('authContainer').classList.remove('hidden');
         }
     });
 
-    function loadUserData(uid) {
-        db.ref(`users/${uid}/photo`).on('value', snap => { if(snap.val()) document.getElementById('userImg').src = snap.val(); });
-        
-        const topupRef = db.ref("topup");
-        const tarikRef = db.ref("penarikan");
-        const investRef = db.ref(`invest_history/${uid}`);
+    function toggleAuth(isReg) {
+        document.getElementById('loginView').classList.toggle('hidden', isReg);
+        document.getElementById('registerView').classList.toggle('hidden', !isReg);
+    }
 
-        const syncAll = () => {
-            let depoTotal = 0, tarikTotal = 0, listData = [];
-            
-            topupRef.once('value', snap => {
-                snap.forEach(c => {
+    function handleLogin() {
+        const e = document.getElementById('loginEmail').value;
+        const p = document.getElementById('loginPass').value;
+        if(!e || !p) return alert("Isi email dan password!");
+        auth.signInWithEmailAndPassword(e, p).catch(err => alert(err.message));
+    }
+
+    function handleRegister() {
+        const e = document.getElementById('regEmail').value;
+        const p = document.getElementById('regPass').value;
+        if(!e || p.length < 6) return alert("Data tidak valid (Pass min 6 karakter)!");
+        auth.createUserWithEmailAndPassword(e, p)
+            .then(() => alert("Berhasil! Silakan Login."), err => alert(err.message));
+    }
+
+    function handleLogout() { auth.signOut(); }
+
+    // --- DATA ---
+    function loadRealtimeData(uid) {
+        db.ref(`users/${uid}/photo`).on('value', s => { if(s.val()) document.getElementById('userImg').src = s.val(); });
+
+        const topups = db.ref('topup');
+        const withdrawals = db.ref('penarikan');
+        const investHistory = db.ref(`invest_history/${uid}`);
+
+        function calculate() {
+            let totalDepo = 0, totalTarik = 0, historyInvArr = [], allTrans = [];
+
+            topups.once('value', s => {
+                s.forEach(c => {
                     const v = c.val();
                     if(v.uid === uid) {
-                        if(v.status === "selesai") depoTotal += parseInt(v.nominal);
-                        listData.push({...v, type: 'depo', id: c.key});
+                        if(v.status === 'selesai') totalDepo += parseInt(v.nominal);
+                        allTrans.push({...v, id: c.key, type: 'depo'});
                     }
                 });
-                
-                tarikRef.once('value', snap => {
-                    snap.forEach(c => {
+
+                withdrawals.once('value', s => {
+                    s.forEach(c => {
                         const v = c.val();
                         if(v.uid === uid) {
-                            if(v.status === "selesai") tarikTotal += parseInt(v.nominal);
-                            listData.push({...v, type: 'tarik', id: c.key});
+                            if(v.status === 'selesai') totalTarik += parseInt(v.nominal);
+                            allTrans.push({...v, id: c.key, type: 'tarik'});
                         }
                     });
 
-                    investRef.once('value', snap => {
-                        let invHistoryArr = [];
-                        snap.forEach(c => invHistoryArr.push(c.val()));
-                        renderPage(depoTotal, tarikTotal, invHistoryArr, listData);
+                    investHistory.once('value', s => {
+                        s.forEach(c => historyInvArr.push(c.val()));
+                        updateUI(totalDepo, totalTarik, historyInvArr, allTrans);
                     });
                 });
             });
-        };
-
-        topupRef.on('value', syncAll);
-        tarikRef.on('value', syncAll);
-        investRef.on('value', syncAll);
-    }
-
-    function renderPage(totalDepo, totalTarik, historyInv, transactions) {
-        let cost = 0, profit = 0, active = false, daysLeft = 0;
-        const skrg = Date.now();
-        historyInv.forEach(h => {
-            cost += 20000;
-            let dDays = Math.floor((skrg - h.tanggalBeli) / 86400000);
-            profit += ((dDays > 60 ? 60 : dDays) * 500);
-            if(dDays < 60) { active = true; daysLeft = 60 - dDays; }
-        });
-
-        currentBalance = totalDepo - cost + profit - totalTarik;
-        document.getElementById('welcomeBalance').innerText = "Rp. " + currentBalance.toLocaleString('id-ID');
-        document.getElementById('tarikBalanceText').innerText = "Saldo Tersedia: Rp " + currentBalance.toLocaleString('id-ID');
-
-        // Invest UI
-        const btn = document.getElementById('btnBeliA');
-        const check = document.getElementById('checkPaketA');
-        const info = document.getElementById('timerInfo');
-        if(active) {
-            btn.disabled = true; btn.innerText = "PAKET AKTIF"; check.classList.remove('hidden');
-            btn.classList.replace('bg-cyan-400', 'bg-gray-800'); btn.classList.add('text-gray-500');
-            info.innerText = "Status: Aktif (" + daysLeft + " Hari lagi)";
-        } else {
-            btn.disabled = false; btn.innerText = "BELI SEKARANG"; check.classList.add('hidden');
-            btn.classList.replace('bg-gray-800', 'bg-cyan-400'); btn.classList.remove('text-gray-500');
-            info.innerText = "";
         }
 
-        // History UI
-        const list = document.getElementById('historyList');
-        list.innerHTML = "";
-        transactions.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
-        if(transactions.length === 0) list.innerHTML = '<div class="text-center p-10 text-gray-600">Belum ada riwayat.</div>';
+        topups.on('value', calculate);
+        withdrawals.on('value', calculate);
+        investHistory.on('value', calculate);
+    }
+
+    function updateUI(depo, tarik, invs, trans) {
+        let cost = 0, profit = 0, isActive = false, days = 0;
+        const now = Date.now();
+
+        invs.forEach(i => {
+            cost += 20000;
+            let diff = Math.floor((now - i.tanggalBeli) / 86400000);
+            let pDays = Math.min(diff, 60);
+            profit += (pDays * 500);
+            if(diff < 60) { isActive = true; days = 60 - diff; }
+        });
+
+        currentBalance = depo - cost + profit - tarik;
+        document.getElementById('balanceTop').innerText = "Rp " + currentBalance.toLocaleString('id-ID');
+        document.getElementById('tarikBalanceInfo').innerText = "Saldo: Rp " + currentBalance.toLocaleString('id-ID');
+
+        // Invest State
+        const btn = document.getElementById('btnBuy');
+        const badge = document.getElementById('activeBadge');
+        const timer = document.getElementById('investTimer');
+        if(isActive) {
+            btn.disabled = true;
+            btn.innerText = "PAKET AKTIF";
+            btn.className = "mt-6 w-full rounded-lg bg-gray-800 py-3 font-bold text-gray-500 cursor-not-allowed";
+            badge.classList.remove('hidden');
+            timer.innerText = `Status: Aktif (${days} Hari lagi)`;
+        } else {
+            btn.disabled = false;
+            btn.innerText = "BELI SEKARANG";
+            btn.className = "mt-6 w-full rounded-lg bg-cyan-400 py-3 font-bold text-black active:scale-95 transition";
+            badge.classList.add('hidden');
+            timer.innerText = "";
+        }
+
+        // History
+        const cont = document.getElementById('historyContainer');
+        cont.innerHTML = "";
+        trans.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
         
-        transactions.forEach(t => {
-            const time = t.timestamp ? new Date(t.timestamp).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) : '--:--';
+        if(trans.length === 0) {
+            cont.innerHTML = `<div class="text-center py-10 text-gray-600 text-xs italic">Belum ada aktivitas.</div>`;
+        }
+
+        trans.forEach(t => {
             const isDepo = t.type === 'depo';
-            list.innerHTML += `
+            const timeStr = t.timestamp ? new Date(t.timestamp).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) : '--:--';
+            const statusClass = t.status === 'selesai' ? 'text-green-400 bg-green-400/10' : 'text-yellow-400 bg-yellow-400/10';
+            
+            cont.innerHTML += `
                 <div class="flex items-center justify-between rounded-xl border border-white/5 bg-[#111] p-4">
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3">
                         <div class="flex h-10 w-10 items-center justify-center rounded-lg ${isDepo ? 'bg-cyan-400/10 text-cyan-400' : 'bg-red-400/10 text-red-500'}">
-                            <span class="font-bold text-xl">${isDepo ? '↓' : '↑'}</span>
+                            <span class="font-bold text-lg">${isDepo ? '↓' : '↑'}</span>
                         </div>
                         <div>
-                            <div class="font-bold text-sm">${isDepo ? 'Depo' : 'Tarik'} Rp ${parseInt(t.nominal).toLocaleString('id-ID')}</div>
-                            <div class="text-[10px] text-gray-500">${time}</div>
+                            <div class="text-xs font-bold text-white uppercase">${isDepo ? 'Deposit' : 'Tarik'} Rp ${parseInt(t.nominal).toLocaleString('id-ID')}</div>
+                            <div class="text-[9px] text-gray-500 font-medium">${timeStr}</div>
                         </div>
                     </div>
-                    <div class="rounded-full px-3 py-1 text-[9px] font-bold uppercase ${t.status === 'selesai' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500'}">
+                    <div class="px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-tighter ${statusClass}">
                         ${t.status}
                     </div>
-                </div>`;
+                </div>
+            `;
         });
     }
 
-    function login() { auth.signInWithEmailAndPassword(document.getElementById('loginUser').value, document.getElementById('loginPass').value).catch(e => alert(e.message)); }
-    function register() {
-        regProcessing = true;
-        auth.createUserWithEmailAndPassword(document.getElementById('regUser').value, document.getElementById('regPass').value)
-            .then(() => { alert("Sukses! Silakan Login."); showLogin(); regProcessing = false; })
-            .catch(e => { alert(e.message); regProcessing = false; });
-    }
-    function logout() { auth.signOut().then(() => location.reload()); }
-    function showRegister() { document.getElementById('loginBox').classList.add('hidden'); document.getElementById('registerBox').classList.remove('hidden'); }
-    function showLogin() { document.getElementById('registerBox').classList.add('hidden'); document.getElementById('loginBox').classList.remove('hidden'); }
-    
-    function showSub(id) {
-        ['news','quiz','invest','depo','tarik','history'].forEach(s => {
-            document.getElementById(`sub-${s}`).classList.add('hidden');
-            const m = document.getElementById(`m${s.charAt(0).t
+    // --- ACTIONS ---
+    function showSection(id) {
+        document.querySelec
