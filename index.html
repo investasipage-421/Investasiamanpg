@@ -3,323 +3,327 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investasi Page421 - Update</title>
+    <title>Investasi Page421</title>
+    <!-- Tailwind CSS 3 CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- React & Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Framer Motion -->
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
-        html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
-
-        /* LOGO */
-        .logo-wrapper {
-            width: 100px; height: 100px; margin: 0 auto 15px auto;
-            background: white; padding: 10px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        /* BOX LOGIN, REGISTER & WITHDRAW */
-        .box{background:#111;padding:25px;border-radius:15px;width:90%;max-width:350px;text-align:center;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border: 1px solid #333; z-index: 100;}
-        input:not([type="file"]){width:100%;padding:12px;margin:8px 0;border:none;border-radius:8px;background:#222;color:white;outline:none;}
-        button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px;font-weight:bold;background:white;color:black;cursor:pointer;}
-
-        /* DASHBOARD UI */
-        #dashboard{display:none;height:100%;}
-        #topBar{display:flex;justify-content:space-between;align-items:center;padding:15px;background:#111;border-bottom:1px solid #333;}
-        #welcome{font-size:18px;font-weight:bold;color: cyan;}
-        #emailText{font-size:11px;color:white;}
-        #logoutBtn{font-size:11px;padding:5px 10px;border:none;border-radius:5px;background:white;color:black;cursor:pointer;font-weight:bold;}
-        
-        .profile-container { position: relative; cursor: pointer; width: 45px; height: 45px; }
-        .profile-container img { border-radius: 50%; width: 100%; height: 100%; object-fit: cover; border: 2px solid cyan; }
-        .profile-container::after { content: "+"; position: absolute; bottom: 0; right: 0; background: cyan; color: black; width: 15px; height: 15px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #111; }
-
-        /* SIDEBAR */
-        #sidebar{position:fixed;left:0;top:75px;width:80px;background:#111;height:100%;padding-top:20px;border-right:1px solid #333;display:flex;flex-direction:column;align-items:center;gap:15px;}
-        .menuItem{text-align:center;cursor:pointer;padding:10px;border-radius:10px;width:70px;transition:0.3s;}
-        .menuItem img{width:28px;height:28px;}
-        .menuItem span{display:block;font-size:10px;margin-top:5px;color: #ccc;}
-        .menuItem.active{background:white;}
-        .menuItem.active span, .menuItem.active img{filter: invert(1);}
-
-        /* CONTENT AREA */
-        #content{padding:20px;margin-left:85px;height:calc(100% - 75px);overflow-y:auto;}
-        .card{background:white;color:black;padding:20px;border-radius:15px;margin-bottom:15px;font-weight:bold;}
-
-        /* INVEST CARD */
-        .invest-card { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 20px; color: white; }
-        .invest-title { color: cyan; font-size: 20px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; display: flex; align-items: center; justify-content: space-between; }
-        .invest-detail { margin: 8px 0; font-size: 14px; color: #ccc; }
-        .btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 15px; cursor: pointer; }
-        .btn-invest:disabled { background: #333; color: #666; cursor: not-allowed; }
-
-        /* POPUP PENGUMUMAN */
-        #announcementPopup {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 9999;
-            display: none; align-items: center; justify-content: center;
-        }
-        .popup-content {
-            background: #111; width: 85%; max-width: 380px;
-            padding: 40px 25px 40px 25px; border-radius: 20px; border: 2px solid cyan;
-            text-align: center; position: relative; animation: popZoom 0.3s ease;
-        }
-        @keyframes popZoom { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
-        
-        .close-popup-x {
-            position: absolute; top: 10px; right: 15px;
-            font-size: 35px; color: #777; cursor: pointer; line-height: 1;
-        }
-        .close-popup-x:hover { color: cyan; }
-
-        .popup-content h2 { color: cyan; margin-bottom: 15px; }
-        .popup-content p { font-size: 15px; line-height: 1.6; color: #eee; }
-
-        /* DEPO & TARIK */
-        .depo-container { background: #f1f1f1; border-radius: 15px; padding: 25px; text-align: center; border: 2px dashed #00b8d4; }
-        .btn-depo { width: 100%; padding: 15px; background: #000; color: #00e5ff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        body { background-color: black; color: white; font-family: sans-serif; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
     </style>
 </head>
-<body>
+<body class="overflow-hidden">
 
-<!-- POPUP PENGUMUMAN -->
-<div id="announcementPopup">
-    <div class="popup-content">
-        <span class="close-popup-x" onclick="closePopup()">&times;</span>
-        <h2>📢 Pengumuman</h2>
-        <p>Selamat datang di Investasi Page421! Pantau terus paket investasi Anda dan kumpulkan profit setiap harinya.</p>
-    </div>
-</div>
+<div id="root"></div>
 
-<!-- LOGIN -->
-<div class="box" id="loginBox">
-    <div class="logo-wrapper">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <rect x="5" y="5" width="90" height="90" rx="8" fill="none" stroke="black" stroke-width="4"/>
-            <path d="M25 25 v50 M25 25 h20 c15 0 15 20 0 20 h-20" fill="none" stroke="black" stroke-width="8" stroke-linecap="round"/>
-            <text x="48" y="65" font-family="Arial" font-weight="bold" font-size="20" fill="black">Age</text>
-        </svg>
-    </div>
-    <h2>Login</h2>
-    <input id="loginUser" type="email" placeholder="Email">
-    <input id="loginPass" type="password" placeholder="Password">
-    <button onclick="login()">MASUK</button>
-    <p style="margin-top:15px; font-size:13px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;font-weight:bold;">Registrasi</span></p>
-</div>
-
-<!-- REGISTER -->
-<div class="box" id="registerBox" style="display:none;">
-    <div class="logo-wrapper">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <rect x="5" y="5" width="90" height="90" rx="8" fill="none" stroke="black" stroke-width="4"/>
-            <path d="M25 25 v50 M25 25 h20 c15 0 15 20 0 20 h-20" fill="none" stroke="black" stroke-width="8" stroke-linecap="round"/>
-            <text x="48" y="65" font-family="Arial" font-weight="bold" font-size="20" fill="black">Age</text>
-        </svg>
-    </div>
-    <h2>Registrasi</h2>
-    <input id="regUser" type="email" placeholder="Email Baru">
-    <input id="regPass" type="password" placeholder="Password (Min 6 Digit)">
-    <button onclick="register()">DAFTAR SEKARANG</button>
-    <p style="margin-top:15px; font-size:13px;">Sudah punya akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;font-weight:bold;">Login</span></p>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard">
-    <div id="topBar">
-        <div style="display:flex;align-items:center;gap:10px;">
-            <div class="profile-container" onclick="openGallery()">
-                <img id="userImg" src="https://i.imgur.com/8Km9tLL.png">
-            </div>
-            <input type="file" id="fileInput" style="display:none;" accept="image/*" onchange="uploadFoto()">
-            <div>
-                <div id="welcome">Rp. 0</div>
-                <div id="emailText">Memuat...</div>
-            </div>
-        </div>
-        <button id="logoutBtn" onclick="logout()">Logout</button>
-    </div>
-
-    <div id="sidebar">
-        <div class="menuItem active" id="mNews" onclick="showNews()"><img src="https://img.icons8.com/color/48/news.png"><span>Berita</span></div>
-        <div class="menuItem" id="mQuiz" onclick="showQuiz()"><img src="https://img.icons8.com/color/48/book-shelf.png"><span>Soal</span></div>
-        <div class="menuItem" id="mInvest" onclick="showInvest()"><img src="https://img.icons8.com/color/48/coins.png"><span>Invest</span></div>
-        <div class="menuItem" id="mDepo" onclick="showDepo()"><img src="https://img.icons8.com/color/48/request-money.png"><span>Depo</span></div>
-        <div class="menuItem" id="mTarik" onclick="showTarik()"><img src="https://img.icons8.com/color/48/atm.png"><span>Tarik</span></div>
-    </div>
-
-    <div id="content">
-        <div id="newsBox" class="card">Selamat Datang di Investasi Page421!</div>
-        <div id="quizBox" class="card" style="display:none;"><h3>Materi & Soal</h3><p>Segera hadir.</p></div>
-        
-        <div id="investBox" style="display:none;">
-            <div class="invest-card">
-                <div class="invest-title">
-                    <span>Paket Investasi A</span>
-                    <span id="checkPaketA" style="display:none; color:cyan;">✓ Aktif</span>
-                </div>
-                <div class="invest-detail">💰 Harga: Rp 20.000</div>
-                <div class="invest-detail">📈 Profit: Rp 500 / Hari</div>
-                <div class="invest-detail">📅 Durasi: 60 Hari</div>
-                <div id="timerInfo" style="color:cyan; font-size:13px; margin-top:10px; font-weight:bold;"></div>
-                <button id="btnBeliA" class="btn-invest" onclick="buyInvest()">BELI SEKARANG</button>
-            </div>
-        </div>
-
-        <div id="depoBox" style="display:none;" class="card">
-            <div class="depo-container">
-                <p style="color:black">Nominal Depo:</p>
-                <h1 style="color:black; margin:10px 0;">Rp 50.000</h1>
-                <button class="btn-depo" onclick="kirimDepo()">REQUEST DEPO</button>
-            </div>
-        </div>
-
-        <!-- NEW WITHDRAWAL MENU (LIKE LOGIN BOX) -->
-        <div id="tarikBox" style="display:none; position: relative; height: 100%;">
-            <div class="box" style="position: relative; top: 0; left: 0; transform: none; margin: 0 auto; border-color: #ff4757;">
-                <div class="logo-wrapper" style="background: rgba(255, 71, 87, 0.1); border: 2px solid #ff4757;">
-                    <svg viewBox="0 0 24 24" width="48" height="48" stroke="#ff4757" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 19V5M5 12l7-7 7 7"/>
-                        <rect x="2" y="17" width="20" height="4" rx="1"/>
-                    </svg>
-                </div>
-                <h2 style="color: white; margin-bottom: 5px;">Penarikan</h2>
-                <p id="infoSaldoTarik" style="font-size: 11px; color: #777; margin-bottom: 15px;">Saldo: Rp 0</p>
-                
-                <input id="nominalTarik" type="text" value="50.000" 
-                       onfocus="if(this.value=='50.000')this.value=''" 
-                       onblur="if(this.value=='')this.value='50.000'"
-                       style="text-align: center; font-size: 20px; font-weight: bold; border: 1px solid #333;">
-                
-                <button onclick="kirimTarik()" style="background: #ff4757; color: white;">REQUEST TARIK</button>
-                <p style="margin-top: 10px; font-size: 10px; color: #555;">Minimal penarikan Rp 50.000</p>
-            </div>
-        </div>
-    </div>
-</div>
-
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
-<script>
-const firebaseConfig = {
-    apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
-    authDomain: "page421-b9a6c.firebaseapp.com",
-    databaseURL: "https://page421-b9a6c-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "page421-b9a6c"
-};
+<script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+    const { motion, AnimatePresence } = FramerMotion;
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.database();
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
+        authDomain: "page421-b9a6c.firebaseapp.com",
+        databaseURL: "https://page421-b9a6c-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "page421-b9a6c"
+    };
 
-let totalDepoSelesai = 0, totalTarikSelesai = 0, historyInvestasi = [], currentBalance = 0, sedangDaftar = false;
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
 
-auth.onAuthStateChanged(user => {
-    if (sedangDaftar) return;
-    if (user) {
-        document.getElementById('loginBox').style.display = "none";
-        document.getElementById('registerBox').style.display = "none";
-        document.getElementById('dashboard').style.display = "block";
-        document.getElementById('emailText').innerText = user.email;
-        showPopup();
-        db.ref("users/" + user.uid + "/photo").on("value", snap => {
-            if (snap.val()) document.getElementById('userImg').src = snap.val();
-        });
-        loadDataRealtime(user.uid);
-    } else {
-        document.getElementById('dashboard').style.display = "none";
-        if(!sedangDaftar) document.getElementById('loginBox').style.display = "block";
+    function App() {
+        const [user, setUser] = useState(null);
+        const [loading, setLoading] = useState(true);
+        const [email, setEmail] = useState('');
+        const [password, setPassword] = useState('');
+        const [isRegistering, setIsRegistering] = useState(false);
+        const [activeMenu, setActiveMenu] = useState('news');
+        const [showAnnouncement, setShowAnnouncement] = useState(false);
+        const [balance, setBalance] = useState(0);
+        const [userPhoto, setUserPhoto] = useState('https://i.imgur.com/8Km9tLL.png');
+        const [investmentStatus, setInvestmentStatus] = useState({ active: false, daysLeft: 0 });
+        const [withdrawAmount, setWithdrawAmount] = useState('50.000');
+        const [transactions, setTransactions] = useState([]);
+
+        useEffect(() => {
+            return auth.onAuthStateChanged(u => {
+                setUser(u);
+                setLoading(false);
+                if (u) {
+                    setShowAnnouncement(true);
+                    loadData(u.uid);
+                }
+            });
+        }, []);
+
+        const loadData = (uid) => {
+            db.ref(`users/${uid}/photo`).on('value', snap => {
+                if (snap.val()) setUserPhoto(snap.val());
+            });
+
+            let topupTotal = 0;
+            let tarikTotal = 0;
+            let history = [];
+            let allTx = [];
+
+            const calculateBalance = () => {
+                let cost = 0;
+                let profit = 0;
+                let isActive = false;
+                let left = 0;
+                const now = Date.now();
+
+                history.forEach(inv => {
+                    cost += 20000;
+                    const diffDays = Math.floor((now - inv.tanggalBeli) / 86400000);
+                    const pDays = diffDays > 60 ? 60 : diffDays;
+                    profit += (pDays * 500);
+                    if (diffDays < 60) {
+                        isActive = true;
+                        left = 60 - diffDays;
+                    }
+                });
+
+                setInvestmentStatus({ active: isActive, daysLeft: left });
+                setBalance(topupTotal - cost + profit - tarikTotal);
+                setTransactions([...allTx].sort((a,b) => b.timestamp - a.timestamp));
+            };
+
+            db.ref("topup").on('value', snap => {
+                topupTotal = 0;
+                allTx = allTx.filter(t => t.type !== 'depo');
+                snap.forEach(c => {
+                    const v = c.val();
+                    if(v.uid === uid) {
+                        if(v.status === "selesai") topupTotal += parseInt(v.nominal);
+                        allTx.push({id: c.key, type: 'depo', nominal: v.nominal, status: v.status, timestamp: v.timestamp });
+                    }
+                });
+                calculateBalance();
+            });
+
+            db.ref("penarikan").on('value', snap => {
+                tarikTotal = 0;
+                allTx = allTx.filter(t => t.type !== 'tarik');
+                snap.forEach(c => {
+                    const v = c.val();
+                    if(v.uid === uid) {
+                        if(v.status === "selesai") tarikTotal += parseInt(v.nominal);
+                        allTx.push({id: c.key, type: 'tarik', nominal: v.nominal, status: v.status, timestamp: v.timestamp });
+                    }
+                });
+                calculateBalance();
+            });
+
+            db.ref(`invest_history/${uid}`).on('value', snap => {
+                history = [];
+                snap.forEach(c => { history.push(c.val()); });
+                calculateBalance();
+            });
+        };
+
+        const handleLogin = (e) => {
+            e.preventDefault();
+            auth.signInWithEmailAndPassword(email, password).catch(err => alert(err.message));
+        };
+
+        const handleRegister = (e) => {
+            e.preventDefault();
+            auth.createUserWithEmailAndPassword(email, password).then(() => {
+                auth.signOut();
+                alert("Registrasi Berhasil! Silakan Login.");
+                setIsRegistering(false);
+            }).catch(err => alert(err.message));
+        };
+
+        const handleWithdraw = () => {
+            const amount = parseInt(withdrawAmount.replace(/\./g, ''));
+            if(amount < 50000) return alert("Minimal Rp 50.000");
+            if(balance < amount) return alert("Saldo Kurang");
+            db.ref("penarikan").push({
+                uid: user.uid, email: user.email, nominal: amount, status: "pending", timestamp: Date.now()
+            }).then(() => alert("Request Terkirim!"));
+        };
+
+        if (loading) return <div className="h-screen bg-black flex items-center justify-center text-cyan-400 font-bold">Memuat...</div>;
+
+        if (!user) return (
+            <div className="h-screen flex items-center justify-center bg-black px-6">
+                <div className="w-full max-w-sm bg-[#111] border border-white/10 p-8 rounded-2xl text-center">
+                    <div className="bg-white w-24 h-24 mx-auto mb-6 rounded-xl p-2 flex items-center justify-center">
+                        <svg viewBox="0 0 100 100" className="w-full h-full">
+                            <rect x="5" y="5" width="90" height="90" rx="8" fill="none" stroke="black" strokeWidth="4"/>
+                            <path d="M25 25 v50 M25 25 h20 c15 0 15 20 0 20 h-20" fill="none" stroke="black" strokeWidth="8" strokeLinecap="round"/>
+                            <text x="48" y="65" fontFamily="Arial" fontWeight="bold" fontSize="20" fill="black">Age</text>
+                        </svg>
+                    </div>
+                    <h2 className="text-2xl font-bold mb-6">{isRegistering ? 'Registrasi' : 'Login'}</h2>
+                    <form onSubmit={isRegistering ? handleRegister : handleLogin} className="space-y-4">
+                        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-[#222] p-3 rounded-lg outline-none ring-1 ring-white/5 focus:ring-cyan-500" />
+                        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-[#222] p-3 rounded-lg outline-none ring-1 ring-white/5 focus:ring-cyan-500" />
+                        <button type="submit" className="w-full bg-white text-black font-bold py-3 rounded-lg active:scale-95 transition">{isRegistering ? 'DAFTAR' : 'MASUK'}</button>
+                    </form>
+                    <p className="mt-6 text-sm text-gray-500">
+                        {isRegistering ? 'Sudah punya akun?' : 'Belum punya akun?'} 
+                        <span onClick={() => setIsRegistering(!isRegistering)} className="text-cyan-400 font-bold ml-1 cursor-pointer">
+                            {isRegistering ? 'Login' : 'Registrasi'}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        );
+
+        return (
+            <div className="h-screen bg-black text-white">
+                {/* Announcement */}
+                <AnimatePresence>
+                    {showAnnouncement && (
+                        <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-6">
+                            <motion.div initial={{scale:0.8}} animate={{scale:1}} className="bg-[#111] border-2 border-cyan-500 p-10 rounded-3xl max-w-sm text-center relative">
+                                <button onClick={() => setShowAnnouncement(false)} className="absolute top-4 right-4 text-gray-500 text-2xl">✕</button>
+                                <h2 className="text-cyan-400 text-xl font-bold mb-4">📢 Pengumuman</h2>
+                                <p className="text-gray-300">Selamat datang di Investasi Page421! Pantau terus paket investasi Anda.</p>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Navbar */}
+                <div className="h-20 bg-[#111] border-b border-white/10 px-6 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full border-2 border-cyan-500 overflow-hidden">
+                            <img src={userPhoto} className="w-full h-full object-cover" />
+                        </div>
+                        <div>
+                            <div className="text-cyan-400 font-bold text-lg">Rp {balance.toLocaleString('id-ID')}</div>
+                            <div className="text-[10px] text-gray-400">{user.email}</div>
+                        </div>
+                    </div>
+                    <button onClick={() => auth.signOut().then(() => window.location.reload())} className="bg-white text-black text-xs font-bold px-4 py-2 rounded-lg">Logout</button>
+                </div>
+
+                <div className="flex h-[calc(100vh-80px)]">
+                    {/* Sidebar */}
+                    <div className="w-20 bg-[#111] border-r border-white/10 flex flex-col items-center py-6 gap-6">
+                        {[
+                            {id: 'news', icon: 'newspaper'},
+                            {id: 'quiz', icon: 'book-open'},
+                            {id: 'invest', icon: 'coins'},
+                            {id: 'depo', icon: 'arrow-down-to-line'},
+                            {id: 'tarik', icon: 'arrow-up-from-line'},
+                            {id: 'history', icon: 'history'},
+                        ].map(item => (
+                            <div key={item.id} onClick={() => setActiveMenu(item.id)} className={`p-2 rounded-xl cursor-pointer ${activeMenu === item.id ? 'bg-white text-black' : 'text-gray-500'}`}>
+                                <i data-lucide={item.icon} className="w-6 h-6"></i>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Content Area */}
+                    <div className="flex-1 p-6 overflow-y-auto">
+                        {activeMenu === 'news' && <div className="bg-white text-black p-6 rounded-2xl font-bold">Selamat Datang di Page421!</div>}
+                        
+                        {activeMenu === 'invest' && (
+                            <div className="bg-[#1a1a1a] border border-white/10 p-6 rounded-2xl">
+                                <div className="text-cyan-400 font-bold text-xl border-b border-white/5 pb-2 mb-4 flex justify-between">
+                                    <span>Paket Investasi A</span>
+                                    {investmentStatus.active && <span className="text-xs">✓ Aktif</span>}
+                                </div>
+                                <p className="text-sm text-gray-400 mb-1">💰 Harga: Rp 20.000</p>
+                                <p className="text-sm text-gray-400 mb-1">📈 Profit: Rp 500 / Hari</p>
+                                <p className="text-sm text-gray-400 mb-4">📅 Durasi: 60 Hari</p>
+                                {investmentStatus.active && <div className="text-cyan-400 text-xs font-bold mb-4">Sisa: {investmentStatus.daysLeft} Hari</div>}
+                                <button 
+                                    disabled={investmentStatus.active}
+                                    onClick={() => {
+                                        if(balance < 20000) return alert("Saldo Kurang");
+                                        db.ref(`invest_history/${user.uid}`).push({tanggalBeli: Date.now(), harga:20000});
+                                    }}
+                                    className={`w-full py-3 rounded-xl font-bold ${investmentStatus.active ? 'bg-gray-800 text-gray-500' : 'bg-cyan-500 text-black'}`}
+                                >
+                                    {investmentStatus.active ? 'PAKET AKTIF' : 'BELI SEKARANG'}
+                                </button>
+                            </div>
+                        )}
+
+                        {activeMenu === 'depo' && (
+                            <div className="bg-white text-black p-8 rounded-2xl text-center">
+                                <div className="border-2 border-dashed border-cyan-500 p-6 rounded-2xl">
+                                    <p className="text-sm">Nominal Depo:</p>
+                                    <h1 className="text-3xl font-black my-2">Rp 50.000</h1>
+                                    <button onClick={() => {
+                                        db.ref("topup").push({uid: user.uid, email: user.email, nominal: 50000, status: "pending", timestamp: Date.now()});
+                                        alert("Request Terkirim!");
+                                    }} className="w-full bg-black text-cyan-400 py-3 rounded-xl font-bold mt-4">REQUEST DEPO</button>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeMenu === 'tarik' && (
+                            <div className="flex justify-center">
+                                <div className="w-full max-w-sm bg-[#111] p-8 rounded-[24px] border border-white/10 text-center shadow-xl">
+                                    <h2 className="text-2xl font-bold mb-1">Penarikan</h2>
+                                    <p className="text-[10px] text-gray-500 mb-6">Saldo: Rp {balance.toLocaleString()}</p>
+                                    <input 
+                                        type="text" 
+                                        value={withdrawAmount} 
+                                        onChange={e => setWithdrawAmount(e.target.value)} 
+                                        onFocus={() => withdrawAmount === '50.000' && setWithdrawAmount('')}
+                                        className="w-full bg-[#222] p-4 text-center text-2xl font-black rounded-xl mb-4 border border-white/5 outline-none focus:ring-1 ring-red-500" 
+                                    />
+                                    <button onClick={handleWithdraw} className="w-full bg-red-500 py-4 rounded-xl font-bold active:scale-95 transition">REQUEST TARIK</button>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeMenu === 'history' && (
+                            <div className="space-y-3">
+                                <h2 className="text-cyan-400 font-bold mb-4">Riwayat Transaksi</h2>
+                                {transactions.map(t => (
+                                    <div key={t.id} className="bg-[#111] border border-white/5 p-4 rounded-xl flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`p-2 rounded-lg ${t.type === 'depo' ? 'bg-cyan-500/10 text-cyan-500' : 'bg-red-500/10 text-red-500'}`}>
+                                                <i data-lucide={t.type === 'depo' ? 'arrow-down' : 'arrow-up'} className="w-5 h-5"></i>
+                                            </div>
+                                            <div>
+                                                <div className="font-bold text-sm">{t.type === 'depo' ? 'Depo' : 'Tarik'} Rp {parseInt(t.nominal).toLocaleString()}</div>
+                                                <div className="text-[10px] text-gray-500">{t.timestamp ? new Date(t.timestamp).toLocaleTimeString() : ''}</div>
+                                            </div>
+                                        </div>
+                                        <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${t.status === 'selesai' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500'}`}>
+                                            {t.status.toUpperCase()}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
     }
-});
 
-function loadDataRealtime(uid) {
-    db.ref("topup").on("value", snap => {
-        totalDepoSelesai = 0;
-        snap.forEach(c => { if(c.val().uid === uid && c.val().status === "selesai") totalDepoSelesai += parseInt(c.val().nominal); });
-        hitungSistem();
-    });
-    db.ref("penarikan").on("value", snap => {
-        totalTarikSelesai = 0;
-        snap.forEach(c => { if(c.val().uid === uid && c.val().status === "selesai") totalTarikSelesai += parseInt(c.val().nominal); });
-        hitungSistem();
-    });
-    db.ref("invest_history/" + uid).on("value", snap => {
-        historyInvestasi = [];
-        snap.forEach(c => { historyInvestasi.push(c.val()); });
-        hitungSistem();
-    });
-}
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
 
-function hitungSistem() {
-    let totalBiayaBeli = 0, totalProfitLaba = 0, adaAktif = false, sekarang = Date.now();
-    historyInvestasi.forEach(inv => {
-        totalBiayaBeli += (inv.harga || 20000);
-        let diffHari = Math.floor((sekarang - inv.tanggalBeli) / 86400000);
-        let hariProfit = diffHari > 60 ? 60 : diffHari;
-        totalProfitLaba += (hariProfit * 500);
-        if (diffHari < 60) {
-            adaAktif = true;
-            document.getElementById('timerInfo').innerText = "Status: Aktif (" + (60 - diffHari) + " Hari lagi)";
-        }
-    });
-    if(!adaAktif) document.getElementById('timerInfo').innerText = "";
-    currentBalance = totalDepoSelesai - totalBiayaBeli + totalProfitLaba - totalTarikSelesai;
-    document.getElementById('welcome').innerText = "Rp. " + currentBalance.toLocaleString('id-ID');
-    document.getElementById('infoSaldoTarik').innerText = "Saldo: Rp " + currentBalance.toLocaleString('id-ID');
-    document.getElementById('checkPaketA').style.display = adaAktif ? "inline" : "none";
-    document.getElementById('btnBeliA').disabled = adaAktif;
-    document.getElementById('btnBeliA').innerText = adaAktif ? "PAKET AKTIF" : "BELI SEKARANG";
-}
-
-function showPopup() { document.getElementById('announcementPopup').style.display = "flex"; }
-function closePopup() { document.getElementById('announcementPopup').style.display = "none"; }
-
-function login() { auth.signInWithEmailAndPassword(document.getElementById('loginUser').value, document.getElementById('loginPass').value).catch(e => alert(e.message)); }
-function logout() { auth.signOut().then(() => location.reload()); }
-function showRegister() { document.getElementById('loginBox').style.display="none"; document.getElementById('registerBox').style.display="block"; }
-function showLogin() { document.getElementById('registerBox').style.display="none"; document.getElementById('loginBox').style.display="block"; }
-function register() {
-    sedangDaftar = true;
-    auth.createUserWithEmailAndPassword(document.getElementById('regUser').value, document.getElementById('regPass').value)
-    .then(() => auth.signOut()).then(() => { alert("Registrasi Berhasil!"); sedangDaftar=false; showLogin(); })
-    .catch(e => { sedangDaftar=false; alert(e.message); });
-}
-
-function clearMenu() {
-    const ids = ['newsBox','quizBox','investBox','depoBox','tarikBox'];
-    ids.forEach(id => document.getElementById(id).style.display="none");
-    document.querySelectorAll('.menuItem').forEach(m => m.classList.remove('active'));
-}
-function showNews() { clearMenu(); document.getElementById('newsBox').style.display="block"; document.getElementById('mNews').classList.add('active'); }
-function showQuiz() { clearMenu(); document.getElementById('quizBox').style.display="block"; document.getElementById('mQuiz').classList.add('active'); }
-function showInvest() { clearMenu(); document.getElementById('investBox').style.display="block"; document.getElementById('mInvest').classList.add('active'); }
-function showDepo() { clearMenu(); document.getElementById('depoBox').style.display="block"; document.getElementById('mDepo').classList.add('active'); }
-function showTarik() { clearMenu(); document.getElementById('tarikBox').style.display="block"; document.getElementById('mTarik').classList.add('active'); }
-
-function buyInvest() {
-    if (currentBalance < 20000) return alert("Saldo Kurang");
-    if(confirm("Beli paket investasi Rp 20.000?")){
-        db.ref("invest_history/" + auth.currentUser.uid).push({ tanggalBeli: Date.now(), harga: 20000 }).then(() => alert("Berhasil!"));
-    }
-}
-function kirimDepo() {
-    db.ref("topup").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: 50000, status: "pending" });
-    alert("Request Depo Terkirim!");
-}
-function kirimTarik() {
-    let nominalRaw = document.getElementById('nominalTarik').value.replace(/\./g, '');
-    let nominal = parseInt(nominalRaw);
-    
-    if (isNaN(nominal) || nominal < 50000) return alert("Minimal penarikan Rp 50.000");
-    if (currentBalance < nominal) return alert("Saldo Kurang");
-    
-    db.ref("penarikan").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: nominal, status: "pending" });
-    alert("Request Tarik Terkirim!");
-}
-function openGallery() { document.getElementById('fileInput').click(); }
-function uploadFoto() {
-    const reader = new FileReader();
-    reader.onload = e => db.ref("users/" + auth.currentUser.uid).update({ photo: e.target.result });
-    reader.readAsDataURL(document.getElementById('fileInput').files[0]);
-}
+    // Initialize icons after React render
+    setTimeout(() => lucide.createIcons(), 500);
 </script>
+
 </body>
 </html>
