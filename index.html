@@ -5,176 +5,208 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Investasi Page421</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
-        html,body{width:100%;height:100%;overflow:hidden;background:black;color:white;}
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', Arial, sans-serif; }
+        
+        /* Tema Warna */
+        :root {
+            --bg-main: #0f1115;
+            --bg-card: #181a20;
+            --border-color: #2b3139;
+            --text-main: #eaeaea;
+            --text-muted: #848e9c;
+            --accent: #00e5ff;
+            --accent-hover: #00b8d4;
+            --danger: #ff4757;
+        }
+
+        html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg-main); color: var(--text-main); }
 
         /* LOGO */
         .logo-wrapper {
-            width: 100px; height: 100px; margin: 0 auto 15px auto;
-            background: white; padding: 10px; border-radius: 12px;
+            width: 90px; height: 90px; margin: 0 auto 20px auto;
+            background: linear-gradient(135deg, #ffffff, #e0e0e0); padding: 10px; border-radius: 16px;
             display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
 
         /* BOX LOGIN & REGISTER */
-        .box{background:#111;padding:25px;border-radius:15px;width:90%;max-width:350px;text-align:center;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border: 1px solid #333; z-index: 100;}
-        input:not([type="file"]){width:100%;padding:12px;margin:8px 0;border:none;border-radius:8px;background:#222;color:white;outline:none;}
-        button:not(#logoutBtn, .btn-invest, .btn-depo){width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px;font-weight:bold;background:white;color:black;cursor:pointer;}
+        .box { background: var(--bg-card); padding: 30px 25px; border-radius: 20px; width: 90%; max-width: 360px; text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); border: 1px solid var(--border-color); z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .box h2 { color: var(--text-main); margin-bottom: 20px; font-weight: 700; }
+        input:not([type="file"]) { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid var(--border-color); border-radius: 10px; background: #0f1115; color: white; outline: none; transition: 0.3s; }
+        input:not([type="file"]):focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.2); }
+        button:not(#logoutBtn, .btn-invest, .btn-depo) { width: 100%; padding: 14px; margin-top: 15px; border: none; border-radius: 10px; font-weight: 700; background: var(--accent); color: black; cursor: pointer; transition: 0.3s; font-size: 15px; }
+        button:not(#logoutBtn, .btn-invest, .btn-depo):hover { background: var(--accent-hover); transform: translateY(-2px); }
 
         /* DASHBOARD UI */
-        #dashboard{display:none;height:100%;}
-        #topBar{display:flex;justify-content:space-between;align-items:center;padding:15px;background:#111;border-bottom:1px solid #333;}
-        #welcome{font-size:18px;font-weight:bold;color: cyan;}
-        #emailText{font-size:11px;color:white;}
-        #logoutBtn{font-size:11px;padding:5px 10px;border:none;border-radius:5px;background:white;color:black;cursor:pointer;font-weight:bold;}
+        #dashboard { display: none; height: 100%; }
+        #topBar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: relative; z-index: 10; }
         
-        .profile-container { position: relative; cursor: pointer; width: 45px; height: 45px; }
-        .profile-container img { border-radius: 50%; width: 100%; height: 100%; object-fit: cover; border: 2px solid cyan; }
-        .profile-container::after { content: "+"; position: absolute; bottom: 0; right: 0; background: cyan; color: black; width: 15px; height: 15px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #111; }
+        .balance-info { display: flex; flex-direction: column; }
+        #welcome { font-size: 22px; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; }
+        #emailText { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        
+        #logoutBtn { font-size: 12px; padding: 8px 15px; border: 1px solid var(--border-color); border-radius: 8px; background: transparent; color: var(--text-muted); cursor: pointer; font-weight: 600; transition: 0.3s; }
+        #logoutBtn:hover { background: rgba(255, 71, 87, 0.1); color: var(--danger); border-color: var(--danger); }
+        
+        .profile-container { position: relative; cursor: pointer; width: 48px; height: 48px; }
+        .profile-container img { border-radius: 50%; width: 100%; height: 100%; object-fit: cover; border: 2px solid var(--accent); padding: 2px; }
+        .profile-container::after { content: "+"; position: absolute; bottom: 0; right: 0; background: var(--accent); color: black; width: 16px; height: 16px; border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid var(--bg-card); }
 
         /* SIDEBAR */
-        #sidebar{position:fixed;left:0;top:75px;width:80px;background:#111;height:100%;padding-top:20px;border-right:1px solid #333;display:flex;flex-direction:column;align-items:center;gap:15px;}
-        .menuItem{text-align:center;cursor:pointer;padding:10px;border-radius:10px;width:70px;transition:0.3s;}
-        .menuItem img{width:28px;height:28px;}
-        .menuItem span{display:block;font-size:10px;margin-top:5px;color: #ccc;}
-        .menuItem.active{background:white;}
-        .menuItem.active span, .menuItem.active img{filter: invert(1);}
+        #sidebar { position: fixed; left: 0; top: 80px; width: 85px; background: var(--bg-card); height: calc(100% - 80px); padding-top: 20px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 5; }
+        .menuItem { text-align: center; cursor: pointer; padding: 12px 5px; border-radius: 12px; width: 70px; transition: 0.3s; border: 1px solid transparent; }
+        .menuItem img { width: 26px; height: 26px; transition: 0.3s; }
+        .menuItem span { display: block; font-size: 11px; margin-top: 6px; color: var(--text-muted); font-weight: 600; transition: 0.3s; }
+        .menuItem:hover { background: rgba(255,255,255,0.05); }
+        .menuItem.active { background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.2); }
+        .menuItem.active span { color: var(--accent); }
 
         /* CONTENT AREA */
-        #content{padding:20px;margin-left:85px;height:calc(100% - 75px);overflow-y:auto;}
-        .card{background:white;color:black;padding:20px;border-radius:15px;margin-bottom:15px;font-weight:bold;}
+        #content { padding: 25px; margin-left: 85px; height: calc(100% - 80px); overflow-y: auto; background: var(--bg-main); }
+        .card { background: var(--bg-card); color: var(--text-main); padding: 25px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .card h3 { color: var(--accent); margin-bottom: 10px; }
 
         /* INVEST CARD */
-        .invest-card { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 20px; color: white; }
-        .invest-title { color: cyan; font-size: 20px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; display: flex; align-items: center; justify-content: space-between; }
-        .invest-detail { margin: 8px 0; font-size: 14px; color: #ccc; }
-        .btn-invest { width: 100%; padding: 12px; background: cyan; border: none; border-radius: 8px; color: black; font-weight: bold; margin-top: 15px; cursor: pointer; }
-        .btn-invest:disabled { background: #333; color: #666; cursor: not-allowed; }
-
-        /* POPUP PENGUMUMAN */
-        #announcementPopup {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 9999;
-            display: none; align-items: center; justify-content: center;
-        }
-        .popup-content {
-            background: #111; width: 85%; max-width: 380px;
-            padding: 40px 25px 40px 25px; border-radius: 20px; border: 2px solid cyan;
-            text-align: center; position: relative; animation: popZoom 0.3s ease;
-        }
-        @keyframes popZoom { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
-        
-        .close-popup-x {
-            position: absolute; top: 10px; right: 15px;
-            font-size: 35px; color: #777; cursor: pointer; line-height: 1;
-        }
-        .close-popup-x:hover { color: cyan; }
-
-        .popup-content h2 { color: cyan; margin-bottom: 15px; }
-        .popup-content p { font-size: 15px; line-height: 1.6; color: #eee; }
+        .invest-card { background: linear-gradient(145deg, #181a20, #121318); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; color: white; position: relative; overflow: hidden; }
+        .invest-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); }
+        .invest-title { color: var(--accent); font-size: 20px; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+        .invest-detail { margin: 10px 0; font-size: 15px; color: #b7bdc6; display: flex; align-items: center; gap: 8px; }
+        .btn-invest { width: 100%; padding: 14px; background: var(--accent); border: none; border-radius: 10px; color: black; font-weight: 700; font-size: 15px; margin-top: 20px; cursor: pointer; transition: 0.3s; }
+        .btn-invest:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3); }
+        .btn-invest:disabled { background: #2b3139; color: #848e9c; cursor: not-allowed; transform: none; box-shadow: none; }
 
         /* DEPO & TARIK */
-        .depo-container { background: #f1f1f1; border-radius: 15px; padding: 25px; text-align: center; border: 2px dashed #00b8d4; }
-        .btn-depo { width: 100%; padding: 15px; background: #000; color: #00e5ff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .depo-container { background: #121318; border-radius: 16px; padding: 30px 20px; text-align: center; border: 2px dashed var(--accent); }
+        .depo-container p { color: var(--text-muted); font-size: 14px; font-weight: 600; }
+        .depo-container h1 { color: white; margin: 15px 0 25px 0; font-size: 32px; letter-spacing: 1px; }
+        .btn-depo { width: 100%; padding: 16px; background: var(--accent); color: black; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn-depo:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 229, 255, 0.2); }
+        
+        .tarik-container { border-color: var(--danger); }
+        .btn-tarik { background: var(--danger); color: white; }
+        .btn-tarik:hover { background: #ff3344; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3); color: white;}
+
+        /* POPUP PENGUMUMAN */
+        #announcementPopup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 9999; display: none; align-items: center; justify-content: center; }
+        .popup-content { background: var(--bg-card); width: 85%; max-width: 400px; padding: 40px 30px; border-radius: 24px; border: 1px solid var(--border-color); box-shadow: 0 10px 40px rgba(0, 229, 255, 0.15); text-align: center; position: relative; animation: popZoom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popZoom { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        .close-popup-x { position: absolute; top: 15px; right: 20px; font-size: 32px; color: var(--text-muted); cursor: pointer; line-height: 1; transition: 0.3s; }
+        .close-popup-x:hover { color: var(--accent); transform: rotate(90deg); }
+        .popup-content h2 { color: var(--accent); margin-bottom: 15px; font-weight: 700; }
+        .popup-content p { font-size: 15px; line-height: 1.6; color: var(--text-main); }
+        
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
     </style>
 </head>
 <body>
 
-<!-- POPUP PENGUMUMAN (Tanpa tombol, hanya X) -->
 <div id="announcementPopup">
     <div class="popup-content">
         <span class="close-popup-x" onclick="closePopup()">&times;</span>
         <h2>📢 Pengumuman</h2>
-        <p>Selamat datang di Investasi Page421! Pantau terus paket investasi Anda dan kumpulkan profit setiap harinya.</p>
+        <p>Selamat datang di <strong>Investasi Page421</strong>!<br><br>Pantau terus paket investasi Anda dan kumpulkan profit setiap harinya dengan mudah.</p>
     </div>
 </div>
 
-<!-- LOGIN -->
 <div class="box" id="loginBox">
     <div class="logo-wrapper">
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <rect x="5" y="5" width="90" height="90" rx="8" fill="none" stroke="black" stroke-width="4"/>
-            <path d="M25 25 v50 M25 25 h20 c15 0 15 20 0 20 h-20" fill="none" stroke="black" stroke-width="8" stroke-linecap="round"/>
-            <text x="48" y="65" font-family="Arial" font-weight="bold" font-size="20" fill="black">Age</text>
+            <rect x="5" y="5" width="90" height="90" rx="12" fill="none" stroke="#000" stroke-width="4"/>
+            <path d="M25 25 v50 M25 25 h20 c15 0 15 20 0 20 h-20" fill="none" stroke="#000" stroke-width="8" stroke-linecap="round"/>
+            <text x="48" y="65" font-family="Arial" font-weight="bold" font-size="20" fill="#000">Age</text>
         </svg>
     </div>
-    <h2>Login</h2>
-    <input id="loginUser" type="email" placeholder="Email">
+    <h2>Login Akun</h2>
+    <input id="loginUser" type="email" placeholder="Alamat Email">
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">MASUK</button>
-    <p style="margin-top:15px; font-size:13px;">Belum punya akun? <span onclick="showRegister()" style="color:cyan;cursor:pointer;font-weight:bold;">Registrasi</span></p>
+    <p style="margin-top:20px; font-size:13px; color: var(--text-muted);">Belum punya akun? <span onclick="showRegister()" style="color:var(--accent);cursor:pointer;font-weight:bold;">Registrasi</span></p>
 </div>
 
-<!-- REGISTER -->
 <div class="box" id="registerBox" style="display:none;">
     <div class="logo-wrapper">
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <rect x="5" y="5" width="90" height="90" rx="8" fill="none" stroke="black" stroke-width="4"/>
-            <path d="M25 25 v50 M25 25 h20 c15 0 15 20 0 20 h-20" fill="none" stroke="black" stroke-width="8" stroke-linecap="round"/>
-            <text x="48" y="65" font-family="Arial" font-weight="bold" font-size="20" fill="black">Age</text>
+            <rect x="5" y="5" width="90" height="90" rx="12" fill="none" stroke="#000" stroke-width="4"/>
+            <path d="M25 25 v50 M25 25 h20 c15 0 15 20 0 20 h-20" fill="none" stroke="#000" stroke-width="8" stroke-linecap="round"/>
+            <text x="48" y="65" font-family="Arial" font-weight="bold" font-size="20" fill="#000">Age</text>
         </svg>
     </div>
-    <h2>Registrasi</h2>
+    <h2>Daftar Akun Baru</h2>
     <input id="regUser" type="email" placeholder="Email Baru">
     <input id="regPass" type="password" placeholder="Password (Min 6 Digit)">
     <button onclick="register()">DAFTAR SEKARANG</button>
-    <p style="margin-top:15px; font-size:13px;">Sudah punya akun? <span onclick="showLogin()" style="color:cyan;cursor:pointer;font-weight:bold;">Login</span></p>
+    <p style="margin-top:20px; font-size:13px; color: var(--text-muted);">Sudah punya akun? <span onclick="showLogin()" style="color:var(--accent);cursor:pointer;font-weight:bold;">Login</span></p>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard">
     <div id="topBar">
-        <div style="display:flex;align-items:center;gap:10px;">
+        <div style="display:flex;align-items:center;gap:15px;">
             <div class="profile-container" onclick="openGallery()">
-                <img id="userImg" src="https://i.imgur.com/8Km9tLL.png">
+                <img id="userImg" src="https://i.imgur.com/8Km9tLL.png" alt="Profile">
             </div>
             <input type="file" id="fileInput" style="display:none;" accept="image/*" onchange="uploadFoto()">
-            <div>
-                <div id="welcome">Rp. 0</div>
-                <div id="emailText">Memuat...</div>
+            <div class="balance-info">
+                <div id="welcome">Rp 0</div>
+                <div id="emailText">Memuat data...</div>
             </div>
         </div>
-        <button id="logoutBtn" onclick="logout()">Logout</button>
+        <button id="logoutBtn" onclick="logout()">Keluar</button>
     </div>
 
     <div id="sidebar">
-        <div class="menuItem active" id="mNews" onclick="showNews()"><img src="https://img.icons8.com/color/48/news.png"><span>Berita</span></div>
-        <div class="menuItem" id="mQuiz" onclick="showQuiz()"><img src="https://img.icons8.com/color/48/book-shelf.png"><span>Soal</span></div>
-        <div class="menuItem" id="mInvest" onclick="showInvest()"><img src="https://img.icons8.com/color/48/coins.png"><span>Invest</span></div>
-        <div class="menuItem" id="mDepo" onclick="showDepo()"><img src="https://img.icons8.com/color/48/request-money.png"><span>Depo</span></div>
-        <div class="menuItem" id="mTarik" onclick="showTarik()"><img src="https://img.icons8.com/color/48/atm.png"><span>Tarik</span></div>
+        <div class="menuItem active" id="mNews" onclick="showNews()"><img src="https://img.icons8.com/color/48/news.png" alt="News"><span>Berita</span></div>
+        <div class="menuItem" id="mQuiz" onclick="showQuiz()"><img src="https://img.icons8.com/color/48/book-shelf.png" alt="Quiz"><span>Soal</span></div>
+        <div class="menuItem" id="mInvest" onclick="showInvest()"><img src="https://img.icons8.com/color/48/coins.png" alt="Invest"><span>Invest</span></div>
+        <div class="menuItem" id="mDepo" onclick="showDepo()"><img src="https://img.icons8.com/color/48/request-money.png" alt="Depo"><span>Top Up</span></div>
+        <div class="menuItem" id="mTarik" onclick="showTarik()"><img src="https://img.icons8.com/color/48/atm.png" alt="Tarik"><span>Tarik</span></div>
     </div>
 
     <div id="content">
-        <div id="newsBox" class="card">Selamat Datang di Investasi Page421!</div>
-        <div id="quizBox" class="card" style="display:none;"><h3>Materi & Soal</h3><p>Segera hadir.</p></div>
+        <div id="newsBox" class="card">
+            <h3>Pusat Informasi</h3>
+            <p style="color: var(--text-muted); line-height: 1.6;">Selamat Datang di Investasi Page421! Pilih menu di samping untuk memulai perjalanan investasi Anda hari ini.</p>
+        </div>
+        
+        <div id="quizBox" class="card" style="display:none;">
+            <h3>Materi & Soal</h3>
+            <p style="color: var(--text-muted);">Fitur ini sedang dalam tahap pengembangan. Segera hadir.</p>
+        </div>
         
         <div id="investBox" style="display:none;">
             <div class="invest-card">
                 <div class="invest-title">
-                    <span>Paket Investasi A</span>
-                    <span id="checkPaketA" style="display:none; color:cyan;">✓ Aktif</span>
+                    <span>Paket Alpha</span>
+                    <span id="checkPaketA" style="display:none; color:var(--accent); font-size: 14px; font-weight: normal; background: rgba(0,229,255,0.1); padding: 4px 10px; border-radius: 20px;">✓ Aktif</span>
                 </div>
-                <div class="invest-detail">💰 Harga: Rp 20.000</div>
-                <div class="invest-detail">📈 Profit: Rp 500 / Hari</div>
-                <div class="invest-detail">📅 Durasi: 60 Hari</div>
-                <div id="timerInfo" style="color:cyan; font-size:13px; margin-top:10px; font-weight:bold;"></div>
+                <div class="invest-detail">💰 Harga: <strong>Rp 20.000</strong></div>
+                <div class="invest-detail">📈 Profit: <strong>Rp 500 / Hari</strong></div>
+                <div class="invest-detail">📅 Durasi: <strong>60 Hari</strong></div>
+                <div id="timerInfo" style="color:var(--accent); font-size:14px; margin-top:15px; font-weight:bold;"></div>
                 <button id="btnBeliA" class="btn-invest" onclick="buyInvest()">BELI SEKARANG</button>
             </div>
         </div>
 
         <div id="depoBox" style="display:none;" class="card">
+            <h3 style="margin-bottom: 20px; text-align: center;">Isi Saldo (Deposit)</h3>
             <div class="depo-container">
-                <p style="color:black">Nominal Depo:</p>
-                <h1 style="color:black; margin:10px 0;">Rp 50.000</h1>
-                <button class="btn-depo" onclick="kirimDepo()">REQUEST DEPO</button>
+                <p>Nominal Deposit Cepat:</p>
+                <h1>Rp 50.000</h1>
+                <button class="btn-depo" onclick="kirimDepo()">REQUEST DEPOSIT</button>
             </div>
         </div>
 
         <div id="tarikBox" style="display:none;" class="card">
-            <div class="depo-container" style="border-color: #ff4757;">
-                <p style="color:black">Nominal Penarikan:</p>
-                <h1 style="color:black; margin:10px 0;">Rp 50.000</h1>
-                <button class="btn-depo" style="background:#ff4757; color:white;" onclick="kirimTarik()">REQUEST TARIK</button>
+            <h3 style="margin-bottom: 20px; text-align: center;">Penarikan Dana (Withdraw)</h3>
+            <div class="depo-container tarik-container">
+                <p>Nominal Penarikan Cepat:</p>
+                <h1>Rp 50.000</h1>
+                <button class="btn-depo btn-tarik" onclick="kirimTarik()">REQUEST TARIK</button>
             </div>
         </div>
     </div>
@@ -185,6 +217,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
+// (Bagian Javascript Firebase Tetap Sama, Tidak Ada Perubahan Logic)
 const firebaseConfig = {
     apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
     authDomain: "page421-b9a6c.firebaseapp.com",
@@ -248,8 +281,8 @@ function hitungSistem() {
     });
     if(!adaAktif) document.getElementById('timerInfo').innerText = "";
     currentBalance = totalDepoSelesai - totalBiayaBeli + totalProfitLaba - totalTarikSelesai;
-    document.getElementById('welcome').innerText = "Rp. " + currentBalance.toLocaleString('id-ID');
-    document.getElementById('checkPaketA').style.display = adaAktif ? "inline" : "none";
+    document.getElementById('welcome').innerText = "Rp " + currentBalance.toLocaleString('id-ID');
+    document.getElementById('checkPaketA').style.display = adaAktif ? "inline-block" : "none";
     document.getElementById('btnBeliA').disabled = adaAktif;
     document.getElementById('btnBeliA').innerText = adaAktif ? "PAKET AKTIF" : "BELI SEKARANG";
 }
@@ -276,30 +309,4 @@ function clearMenu() {
 function showNews() { clearMenu(); document.getElementById('newsBox').style.display="block"; document.getElementById('mNews').classList.add('active'); }
 function showQuiz() { clearMenu(); document.getElementById('quizBox').style.display="block"; document.getElementById('mQuiz').classList.add('active'); }
 function showInvest() { clearMenu(); document.getElementById('investBox').style.display="block"; document.getElementById('mInvest').classList.add('active'); }
-function showDepo() { clearMenu(); document.getElementById('depoBox').style.display="block"; document.getElementById('mDepo').classList.add('active'); }
-function showTarik() { clearMenu(); document.getElementById('tarikBox').style.display="block"; document.getElementById('mTarik').classList.add('active'); }
-
-function buyInvest() {
-    if (currentBalance < 20000) return alert("Saldo Kurang");
-    if(confirm("Beli paket investasi Rp 20.000?")){
-        db.ref("invest_history/" + auth.currentUser.uid).push({ tanggalBeli: Date.now(), harga: 20000 }).then(() => alert("Berhasil!"));
-    }
-}
-function kirimDepo() {
-    db.ref("topup").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: 50000, status: "pending" });
-    alert("Request Depo Terkirim!");
-}
-function kirimTarik() {
-    if (currentBalance < 50000) return alert("Saldo Kurang");
-    db.ref("penarikan").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: 50000, status: "pending" });
-    alert("Request Tarik Terkirim!");
-}
-function openGallery() { document.getElementById('fileInput').click(); }
-function uploadFoto() {
-    const reader = new FileReader();
-    reader.onload = e => db.ref("users/" + auth.currentUser.uid).update({ photo: e.target.result });
-    reader.readAsDataURL(document.getElementById('fileInput').files[0]);
-}
-</script>
-</body>
-</html>
+function showDepo() { clearMenu(); document.getElementById('depoBox').style.display="b
