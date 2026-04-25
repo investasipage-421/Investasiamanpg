@@ -75,6 +75,24 @@
         /* DEPO & TARIK */
         .depo-container { background: #f1f1f1; border-radius: 15px; padding: 25px; text-align: center; border: 2px dashed #00b8d4; }
         .btn-depo { width: 100%; padding: 15px; background: #000; color: #00e5ff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
+
+        /* RIWAYAT TRANSAKSI - BARU! */
+        .history-card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 15px; margin-bottom: 12px; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .history-title { color: #00ff88; font-size: 16px; font-weight: bold; }
+        .history-time { font-size: 11px; color: #aaa; }
+        .history-amount { font-size: 18px; font-weight: bold; color: cyan; text-align: center; margin: 8px 0; }
+        .history-status { 
+            padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; 
+            background: #ff4757; color: white; display: inline-block;
+        }
+        .history-status.selesai { background: #00ff88; color: black; }
+        .history-status.pending { background: #ffa502; color: black; }
+        .no-history { text-align: center; color: #888; font-style: italic; padding: 30px; }
+
+        /* TARIK BOX */
+        .tarik-container { position: relative; height: auto; }
+        .tarik-box { position: relative; top: 0; left: 0; transform: none; margin: 0 auto 20px auto; border-color: #ff4757; }
     </style>
 </head>
 <body>
@@ -170,25 +188,36 @@
             </div>
         </div>
 
-        <!-- NEW WITHDRAWAL MENU (LIKE LOGIN BOX) -->
-        <div id="tarikBox" style="display:none; position: relative; height: 100%;">
-            <div class="box" style="position: relative; top: 0; left: 0; transform: none; margin: 0 auto; border-color: #ff4757;">
-                <div class="logo-wrapper" style="background: rgba(255, 71, 87, 0.1); border: 2px solid #ff4757;">
-                    <svg viewBox="0 0 24 24" width="48" height="48" stroke="#ff4757" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 19V5M5 12l7-7 7 7"/>
-                        <rect x="2" y="17" width="20" height="4" rx="1"/>
-                    </svg>
+        <!-- TARIK + RIWAYAT BARU! -->
+        <div id="tarikBox" style="display:none;">
+            <!-- TARIK FORM -->
+            <div class="tarik-container">
+                <div class="box tarik-box">
+                    <div class="logo-wrapper" style="background: rgba(255, 71, 87, 0.1); border: 2px solid #ff4757;">
+                        <svg viewBox="0 0 24 24" width="48" height="48" stroke="#ff4757" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 19V5M5 12l7-7 7 7"/>
+                            <rect x="2" y="17" width="20" height="4" rx="1"/>
+                        </svg>
+                    </div>
+                    <h2 style="color: white; margin-bottom: 5px;">Penarikan</h2>
+                    <p id="infoSaldoTarik" style="font-size: 11px; color: #777; margin-bottom: 15px;">Saldo: Rp 0</p>
+                    
+                    <input id="nominalTarik" type="text" value="50.000" 
+                           onfocus="if(this.value=='50.000')this.value=''" 
+                           onblur="if(this.value=='')this.value='50.000'"
+                           style="text-align: center; font-size: 20px; font-weight: bold; border: 1px solid #333;">
+                    
+                    <button onclick="kirimTarik()" style="background: #ff4757; color: white;">REQUEST TARIK</button>
+                    <p style="margin-top: 10px; font-size: 10px; color: #555;">Minimal penarikan Rp 50.000</p>
                 </div>
-                <h2 style="color: white; margin-bottom: 5px;">Penarikan</h2>
-                <p id="infoSaldoTarik" style="font-size: 11px; color: #777; margin-bottom: 15px;">Saldo: Rp 0</p>
-                
-                <input id="nominalTarik" type="text" value="50.000" 
-                       onfocus="if(this.value=='50.000')this.value=''" 
-                       onblur="if(this.value=='')this.value='50.000'"
-                       style="text-align: center; font-size: 20px; font-weight: bold; border: 1px solid #333;">
-                
-                <button onclick="kirimTarik()" style="background: #ff4757; color: white;">REQUEST TARIK</button>
-                <p style="margin-top: 10px; font-size: 10px; color: #555;">Minimal penarikan Rp 50.000</p>
+            </div>
+
+            <!-- RIWAYAT TRANSAKSI -->
+            <div style="margin-top: 20px;">
+                <h3 style="color: cyan; margin-bottom: 15px; font-size: 18px;">📋 Riwayat Transaksi</h3>
+                <div id="historyList">
+                    <div class="history-card no-history">Belum ada transaksi</div>
+                </div>
             </div>
         </div>
     </div>
@@ -211,6 +240,7 @@ const auth = firebase.auth();
 const db = firebase.database();
 
 let totalDepoSelesai = 0, totalTarikSelesai = 0, historyInvestasi = [], currentBalance = 0, sedangDaftar = false;
+let riwayatTransaksi = []; // Array untuk riwayat
 
 auth.onAuthStateChanged(user => {
     if (sedangDaftar) return;
@@ -221,105 +251,3 @@ auth.onAuthStateChanged(user => {
         document.getElementById('emailText').innerText = user.email;
         showPopup();
         db.ref("users/" + user.uid + "/photo").on("value", snap => {
-            if (snap.val()) document.getElementById('userImg').src = snap.val();
-        });
-        loadDataRealtime(user.uid);
-    } else {
-        document.getElementById('dashboard').style.display = "none";
-        if(!sedangDaftar) document.getElementById('loginBox').style.display = "block";
-    }
-});
-
-function loadDataRealtime(uid) {
-    db.ref("topup").on("value", snap => {
-        totalDepoSelesai = 0;
-        snap.forEach(c => { if(c.val().uid === uid && c.val().status === "selesai") totalDepoSelesai += parseInt(c.val().nominal); });
-        hitungSistem();
-    });
-    db.ref("penarikan").on("value", snap => {
-        totalTarikSelesai = 0;
-        snap.forEach(c => { if(c.val().uid === uid && c.val().status === "selesai") totalTarikSelesai += parseInt(c.val().nominal); });
-        hitungSistem();
-    });
-    db.ref("invest_history/" + uid).on("value", snap => {
-        historyInvestasi = [];
-        snap.forEach(c => { historyInvestasi.push(c.val()); });
-        hitungSistem();
-    });
-}
-
-function hitungSistem() {
-    let totalBiayaBeli = 0, totalProfitLaba = 0, adaAktif = false, sekarang = Date.now();
-    historyInvestasi.forEach(inv => {
-        totalBiayaBeli += (inv.harga || 20000);
-        let diffHari = Math.floor((sekarang - inv.tanggalBeli) / 86400000);
-        let hariProfit = diffHari > 60 ? 60 : diffHari;
-        totalProfitLaba += (hariProfit * 500);
-        if (diffHari < 60) {
-            adaAktif = true;
-            document.getElementById('timerInfo').innerText = "Status: Aktif (" + (60 - diffHari) + " Hari lagi)";
-        }
-    });
-    if(!adaAktif) document.getElementById('timerInfo').innerText = "";
-    currentBalance = totalDepoSelesai - totalBiayaBeli + totalProfitLaba - totalTarikSelesai;
-    document.getElementById('welcome').innerText = "Rp. " + currentBalance.toLocaleString('id-ID');
-    document.getElementById('infoSaldoTarik').innerText = "Saldo: Rp " + currentBalance.toLocaleString('id-ID');
-    document.getElementById('checkPaketA').style.display = adaAktif ? "inline" : "none";
-    document.getElementById('btnBeliA').disabled = adaAktif;
-    document.getElementById('btnBeliA').innerText = adaAktif ? "PAKET AKTIF" : "BELI SEKARANG";
-}
-
-function showPopup() { document.getElementById('announcementPopup').style.display = "flex"; }
-function closePopup() { document.getElementById('announcementPopup').style.display = "none"; }
-
-function login() { auth.signInWithEmailAndPassword(document.getElementById('loginUser').value, document.getElementById('loginPass').value).catch(e => alert(e.message)); }
-function logout() { auth.signOut().then(() => location.reload()); }
-function showRegister() { document.getElementById('loginBox').style.display="none"; document.getElementById('registerBox').style.display="block"; }
-function showLogin() { document.getElementById('registerBox').style.display="none"; document.getElementById('loginBox').style.display="block"; }
-function register() {
-    sedangDaftar = true;
-    auth.createUserWithEmailAndPassword(document.getElementById('regUser').value, document.getElementById('regPass').value)
-    .then(() => auth.signOut()).then(() => { alert("Registrasi Berhasil!"); sedangDaftar=false; showLogin(); })
-    .catch(e => { sedangDaftar=false; alert(e.message); });
-}
-
-function clearMenu() {
-    const ids = ['newsBox','quizBox','investBox','depoBox','tarikBox'];
-    ids.forEach(id => document.getElementById(id).style.display="none");
-    document.querySelectorAll('.menuItem').forEach(m => m.classList.remove('active'));
-}
-function showNews() { clearMenu(); document.getElementById('newsBox').style.display="block"; document.getElementById('mNews').classList.add('active'); }
-function showQuiz() { clearMenu(); document.getElementById('quizBox').style.display="block"; document.getElementById('mQuiz').classList.add('active'); }
-function showInvest() { clearMenu(); document.getElementById('investBox').style.display="block"; document.getElementById('mInvest').classList.add('active'); }
-function showDepo() { clearMenu(); document.getElementById('depoBox').style.display="block"; document.getElementById('mDepo').classList.add('active'); }
-function showTarik() { clearMenu(); document.getElementById('tarikBox').style.display="block"; document.getElementById('mTarik').classList.add('active'); }
-
-function buyInvest() {
-    if (currentBalance < 20000) return alert("Saldo Kurang");
-    if(confirm("Beli paket investasi Rp 20.000?")){
-        db.ref("invest_history/" + auth.currentUser.uid).push({ tanggalBeli: Date.now(), harga: 20000 }).then(() => alert("Berhasil!"));
-    }
-}
-function kirimDepo() {
-    db.ref("topup").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: 50000, status: "pending" });
-    alert("Request Depo Terkirim!");
-}
-function kirimTarik() {
-    let nominalRaw = document.getElementById('nominalTarik').value.replace(/\./g, '');
-    let nominal = parseInt(nominalRaw);
-    
-    if (isNaN(nominal) || nominal < 50000) return alert("Minimal penarikan Rp 50.000");
-    if (currentBalance < nominal) return alert("Saldo Kurang");
-    
-    db.ref("penarikan").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: nominal, status: "pending" });
-    alert("Request Tarik Terkirim!");
-}
-function openGallery() { document.getElementById('fileInput').click(); }
-function uploadFoto() {
-    const reader = new FileReader();
-    reader.onload = e => db.ref("users/" + auth.currentUser.uid).update({ photo: e.target.result });
-    reader.readAsDataURL(document.getElementById('fileInput').files[0]);
-}
-</script>
-</body>
-</html>
