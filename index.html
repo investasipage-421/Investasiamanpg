@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -275,4 +274,89 @@
                 data.reverse().forEach(w => {
                     const stCls = w.status=='selesai'?'text-green-400 bg-green-400/10':w.status=='pending'?'text-yellow-400 bg-yellow-400/10':'text-red-400 bg-red-400/10';
                     html += `<div class="bg-[#1a1a1a] p-3 rounded-xl flex justify-between items-center text-[11px] border border-[#222] animate-pop">
-                        <div><div class="font-bold text-white">R
+                        <div><div class="font-bold text-white">Rp ${Number(w.nominal).toLocaleString('id-ID')}</div><div class="text-[8px] text-gray-600">${w.timestamp?new Date(w.timestamp).toLocaleString():''}</div></div>
+                        <span class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase ${stCls}">${w.status}</span>
+                    </div>`;
+                });
+                document.getElementById('listTarik').innerHTML = html || "<div class='text-center text-xs text-gray-600 py-6 italic'>Belum ada riwayat penarikan.</div>";
+                hitungSaldo(null, totalTarik, null);
+            });
+
+            // Invest Listener
+            db.ref("invest_history/" + uid).on("value", snap => {
+                historyInv = [];
+                snap.forEach(c => { historyInv.push(c.val()); });
+                hitungSaldo(null, null, historyInv);
+            });
+        }
+
+        let _lastDepo = 0, _lastTarik = 0;
+        function hitungSaldo(depo, tarik, invs) {
+            if (depo !== null) _lastDepo = depo;
+            if (tarik !== null) _lastTarik = tarik;
+            
+            let totalCost = 0, totalProfit = 0, aktif = false, sekarang = Date.now();
+            historyInv.forEach(h => {
+                totalCost += (h.harga || 20000);
+                let diff = Math.floor((sekarang - h.tanggalBeli) / 86400000);
+                let pDays = Math.min(diff, 60);
+                totalProfit += (pDays * 500);
+                if (diff < 60) { aktif = true; document.getElementById('timerA').innerText = "Status: Aktif (" + (60 - diff) + " Hari Sisa)"; }
+            });
+
+            balance = _lastDepo - totalCost + totalProfit - _lastTarik;
+            document.getElementById('balanceText').innerText = "Rp. " + balance.toLocaleString('id-ID');
+            document.getElementById('saldoTarik').innerText = "Saldo Tersedia: Rp " + balance.toLocaleString('id-ID');
+            document.getElementById('labelPaketA').style.display = aktif ? "block" : "none";
+            document.getElementById('btnBeliA').disabled = aktif;
+            document.getElementById('btnBeliA').innerText = aktif ? "PAKET SUDAH AKTIF" : "BELI PAKET SEKARANG";
+            if(!aktif) document.getElementById('timerA').style.display = "none"; else document.getElementById('timerA').style.display = "block";
+        }
+
+        // FUNGSI UTAMA
+        function login() { auth.signInWithEmailAndPassword(document.getElementById('loginUser').value, document.getElementById('loginPass').value).catch(e => alert(e.message)); }
+        function logout() { auth.signOut().then(() => location.reload()); }
+        function register() {
+            sedangDaftar = true;
+            auth.createUserWithEmailAndPassword(document.getElementById('regUser').value, document.getElementById('regPass').value)
+                .then(() => { alert("Registrasi Berhasil!"); sedangDaftar=false; toggleAuth(false); auth.signOut(); })
+                .catch(e => { sedangDaftar=false; alert(e.message); });
+        }
+        function toggleAuth(isReg) {
+            document.getElementById('loginBox').style.display = isReg ? 'none' : 'block';
+            document.getElementById('registerBox').style.display = isReg ? 'block' : 'none';
+        }
+        function showSection(id, element) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            document.querySelectorAll('.menu-item .p-2').forEach(i => i.classList.remove('menu-active'));
+            element.querySelector('.p-2').classList.add('menu-active');
+        }
+        function buyInvest() {
+            if (balance < 20000) return alert("Saldo tidak mencukupi!");
+            if(confirm("Beli paket investasi Rp 20.000?")) {
+                db.ref("invest_history/" + auth.currentUser.uid).push({ tanggalBeli: Date.now(), harga: 20000 }).then(() => alert("Pembelian berhasil!"));
+            }
+        }
+        function kirimDepo() {
+            db.ref("topup").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: 50000, status: "pending", timestamp: Date.now() });
+            alert("Permintaan Deposit Terkirim!");
+        }
+        function kirimTarik() {
+            let nominal = parseInt(document.getElementById('nominalTarik').value.replace(/\./g, ''));
+            if (isNaN(nominal) || nominal < 50000) return alert("Minimal penarikan Rp 50.000");
+            if (balance < nominal) return alert("Saldo tidak mencukupi untuk penarikan!");
+            db.ref("penarikan").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: nominal, status: "pending", timestamp: Date.now() });
+            alert("Permintaan Penarikan Terkirim!");
+        }
+        function openGallery() { document.getElementById('fileInput').click(); }
+        function uploadFoto() {
+            const rd = new FileReader();
+            rd.onload = e => db.ref("users/" + auth.currentUser.uid).update({ photo: e.target.result });
+            rd.readAsDataURL(document.getElementById('fileInput').files[0]);
+        }
+        function showPopup() { document.getElementById('announcementPopup').style.display = "flex"; }
+        function closePopup() { document.getElementById('announcementPopup').style.display = "none"; }
+    </script>
+</body>
+</html>
