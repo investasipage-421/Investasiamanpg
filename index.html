@@ -3,37 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investasi Page421 - Produksi</title>
-    <!-- Tailwind CSS -->
+    <title>Investasi Page421 - Official</title>
+    <!-- Tailwind CSS untuk tampilan modern -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #000; color: #fff; margin: 0; min-height: 100vh; }
+        body { font-family: 'Inter', sans-serif; background-color: #000; color: #fff; margin: 0; min-height: 100vh; overflow: hidden; }
+        
         .active-menu { background-color: #fff !important; color: #000 !important; }
         .active-menu img { filter: invert(1); }
         .active-menu span { color: #000 !important; }
+        
         input::placeholder { color: #555; }
-        /* Prevent scroll bounce */
-        html, body { overflow: hidden; height: 100%; }
         #content::-webkit-scrollbar { width: 4px; }
         #content::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        
+        @keyframes popZoom { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .animate-pop { animation: popZoom 0.3s ease-out; }
     </style>
 </head>
-<body class="bg-black">
+<body class="bg-black text-white h-screen w-screen flex flex-col">
 
-    <!-- POPUP PENGUMUMAN -->
+    <!-- 1. POPUP PENGUMUMAN -->
     <div id="announcementPopup" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/90 px-4">
-        <div class="relative w-full max-w-sm rounded-[24px] border-2 border-cyan-400 bg-black p-10 text-center shadow-[0_0_30px_rgba(34,211,238,0.3)]">
+        <div class="relative w-full max-w-sm rounded-[24px] border-2 border-cyan-400 bg-black p-10 text-center shadow-[0_0_40px_rgba(34,211,238,0.2)] animate-pop">
             <span class="absolute top-4 right-6 text-3xl text-gray-500 cursor-pointer hover:text-cyan-400" onclick="closePopup()">&times;</span>
             <h2 class="mb-4 text-2xl font-bold text-cyan-400">📢 Pengumuman</h2>
             <p class="leading-relaxed text-gray-200">Selamat datang di Investasi Page421! Pantau terus paket investasi Anda dan kumpulkan profit setiap harinya.</p>
         </div>
     </div>
 
-    <!-- AUTH BOX (Login & Register) -->
+    <!-- 2. LOGIN & REGISTER BOX -->
     <div id="authContainer" class="fixed inset-0 z-[100] flex items-center justify-center bg-black px-6">
-        <!-- Main Box -->
-        <div class="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111] p-8 text-center shadow-2xl">
+        <div class="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111] p-8 text-center shadow-2xl animate-pop">
             <div class="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-xl bg-white p-2">
                 <svg viewBox="0 0 100 100" class="h-full w-full">
                     <rect x="5" y="5" width="90" height="90" rx="8" fill="none" stroke="black" stroke-width="4"/>
@@ -42,87 +44,88 @@
                 </svg>
             </div>
 
-            <!-- Login View -->
+            <!-- Login -->
             <div id="loginView">
                 <h2 class="mb-6 text-2xl font-bold text-white">Login</h2>
-                <input id="loginEmail" type="email" placeholder="Email" class="w-full mb-4 rounded-lg bg-[#222] p-3 text-white outline-none ring-1 ring-white/5 focus:ring-cyan-400 transition">
-                <input id="loginPass" type="password" placeholder="Password" class="w-full mb-6 rounded-lg bg-[#222] p-3 text-white outline-none ring-1 ring-white/5 focus:ring-cyan-400 transition">
-                <button onclick="handleLogin()" class="w-full rounded-lg bg-white py-3 font-bold text-black active:scale-95 transition">MASUK</button>
+                <input id="loginEmail" type="email" placeholder="Email" class="w-full mb-4 rounded-lg bg-[#222] p-3 text-white outline-none border border-transparent focus:border-cyan-400 transition">
+                <input id="loginPass" type="password" placeholder="Password" class="w-full mb-6 rounded-lg bg-[#222] p-3 text-white outline-none border border-transparent focus:border-cyan-400 transition">
+                <button onclick="handleLogin()" class="w-full rounded-lg bg-white py-3 font-bold text-black hover:bg-cyan-400 transition active:scale-95">MASUK</button>
                 <p class="mt-6 text-sm text-gray-400">Belum punya akun? <span onclick="toggleAuth(true)" class="cursor-pointer font-bold text-cyan-400">Registrasi</span></p>
             </div>
 
-            <!-- Register View -->
+            <!-- Register -->
             <div id="registerView" class="hidden">
                 <h2 class="mb-6 text-2xl font-bold text-white">Registrasi</h2>
-                <input id="regEmail" type="email" placeholder="Email Baru" class="w-full mb-4 rounded-lg bg-[#222] p-3 text-white outline-none ring-1 ring-white/5 focus:ring-cyan-400 transition">
-                <input id="regPass" type="password" placeholder="Password (Min 6 Karakter)" class="w-full mb-6 rounded-lg bg-[#222] p-3 text-white outline-none ring-1 ring-white/5 focus:ring-cyan-400 transition">
-                <button onclick="handleRegister()" class="w-full rounded-lg bg-white py-3 font-bold text-black active:scale-95 transition">DAFTAR SEKARANG</button>
+                <input id="regEmail" type="email" placeholder="Email Baru" class="w-full mb-4 rounded-lg bg-[#222] p-3 text-white outline-none border border-transparent focus:border-cyan-400 transition">
+                <input id="regPass" type="password" placeholder="Password (Min 6 Karakter)" class="w-full mb-6 rounded-lg bg-[#222] p-3 text-white outline-none border border-transparent focus:border-cyan-400 transition">
+                <button onclick="handleRegister()" class="w-full rounded-lg bg-white py-3 font-bold text-black hover:bg-cyan-400 transition active:scale-95">DAFTAR SEKARANG</button>
                 <p class="mt-6 text-sm text-gray-400">Sudah punya akun? <span onclick="toggleAuth(false)" class="cursor-pointer font-bold text-cyan-400">Login</span></p>
             </div>
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
+    <!-- 3. MAIN DASHBOARD CONTENT -->
     <div id="dashboard" class="hidden flex-col h-full w-full">
-        <!-- Top Bar -->
+        <!-- Top Navigation -->
         <div class="flex h-20 items-center justify-between border-b border-white/10 bg-[#111] px-6 shrink-0">
             <div class="flex items-center gap-4">
-                <div class="relative h-12 w-12 cursor-pointer overflow-hidden rounded-full border-2 border-cyan-400 bg-gray-900" onclick="openGallery()">
+                <div class="relative h-12 w-12 cursor-pointer overflow-hidden rounded-full border-2 border-cyan-400 bg-gray-800" onclick="openGallery()">
                     <img id="userImg" src="https://i.imgur.com/8Km9tLL.png" class="h-full w-full object-cover">
-                    <div class="absolute bottom-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-cyan-400 text-[10px] font-bold text-black border border-black">+</div>
+                    <div class="absolute bottom-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-cyan-400 text-[10px] font-extrabold text-black border border-black">+</div>
                 </div>
                 <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="uploadFoto()">
                 <div>
-                    <div id="balanceTop" class="text-lg font-bold text-cyan-400">Rp 0</div>
-                    <div id="userEmailText" class="text-[10px] text-gray-500">Memuat...</div>
+                    <div id="balanceTop" class="text-xl font-black text-cyan-400 tracking-tight">Rp 0</div>
+                    <div id="userEmailText" class="text-[10px] text-gray-500 font-medium">Memuat...</div>
                 </div>
             </div>
-            <button onclick="handleLogout()" class="rounded-lg bg-white px-4 py-1.5 text-xs font-bold text-black hover:bg-gray-200 transition active:scale-95">Logout</button>
+            <button onclick="handleLogout()" class="rounded-lg bg-white/10 hover:bg-white hover:text-black px-4 py-2 text-xs font-bold text-white transition active:scale-95">Logout</button>
         </div>
 
         <div class="flex flex-1 overflow-hidden">
-            <!-- Sidebar -->
+            <!-- Sidebar Menu -->
             <div class="flex w-20 flex-col items-center gap-6 border-r border-white/10 bg-[#111] pt-8 shrink-0">
-                <div class="menu-item active-menu w-16 h-16 rounded-xl flex flex-col items-center justify-center cursor-pointer" id="m-news" onclick="showSection('news')">
-                    <img src="https://img.icons8.com/ios-filled/50/ffffff/news.png" class="w-7 h-7">
-                    <span class="text-[9px] font-medium mt-1">Berita</span>
+                <div class="flex flex-col items-center gap-1 cursor-pointer p-2 w-16 rounded-xl transition active-menu" id="m-news" onclick="showSection('news')">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/news.png" class="w-6 h-6">
+                    <span class="text-[8px] font-bold mt-1 uppercase">Berita</span>
                 </div>
-                <div class="menu-item text-gray-400 w-16 h-16 rounded-xl flex flex-col items-center justify-center cursor-pointer" id="m-quiz" onclick="showSection('quiz')">
-                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/book.png" class="w-7 h-7">
-                    <span class="text-[9px] font-medium mt-1">Soal</span>
+                <div class="flex flex-col items-center gap-1 cursor-pointer p-2 w-16 rounded-xl transition text-gray-400" id="m-quiz" onclick="showSection('quiz')">
+                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/book.png" class="w-6 h-6">
+                    <span class="text-[8px] font-bold mt-1 uppercase">Soal</span>
                 </div>
-                <div class="menu-item text-gray-400 w-16 h-16 rounded-xl flex flex-col items-center justify-center cursor-pointer" id="m-invest" onclick="showSection('invest')">
-                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/money-bag.png" class="w-7 h-7">
-                    <span class="text-[9px] font-medium mt-1">Invest</span>
+                <div class="flex flex-col items-center gap-1 cursor-pointer p-2 w-16 rounded-xl transition text-gray-400" id="m-invest" onclick="showSection('invest')">
+                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/money-bag.png" class="w-6 h-6">
+                    <span class="text-[8px] font-bold mt-1 uppercase">Invest</span>
                 </div>
-                <div class="menu-item text-gray-400 w-16 h-16 rounded-xl flex flex-col items-center justify-center cursor-pointer" id="m-depo" onclick="showSection('depo')">
-                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/request-money.png" class="w-7 h-7">
-                    <span class="text-[9px] font-medium mt-1">Depo</span>
+                <div class="flex flex-col items-center gap-1 cursor-pointer p-2 w-16 rounded-xl transition text-gray-400" id="m-depo" onclick="showSection('depo')">
+                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/request-money.png" class="w-6 h-6">
+                    <span class="text-[8px] font-bold mt-1 uppercase">Depo</span>
                 </div>
-                <div class="menu-item text-gray-400 w-16 h-16 rounded-xl flex flex-col items-center justify-center cursor-pointer" id="m-tarik" onclick="showSection('tarik')">
-                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/atm.png" class="w-7 h-7">
-                    <span class="text-[9px] font-medium mt-1">Tarik</span>
+                <div class="flex flex-col items-center gap-1 cursor-pointer p-2 w-16 rounded-xl transition text-gray-400" id="m-tarik" onclick="showSection('tarik')">
+                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/atm.png" class="w-6 h-6">
+                    <span class="text-[8px] font-bold mt-1 uppercase">Tarik</span>
                 </div>
-                <div class="menu-item text-gray-400 w-16 h-16 rounded-xl flex flex-col items-center justify-center cursor-pointer" id="m-history" onclick="showSection('history')">
-                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/time-machine.png" class="w-7 h-7">
-                    <span class="text-[9px] font-medium mt-1">Riwayat</span>
+                <div class="flex flex-col items-center gap-1 cursor-pointer p-2 w-16 rounded-xl transition text-gray-400" id="m-history" onclick="showSection('history')">
+                    <img src="https://img.icons8.com/ios-filled/50/aaaaaa/time-machine.png" class="w-6 h-6">
+                    <span class="text-[8px] font-bold mt-1 uppercase">Riwayat</span>
                 </div>
             </div>
 
-            <!-- Content Area -->
+            <!-- Content Container -->
             <div id="content" class="flex-1 overflow-y-auto p-6 bg-black relative">
-                <!-- News -->
+                
+                <!-- News Section -->
                 <div id="sec-news" class="section block rounded-2xl bg-white p-6 font-bold text-black shadow-lg">
-                    Selamat Datang di Investasi Page421!
+                    Selamat Datang kembali di Investasi Page421!
                 </div>
 
-                <!-- Quiz -->
+                <!-- Quiz Section -->
                 <div id="sec-quiz" class="section hidden rounded-2xl bg-white p-6 text-black shadow-lg">
                     <h3 class="mb-2 text-xl font-bold">Materi & Soal</h3>
-                    <p class="text-gray-600 italic">Segera hadir.</p>
+                    <p class="text-gray-600 italic">Materi belajar segera dirilis.</p>
                 </div>
 
-                <!-- Invest -->
+                <!-- Investment Section -->
                 <div id="sec-invest" class="section hidden rounded-2xl border border-white/10 bg-[#1a1a1a] p-6 shadow-xl">
                     <div class="mb-4 flex items-center justify-between border-b border-white/5 pb-2 text-xl font-bold text-cyan-400">
                         <span>Paket Investasi A</span>
@@ -137,26 +140,26 @@
                     <button id="btnBuy" onclick="handleBuy()" class="mt-6 w-full rounded-lg bg-cyan-400 py-3 font-bold text-black active:scale-95 transition">BELI SEKARANG</button>
                 </div>
 
-                <!-- Depo -->
+                <!-- Deposit Section -->
                 <div id="sec-depo" class="section hidden rounded-2xl bg-white p-8 text-center text-black shadow-lg">
                     <div class="rounded-2xl border-2 border-dashed border-cyan-400 bg-cyan-50/50 p-6">
-                        <p class="text-sm text-gray-500">Nominal Depo:</p>
-                        <h1 class="my-2 text-3xl font-black">Rp 50.000</h1>
+                        <p class="text-sm text-gray-500 font-bold uppercase tracking-widest">Nominal Deposit:</p>
+                        <h1 class="my-3 text-4xl font-black">Rp 50.000</h1>
                         <button onclick="handleDepo()" class="mt-4 w-full rounded-xl bg-black py-4 font-bold text-cyan-400 active:scale-95 transition">REQUEST DEPO</button>
                     </div>
                 </div>
 
-                <!-- Tarik -->
+                <!-- Withdrawal Section -->
                 <div id="sec-tarik" class="section hidden flex justify-center p-2">
                     <div class="w-full max-w-sm rounded-[24px] border border-white/10 bg-[#111] p-8 text-center shadow-2xl">
                         <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-xl bg-red-500/10 p-2 text-red-500">
                             <img src="https://img.icons8.com/ios-filled/100/ff4757/atm.png" class="w-12 h-12">
                         </div>
                         <h2 class="mb-2 text-2xl font-bold text-white">Penarikan</h2>
-                        <p id="tarikBalanceInfo" class="mb-6 text-[10px] text-gray-500 uppercase tracking-widest font-bold">Saldo: Rp 0</p>
+                        <p id="tarikBalanceInfo" class="mb-6 text-[10px] text-gray-500 uppercase tracking-widest font-black">Saldo: Rp 0</p>
                         <div class="space-y-4">
                             <div class="relative">
-                                <input id="tarikInput" type="text" value="50.000" onfocus="if(this.value=='50.000')this.value=''" class="w-full rounded-lg bg-[#222] p-4 text-center text-xl font-black text-white outline-none ring-1 ring-white/5 focus:ring-red-500 transition">
+                                <input id="tarikInput" type="text" value="50.000" onfocus="if(this.value=='50.000')this.value=''" class="w-full rounded-lg bg-[#222] p-4 text-center text-xl font-black text-white outline-none border border-transparent focus:border-red-500 transition">
                                 <div class="absolute top-0 right-4 flex h-full items-center text-[10px] font-bold text-gray-600">IDR</div>
                             </div>
                             <button onclick="handleTarik()" class="w-full rounded-lg bg-[#ff4757] py-4 font-bold text-white shadow-lg active:scale-95 transition">REQUEST TARIK</button>
@@ -164,26 +167,27 @@
                     </div>
                 </div>
 
-                <!-- History -->
+                <!-- Transaction History Section -->
                 <div id="sec-history" class="section hidden space-y-4">
-                    <h2 class="mb-4 text-xl font-bold text-cyan-400 flex items-center gap-2">
+                    <h2 class="mb-6 text-xl font-bold text-cyan-400 flex items-center gap-2">
                         <img src="https://img.icons8.com/ios-filled/50/22d3ee/time-machine.png" class="w-6 h-6">
-                        Riwayat
+                        Riwayat Transaksi
                     </h2>
                     <div id="historyContainer" class="space-y-3">
-                        <!-- History Items -->
+                        <!-- History data will load here -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- FIREBASE COMPAT SDKs -->
+    <!-- 4. FIREBASE SDK SCRIPTS -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <script>
+    // Konfigurasi Firebase Anda
     const firebaseConfig = {
         apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
         authDomain: "page421-b9a6c.firebaseapp.com",
@@ -191,14 +195,17 @@
         projectId: "page421-b9a6c"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    // Inisialisasi Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const auth = firebase.auth();
     const db = firebase.database();
 
     let currentBalance = 0;
     let currentUser = null;
 
-    // --- AUTH ---
+    // --- MANAJEMEN LOGIN/LOGOUT ---
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUser = user;
@@ -222,22 +229,23 @@
     function handleLogin() {
         const e = document.getElementById('loginEmail').value;
         const p = document.getElementById('loginPass').value;
-        if(!e || !p) return alert("Isi email dan password!");
-        auth.signInWithEmailAndPassword(e, p).catch(err => alert(err.message));
+        if(!e || !p) return alert("Email/Sandi kosong!");
+        auth.signInWithEmailAndPassword(e, p).catch(err => alert("Login Gagal: " + err.message));
     }
 
     function handleRegister() {
         const e = document.getElementById('regEmail').value;
         const p = document.getElementById('regPass').value;
-        if(!e || p.length < 6) return alert("Data tidak valid (Pass min 6 karakter)!");
+        if(!e || p.length < 6) return alert("Email invalid atau Sandi kurang dari 6 karakter!");
         auth.createUserWithEmailAndPassword(e, p)
-            .then(() => alert("Berhasil! Silakan Login."), err => alert(err.message));
+            .then(() => alert("Berhasil Terdaftar! Silakan Login."), err => alert("Gagal Daftar: " + err.message));
     }
 
     function handleLogout() { auth.signOut(); }
 
-    // --- DATA ---
+    // --- DATA REALTIME DARI DATABASE ---
     function loadRealtimeData(uid) {
+        // Foto profil
         db.ref(`users/${uid}/photo`).on('value', s => { if(s.val()) document.getElementById('userImg').src = s.val(); });
 
         const topups = db.ref('topup');
@@ -245,7 +253,7 @@
         const investHistory = db.ref(`invest_history/${uid}`);
 
         function calculate() {
-            let totalDepo = 0, totalTarik = 0, historyInvArr = [], allTrans = [];
+            let totalDepo = 0, totalTarik = 0, historyInv = [], allTrans = [];
 
             topups.once('value', s => {
                 s.forEach(c => {
@@ -266,8 +274,8 @@
                     });
 
                     investHistory.once('value', s => {
-                        s.forEach(c => historyInvArr.push(c.val()));
-                        updateUI(totalDepo, totalTarik, historyInvArr, allTrans);
+                        s.forEach(c => historyInv.push(c.val()));
+                        updateUI(totalDepo, totalTarik, historyInv, allTrans);
                     });
                 });
             });
@@ -294,7 +302,7 @@
         document.getElementById('balanceTop').innerText = "Rp " + currentBalance.toLocaleString('id-ID');
         document.getElementById('tarikBalanceInfo').innerText = "Saldo: Rp " + currentBalance.toLocaleString('id-ID');
 
-        // Invest State
+        // Status Tombol Investasi
         const btn = document.getElementById('btnBuy');
         const badge = document.getElementById('activeBadge');
         const timer = document.getElementById('investTimer');
@@ -307,18 +315,19 @@
         } else {
             btn.disabled = false;
             btn.innerText = "BELI SEKARANG";
-            btn.className = "mt-6 w-full rounded-lg bg-cyan-400 py-3 font-bold text-black active:scale-95 transition";
+            btn.className = "mt-6 w-full rounded-lg bg-cyan-400 py-3 font-bold text-black active:scale-95 transition hover:bg-cyan-300";
             badge.classList.add('hidden');
             timer.innerText = "";
         }
 
-        // History
+        // List Riwayat
         const cont = document.getElementById('historyContainer');
         cont.innerHTML = "";
         trans.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
         
         if(trans.length === 0) {
-            cont.innerHTML = `<div class="text-center py-10 text-gray-600 text-xs italic">Belum ada aktivitas.</div>`;
+            cont.innerHTML = `<div class="text-center py-12 text-gray-600 text-xs italic">Belum ada transaksi.</div>`;
+            return;
         }
 
         trans.forEach(t => {
@@ -329,22 +338,5 @@
             cont.innerHTML += `
                 <div class="flex items-center justify-between rounded-xl border border-white/5 bg-[#111] p-4">
                     <div class="flex items-center gap-3">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-lg ${isDepo ? 'bg-cyan-400/10 text-cyan-400' : 'bg-red-400/10 text-red-500'}">
-                            <span class="font-bold text-lg">${isDepo ? '↓' : '↑'}</span>
-                        </div>
-                        <div>
-                            <div class="text-xs font-bold text-white uppercase">${isDepo ? 'Deposit' : 'Tarik'} Rp ${parseInt(t.nominal).toLocaleString('id-ID')}</div>
-                            <div class="text-[9px] text-gray-500 font-medium">${timeStr}</div>
-                        </div>
-                    </div>
-                    <div class="px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-tighter ${statusClass}">
-                        ${t.status}
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    // --- ACTIONS ---
-    function showSection(id) {
-        document.querySelec
+                        <div class="flex h-10 w-10 items-center justify-center rounded-lg ${isDepo ? 'bg-cyan-400/10 text-cyan-400' : 'bg-red-500/10 text-red-500'}">
+                    
