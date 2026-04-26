@@ -18,6 +18,28 @@
         .box-glow { box-shadow: 0 0 15px rgba(6, 182, 212, 0.1); border: 1px solid #333; }
         @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .animate-pop { animation: popIn 0.3s ease-out; }
+
+        /* Floating Chat Widget CSS */
+        #chatWidget {
+            display: none;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 280px;
+            height: 400px;
+            z-index: 9999;
+            flex-direction: column;
+            border: 1px solid #06b6d4;
+            background: #111;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        #chatBtn {
+            position: fixed;
+            bottom: 25px;
+            right: 20px;
+            z-index: 9999;
+        }
     </style>
 </head>
 <body class="bg-black text-white selection:bg-cyan-500 selection:text-black">
@@ -36,33 +58,18 @@
     <div id="authContainer" class="fixed inset-0 flex items-center justify-center p-4 z-[100]">
         <!-- Login -->
         <div id="loginBox" class="bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-[#333] text-center box-glow animate-pop">
-            <div class="w-20 h-20 bg-white mx-auto mb-6 flex items-center justify-center rounded-xl p-2 shadow-xl shadow-cyan-500/5">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                    <rect x="5" y="5" width="90" height="90" rx="12" fill="none" stroke="black" stroke-width="4"/>
-                    <path d="M25 25 v50 M25 25 h20 c15 0 15 20 0 20 h-20" fill="none" stroke="black" stroke-width="8" stroke-linecap="round"/>
-                    <text x="48" y="65" font-family="Arial" font-weight="bold" font-size="20" fill="black">Age</text>
-                </svg>
-            </div>
-            <h2 class="text-xl font-bold mb-6 tracking-wide">MASUK KE AKUN</h2>
+            <h2 class="text-xl font-bold mb-6 tracking-wide text-cyan-400">MASUK</h2>
             <input id="loginUser" type="email" placeholder="Email" class="w-full bg-[#222] p-3 mb-3 rounded-lg outline-none focus:ring-1 ring-cyan-500 text-sm">
             <input id="loginPass" type="password" placeholder="Password" class="w-full bg-[#222] p-3 mb-4 rounded-lg outline-none focus:ring-1 ring-cyan-500 text-sm">
             <button onclick="login()" class="w-full bg-white text-black font-bold p-3 rounded-lg hover:bg-cyan-400 active:scale-95 transition-all">LOGIN</button>
             <p class="mt-4 text-xs text-gray-500">Belum punya akun? <span onclick="toggleAuth(true)" class="text-cyan-400 cursor-pointer font-bold hover:underline">Registrasi</span></p>
         </div>
-
         <!-- Register -->
         <div id="registerBox" class="hidden bg-[#111] p-8 rounded-2xl w-full max-w-sm border border-[#333] text-center box-glow animate-pop">
-             <div class="w-20 h-20 bg-white mx-auto mb-6 flex items-center justify-center rounded-xl p-2 shadow-xl shadow-cyan-500/5">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                    <rect x="5" y="5" width="90" height="90" rx="12" fill="none" stroke="black" stroke-width="4"/>
-                    <path d="M25 25 v50 M25 25 h20 c15 0 15 20 0 20 h-20" fill="none" stroke="black" stroke-width="8" stroke-linecap="round"/>
-                    <text x="48" y="65" font-family="Arial" font-weight="bold" font-size="20" fill="black">Age</text>
-                </svg>
-            </div>
-            <h2 class="text-xl font-bold mb-6 tracking-wide">REGISTRASI</h2>
+            <h2 class="text-xl font-bold mb-6 tracking-wide text-cyan-400">REGISTRASI</h2>
             <input id="regUser" type="email" placeholder="Email Baru" class="w-full bg-[#222] p-3 mb-3 rounded-lg outline-none focus:ring-1 ring-cyan-500 text-sm">
-            <input id="regPass" type="password" placeholder="Password (Min 6 Karakter)" class="w-full bg-[#222] p-3 mb-4 rounded-lg outline-none focus:ring-1 ring-cyan-500 text-sm">
-            <button onclick="register()" class="w-full bg-white text-black font-bold p-3 rounded-lg hover:bg-cyan-400 active:scale-95 transition-all">DAFTAR SEKARANG</button>
+            <input id="regPass" type="password" placeholder="Password" class="w-full bg-[#222] p-3 mb-4 rounded-lg outline-none focus:ring-1 ring-cyan-500 text-sm">
+            <button onclick="register()" class="w-full bg-white text-black font-bold p-3 rounded-lg hover:bg-cyan-400 active:scale-95 transition-all">DAFTAR</button>
             <p class="mt-4 text-xs text-gray-500">Sudah punya akun? <span onclick="toggleAuth(false)" class="text-cyan-400 cursor-pointer font-bold hover:underline">Login</span></p>
         </div>
     </div>
@@ -74,7 +81,6 @@
             <div class="flex items-center gap-3">
                 <div class="relative w-12 h-12 rounded-full border-2 border-cyan-500 overflow-hidden cursor-pointer" onclick="openGallery()">
                     <img id="userImg" src="https://i.imgur.com/8Km9tLL.png" class="w-full h-full object-cover">
-                    <div class="absolute bottom-0 right-0 bg-cyan-500 text-black text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold border border-black shadow">+</div>
                 </div>
                 <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="uploadFoto()">
                 <div>
@@ -82,134 +88,115 @@
                     <div id="emailText" class="text-[10px] text-gray-500 font-mono">Memuat...</div>
                 </div>
             </div>
-            <button onclick="logout()" class="bg-gray-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-md hover:bg-red-500 hover:text-white transition-colors uppercase tracking-widest">Keluar</button>
+            <button onclick="logout()" class="bg-gray-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-md hover:bg-red-500">Keluar</button>
         </div>
 
         <div class="flex flex-1 overflow-hidden">
             <!-- SIDEBAR -->
             <div class="w-20 bg-[#111] border-r border-[#333] flex flex-col items-center py-6 gap-6 overflow-y-auto custom-scrollbar">
                 <div class="menu-item text-center cursor-pointer group" onclick="showSection('newsBox', this)">
-                    <div class="p-2 rounded-xl bg-transparent transition-all group-hover:bg-[#222]"><img src="https://img.icons8.com/color/48/news.png" class="w-7 h-7"></div>
+                    <div class="p-2 rounded-xl menu-active"><img src="https://img.icons8.com/color/48/news.png" class="w-7 h-7"></div>
                     <span class="text-[9px] text-gray-500 block mt-1">Berita</span>
                 </div>
                 <div class="menu-item text-center cursor-pointer group" onclick="showSection('quizBox', this)">
-                    <div class="p-2 rounded-xl bg-transparent transition-all group-hover:bg-[#222]"><img src="https://img.icons8.com/color/48/book-shelf.png" class="w-7 h-7"></div>
-                    <span class="text-[9px] text-gray-500 block mt-1 font-semibold text-cyan-500">Soal</span>
+                    <div class="p-2 rounded-xl"><img src="https://img.icons8.com/color/48/book-shelf.png" class="w-7 h-7"></div>
+                    <span class="text-[9px] text-gray-500 block mt-1">Soal</span>
                 </div>
                 <div class="menu-item text-center cursor-pointer group" onclick="showSection('investBox', this)">
-                    <div class="p-2 rounded-xl bg-transparent transition-all group-hover:bg-[#222]"><img src="https://img.icons8.com/color/48/coins.png" class="w-7 h-7"></div>
+                    <div class="p-2 rounded-xl"><img src="https://img.icons8.com/color/48/coins.png" class="w-7 h-7"></div>
                     <span class="text-[9px] text-gray-500 block mt-1">Invest</span>
                 </div>
                 <div class="menu-item text-center cursor-pointer group" onclick="showSection('depoBox', this)">
-                    <div class="p-2 rounded-xl bg-transparent transition-all group-hover:bg-[#222]"><img src="https://img.icons8.com/color/48/request-money.png" class="w-7 h-7"></div>
+                    <div class="p-2 rounded-xl"><img src="https://img.icons8.com/color/48/request-money.png" class="w-7 h-7"></div>
                     <span class="text-[9px] text-gray-500 block mt-1">Depo</span>
                 </div>
                 <div class="menu-item text-center cursor-pointer group" onclick="showSection('tarikBox', this)">
-                    <div class="p-2 rounded-xl bg-transparent transition-all group-hover:bg-[#222]"><img src="https://img.icons8.com/color/48/atm.png" class="w-7 h-7"></div>
+                    <div class="p-2 rounded-xl"><img src="https://img.icons8.com/color/48/atm.png" class="w-7 h-7"></div>
                     <span class="text-[9px] text-gray-500 block mt-1 font-semibold text-red-400">Tarik</span>
                 </div>
             </div>
 
             <!-- CONTENT -->
             <div class="flex-1 p-5 overflow-y-auto custom-scrollbar bg-black/40">
-                <!-- BOX BERITA -->
                 <div id="newsBox" class="section animate-pop">
-                    <div class="bg-white text-black p-8 rounded-2xl font-bold text-center shadow-2xl border-4 border-cyan-500/20">
-                        Selamat Datang di Portal Investasi Page421! 🚀
-                    </div>
+                    <div class="bg-white text-black p-8 rounded-2xl font-bold text-center shadow-2xl">Selamat Datang di Portal Investasi Page421! 🚀</div>
                 </div>
 
-                <!-- BOX SOAL -->
                 <div id="quizBox" class="section hidden space-y-4 animate-pop">
-                    <div class="bg-white text-black p-6 rounded-2xl shadow-xl">
-                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-gray-100">
-                             <img src="https://img.icons8.com/color/48/book-shelf.png" class="w-6 h-6">
-                            <h3 class="text-xl font-bold tracking-tight">Materi Dasar & Soal</h3>
-                        </div>
-                        <div class="space-y-3">
-                            <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 text-sm font-medium hover:border-cyan-500 transition-colors cursor-pointer">
-                                1. Apa itu Investasi Page421? (Platform Profit Harian)
-                            </div>
-                            <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 text-sm font-medium hover:border-cyan-500 transition-colors cursor-pointer">
-                                2. Berapa minimal depo? (Rp 50.000)
-                            </div>
-                            <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 text-sm font-medium hover:border-cyan-500 transition-colors cursor-pointer">
-                                3. Minimal penarikan saldo? (Rp 50.000)
-                            </div>
-                             <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 text-sm font-medium hover:border-cyan-500 transition-colors cursor-pointer">
-                                4. Kapan profit masuk? (Otomatis setiap harian)
-                            </div>
-                             <p class="text-[10px] text-gray-400 italic mt-6">* List soal akan terus diperbarui oleh admin.</p>
+                    <div class="bg-white text-black p-6 rounded-2xl">
+                        <h3 class="text-xl font-bold mb-4">Materi Dasar</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="p-3 bg-gray-100 rounded-lg">1. Investasi Page421 adalah platform profit harian.</div>
+                            <div class="p-3 bg-gray-100 rounded-lg">2. Minimal Deposit Rp 50.000.</div>
+                            <div class="p-3 bg-gray-100 rounded-lg">3. Minimal Penarikan Rp 50.000.</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- BOX INVEST -->
                 <div id="investBox" class="section hidden space-y-4 animate-pop">
-                    <div class="bg-[#1a1a1a] border border-[#333] rounded-2xl p-6 box-glow shadow-cyan-500/10">
-                        <div class="flex justify-between items-center mb-6 pb-2 border-b border-[#333]">
+                    <div class="bg-[#1a1a1a] border border-[#333] rounded-2xl p-6 box-glow">
+                        <div class="flex justify-between items-center mb-6 border-b border-[#333] pb-2">
                             <span class="text-xl font-bold text-cyan-400">Paket Investasi A</span>
                             <span id="labelPaketA" class="hidden text-cyan-400 text-xs font-black bg-cyan-400/10 px-2 py-1 rounded">✓ AKTIF</span>
                         </div>
-                        <div class="space-y-3 text-sm text-gray-300">
-                            <div class="flex justify-between"><span>💰 Harga:</span><span class="text-white font-bold">Rp 20.000</span></div>
-                            <div class="flex justify-between"><span>📈 Profit:</span><span class="text-green-400 font-bold">Rp 500 / Hari</span></div>
-                            <div class="flex justify-between"><span>📅 Durasi:</span><span class="text-white font-bold">60 Hari</span></div>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between"><span>💰 Harga:</span><span>Rp 20.000</span></div>
+                            <div class="flex justify-between"><span>📈 Profit:</span><span class="text-green-400">Rp 500 / Hari</span></div>
                         </div>
-                        <div id="timerA" class="mt-4 text-xs text-cyan-500 font-bold bg-[#222] p-2 rounded text-center"></div>
-                        <button id="btnBeliA" onclick="buyInvest()" class="w-full mt-6 bg-cyan-400 text-black font-bold p-4 rounded-xl shadow-lg shadow-cyan-500/20 active:scale-95 disabled:bg-gray-800 disabled:text-gray-600 disabled:shadow-none">BELI SEKARANG</button>
+                        <div id="timerA" class="mt-4 text-xs text-cyan-500 font-bold text-center"></div>
+                        <button id="btnBeliA" onclick="buyInvest()" class="w-full mt-6 bg-cyan-400 text-black font-bold p-4 rounded-xl active:scale-95 disabled:bg-gray-800">BELI SEKARANG</button>
                     </div>
                 </div>
 
-                <!-- BOX DEPO -->
                 <div id="depoBox" class="section hidden space-y-5 animate-pop">
-                    <div class="bg-gray-100 text-black p-10 rounded-2xl border-4 border-dashed border-cyan-500 text-center shadow-xl">
-                        <p class="font-bold text-gray-600 uppercase tracking-widest text-xs">Nominal Deposit Tetap</p>
+                    <div class="bg-gray-100 text-black p-10 rounded-2xl border-4 border-dashed border-cyan-500 text-center">
+                        <p class="text-xs font-bold">NOMINAL DEPOSIT</p>
                         <h1 class="text-4xl font-black my-5">Rp 50.000</h1>
-                        <button onclick="kirimDepo()" class="w-full bg-black text-cyan-400 font-bold p-4 rounded-xl shadow-xl active:scale-95">REQUEST DEPOSIT</button>
+                        <button onclick="kirimDepo()" class="w-full bg-black text-cyan-400 font-bold p-4 rounded-xl">REQUEST DEPOSIT</button>
                     </div>
-                    <div class="bg-[#111] p-5 rounded-2xl border border-[#333] shadow-inner">
-                        <h3 class="text-xs font-bold text-cyan-400 mb-4 pb-2 border-b border-[#333] flex items-center gap-2">
-                             <img src="https://img.icons8.com/color/48/list.png" class="w-4 h-4"> RIWAYAT DEPOSIT
-                        </h3>
-                        <div id="listDepo" class="space-y-2 max-h-[350px] overflow-y-auto custom-scrollbar pr-2">
-                            <!-- Items go here -->
-                        </div>
-                    </div>
+                    <div id="listDepo" class="space-y-2"></div>
                 </div>
 
-                <!-- BOX TARIK -->
                 <div id="tarikBox" class="section hidden space-y-5 animate-pop">
-                    <div class="bg-[#111] p-8 rounded-2xl border-2 border-red-500/30 text-center box-glow">
-                        <div class="w-16 h-16 bg-red-500/10 rounded-2xl mx-auto mb-4 flex items-center justify-center border border-red-500/20">
-                            <img src="https://img.icons8.com/color/48/atm.png" class="w-10 h-10">
-                        </div>
-                        <h2 class="text-xl font-bold mb-1">Penarikan</h2>
+                    <div class="bg-[#111] p-8 rounded-2xl border-2 border-red-500/30 text-center">
+                        <h2 class="text-xl font-bold">Penarikan</h2>
                         <p id="saldoTarik" class="text-[10px] text-gray-500 mb-6 font-mono">Saldo Tersedia: Rp 0</p>
-                        <input id="nominalTarik" type="text" value="50.000" class="w-full bg-[#1a1a1a] text-center text-4xl font-bold p-4 rounded-2xl mb-5 border border-[#333] outline-none focus:border-red-500">
-                        <button onclick="kirimTarik()" class="w-full bg-red-500 text-white font-bold p-4 rounded-xl shadow-lg shadow-red-900/20 active:scale-95">REQUEST PENARIKAN</button>
-                        <p class="text-[9px] text-gray-700 mt-4 underline italic">Minimal Penarikan Rp 50.000</p>
+                        <input id="nominalTarik" type="text" value="50.000" class="w-full bg-[#1a1a1a] text-center text-4xl font-bold p-4 rounded-2xl mb-5 border border-[#333] outline-none">
+                        <button onclick="kirimTarik()" class="w-full bg-red-500 text-white font-bold p-4 rounded-xl">REQUEST PENARIKAN</button>
                     </div>
-                    <div class="bg-[#111] p-5 rounded-2xl border border-[#333] shadow-inner">
-                        <h3 class="text-xs font-bold text-red-400 mb-4 pb-2 border-b border-[#333] flex items-center gap-2">
-                             <img src="https://img.icons8.com/color/48/list.png" class="w-4 h-4"> RIWAYAT PENARIKAN
-                        </h3>
-                        <div id="listTarik" class="space-y-2 max-h-[350px] overflow-y-auto custom-scrollbar pr-2">
-                            <!-- Items go here -->
-                        </div>
-                    </div>
+                    <div id="listTarik" class="space-y-2"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- CORE JS -->
+    <!-- TOMBOL CHAT (BAWAH KANAN) -->
+    <div id="chatBtn" onclick="toggleChat()" class="w-14 h-14 bg-cyan-500 rounded-full flex items-center justify-center cursor-pointer shadow-lg shadow-cyan-500/40 hover:scale-110 active:scale-90 transition-all">
+        <img src="https://img.icons8.com/ios-filled/50/000000/comments.png" class="w-7 h-7">
+    </div>
+
+    <!-- KOTAK CHAT GLOBAL -->
+    <div id="chatWidget" class="animate-pop">
+        <div class="bg-cyan-500 p-4 flex justify-between items-center rounded-t-2xl">
+            <span class="text-black font-bold text-xs tracking-widest uppercase">Global Chat</span>
+            <button onclick="toggleChat()" class="text-black text-xl font-bold">&times;</button>
+        </div>
+        <div id="chatContent" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-[#0a0a0a]">
+            <!-- Pesan chat muncul di sini -->
+        </div>
+        <div class="p-2 bg-[#111] border-t border-[#222] flex gap-2 rounded-b-2xl">
+            <input id="chatInput" type="text" placeholder="Ketik pesan..." class="flex-1 bg-[#222] p-2 rounded-lg outline-none text-[11px] text-white">
+            <button onclick="sendChat()" class="bg-cyan-500 text-black px-4 rounded-lg font-bold text-[10px]">KIRIM</button>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <script>
-        // CONFIGURASI FIREBASE
+        // CONFIGURASI FIREBASE KAMU
         const firebaseConfig = {
             apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
             authDomain: "page421-b9a6c.firebaseapp.com",
@@ -234,93 +221,107 @@
                     if (snap.val()) document.getElementById('userImg').src = snap.val();
                 });
                 listenData(user.uid);
+                listenChat(); // Aktifkan chat saat login
             } else {
                 document.getElementById('dashboard').classList.add('hidden');
                 document.getElementById('authContainer').classList.remove('hidden');
             }
         });
 
-        // DATA REALTIME
+        // CHAT GLOBAL LOGIC
+        function toggleChat() {
+            const w = document.getElementById('chatWidget');
+            w.style.display = (w.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function sendChat() {
+            const inp = document.getElementById('chatInput');
+            const msg = inp.value.trim();
+            if (!msg) return;
+
+            db.ref("global_chats").push({
+                m: msg,
+                t: Date.now(),
+                u: "user" // Nama diset user semua
+            });
+            inp.value = "";
+        }
+
+        function listenChat() {
+            db.ref("global_chats").limitToLast(50).on("value", snap => {
+                const box = document.getElementById('chatContent');
+                let html = "";
+                snap.forEach(c => {
+                    const data = c.val();
+                    html += `
+                        <div class="flex flex-col items-start animate-pop">
+                            <span class="text-[9px] text-cyan-500 font-bold mb-1 ml-1 uppercase">user</span>
+                            <div class="bg-[#222] text-white p-2 px-3 rounded-2xl rounded-tl-none text-[11px] max-w-[90%] border border-[#333]">
+                                ${data.m}
+                            </div>
+                        </div>
+                    `;
+                });
+                box.innerHTML = html;
+                box.scrollTop = box.scrollHeight;
+            });
+        }
+
+        // FUNGSI TRANSAKSI & INVEST
         function listenData(uid) {
-            // Deposit Listener
             db.ref("topup").on("value", snap => {
-                let html = "", totalDepo = 0, data = [];
+                let html = "", totalDepo = 0;
                 snap.forEach(c => { 
                     if(c.val().uid === uid) {
-                        data.push(c.val());
                         if(c.val().status === "selesai") totalDepo += Number(c.val().nominal);
+                        html += `<div class="bg-[#111] p-3 rounded-xl border border-[#222] text-[10px]">Depo: Rp ${Number(c.val().nominal).toLocaleString()} (${c.val().status})</div>`;
                     }
                 });
-                data.reverse().forEach(t => {
-                    const stCls = t.status=='selesai'?'text-green-400 bg-green-400/10':t.status=='pending'?'text-yellow-400 bg-yellow-400/10':'text-red-400 bg-red-400/10';
-                    html += `<div class="bg-[#1a1a1a] p-3 rounded-xl flex justify-between items-center text-[11px] border border-[#222] animate-pop">
-                        <div><div class="font-bold text-white">Rp ${Number(t.nominal).toLocaleString('id-ID')}</div><div class="text-[8px] text-gray-600">${t.timestamp?new Date(t.timestamp).toLocaleString():''}</div></div>
-                        <span class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase ${stCls}">${t.status}</span>
-                    </div>`;
-                });
-                document.getElementById('listDepo').innerHTML = html || "<div class='text-center text-xs text-gray-600 py-6 italic'>Belum ada riwayat deposit.</div>";
-                hitungSaldo(totalDepo, null, null);
+                document.getElementById('listDepo').innerHTML = html;
+                _lastDepo = totalDepo; hitungSaldo();
             });
-
-            // Withdraw Listener
             db.ref("penarikan").on("value", snap => {
-                let html = "", totalTarik = 0, data = [];
+                let html = "", totalTarik = 0;
                 snap.forEach(c => { 
                     if(c.val().uid === uid) {
-                        data.push(c.val());
                         if(c.val().status === "selesai") totalTarik += Number(c.val().nominal);
+                        html += `<div class="bg-[#111] p-3 rounded-xl border border-[#222] text-[10px]">Tarik: Rp ${Number(c.val().nominal).toLocaleString()} (${c.val().status})</div>`;
                     }
                 });
-                data.reverse().forEach(w => {
-                    const stCls = w.status=='selesai'?'text-green-400 bg-green-400/10':w.status=='pending'?'text-yellow-400 bg-yellow-400/10':'text-red-400 bg-red-400/10';
-                    html += `<div class="bg-[#1a1a1a] p-3 rounded-xl flex justify-between items-center text-[11px] border border-[#222] animate-pop">
-                        <div><div class="font-bold text-white">Rp ${Number(w.nominal).toLocaleString('id-ID')}</div><div class="text-[8px] text-gray-600">${w.timestamp?new Date(w.timestamp).toLocaleString():''}</div></div>
-                        <span class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase ${stCls}">${w.status}</span>
-                    </div>`;
-                });
-                document.getElementById('listTarik').innerHTML = html || "<div class='text-center text-xs text-gray-600 py-6 italic'>Belum ada riwayat penarikan.</div>";
-                hitungSaldo(null, totalTarik, null);
+                document.getElementById('listTarik').innerHTML = html;
+                _lastTarik = totalTarik; hitungSaldo();
             });
-
-            // Invest Listener
             db.ref("invest_history/" + uid).on("value", snap => {
-                historyInv = [];
-                snap.forEach(c => { historyInv.push(c.val()); });
-                hitungSaldo(null, null, historyInv);
+                historyInv = []; snap.forEach(c => historyInv.push(c.val()));
+                hitungSaldo();
             });
         }
 
         let _lastDepo = 0, _lastTarik = 0;
-        function hitungSaldo(depo, tarik, invs) {
-            if (depo !== null) _lastDepo = depo;
-            if (tarik !== null) _lastTarik = tarik;
-            
+        function hitungSaldo() {
             let totalCost = 0, totalProfit = 0, aktif = false, sekarang = Date.now();
             historyInv.forEach(h => {
-                totalCost += (h.harga || 20000);
+                totalCost += 20000;
                 let diff = Math.floor((sekarang - h.tanggalBeli) / 86400000);
-                let pDays = Math.min(diff, 60);
-                totalProfit += (pDays * 500);
-                if (diff < 60) { aktif = true; document.getElementById('timerA').innerText = "Status: Aktif (" + (60 - diff) + " Hari Sisa)"; }
+                totalProfit += (Math.min(diff, 60) * 500);
+                if (diff < 60) { aktif = true; document.getElementById('timerA').innerText = "Aktif (" + (60 - diff) + " Hari Sisa)"; }
             });
-
             balance = _lastDepo - totalCost + totalProfit - _lastTarik;
             document.getElementById('balanceText').innerText = "Rp. " + balance.toLocaleString('id-ID');
-            document.getElementById('saldoTarik').innerText = "Saldo Tersedia: Rp " + balance.toLocaleString('id-ID');
+            document.getElementById('saldoTarik').innerText = "Saldo: Rp " + balance.toLocaleString('id-ID');
             document.getElementById('labelPaketA').style.display = aktif ? "block" : "none";
             document.getElementById('btnBeliA').disabled = aktif;
-            document.getElementById('btnBeliA').innerText = aktif ? "PAKET SUDAH AKTIF" : "BELI PAKET SEKARANG";
-            if(!aktif) document.getElementById('timerA').style.display = "none"; else document.getElementById('timerA').style.display = "block";
+            document.getElementById('btnBeliA').innerText = aktif ? "AKTIF" : "BELI SEKARANG";
         }
 
-        // FUNGSI UTAMA
+        // AUTH FUNCTIONS
         function login() { auth.signInWithEmailAndPassword(document.getElementById('loginUser').value, document.getElementById('loginPass').value).catch(e => alert(e.message)); }
         function logout() { auth.signOut().then(() => location.reload()); }
         function register() {
             sedangDaftar = true;
             auth.createUserWithEmailAndPassword(document.getElementById('regUser').value, document.getElementById('regPass').value)
-                .then(() => { alert("Registrasi Berhasil!"); sedangDaftar=false; toggleAuth(false); auth.signOut(); })
-                .catch(e => { sedangDaftar=false; alert(e.message); });
+                .then(() => { alert("Sukses!"); sedangDaftar=false; toggleAuth(false); auth.signOut(); })
+                .catch(e => { alert(e.message); sedangDaftar=false; });
         }
         function toggleAuth(isReg) {
             document.getElementById('loginBox').style.display = isReg ? 'none' : 'block';
@@ -332,22 +333,21 @@
             document.querySelectorAll('.menu-item .p-2').forEach(i => i.classList.remove('menu-active'));
             element.querySelector('.p-2').classList.add('menu-active');
         }
+
+        // HELPERS
         function buyInvest() {
-            if (balance < 20000) return alert("Saldo tidak mencukupi!");
-            if(confirm("Beli paket investasi Rp 20.000?")) {
-                db.ref("invest_history/" + auth.currentUser.uid).push({ tanggalBeli: Date.now(), harga: 20000 }).then(() => alert("Pembelian berhasil!"));
-            }
+            if (balance < 20000) return alert("Saldo Kurang!");
+            db.ref("invest_history/" + auth.currentUser.uid).push({ tanggalBeli: Date.now(), harga: 20000 }).then(() => alert("Berhasil!"));
         }
         function kirimDepo() {
-            db.ref("topup").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: 50000, status: "pending", timestamp: Date.now() });
-            alert("Permintaan Deposit Terkirim!");
+            db.ref("topup").push({ uid: auth.currentUser.uid, nominal: 50000, status: "pending", timestamp: Date.now() });
+            alert("Terkirim!");
         }
         function kirimTarik() {
-            let nominal = parseInt(document.getElementById('nominalTarik').value.replace(/\./g, ''));
-            if (isNaN(nominal) || nominal < 50000) return alert("Minimal penarikan Rp 50.000");
-            if (balance < nominal) return alert("Saldo tidak mencukupi untuk penarikan!");
-            db.ref("penarikan").push({ uid: auth.currentUser.uid, email: auth.currentUser.email, nominal: nominal, status: "pending", timestamp: Date.now() });
-            alert("Permintaan Penarikan Terkirim!");
+            let n = parseInt(document.getElementById('nominalTarik').value.replace(/\./g, ''));
+            if (balance < n) return alert("Saldo Kurang!");
+            db.ref("penarikan").push({ uid: auth.currentUser.uid, nominal: n, status: "pending", timestamp: Date.now() });
+            alert("Terkirim!");
         }
         function openGallery() { document.getElementById('fileInput').click(); }
         function uploadFoto() {
