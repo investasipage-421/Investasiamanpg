@@ -65,6 +65,14 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
         video { width: 100%; display: block; }
+
+        /* TikTok Icon Styling */
+        .tiktok-icon {
+            background: linear-gradient(45deg, #000, #ff0050);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
     </style>
 </head>
 <body class="selection:bg-cyan-500 selection:text-black">
@@ -153,15 +161,52 @@
                 </div>
             </div>
 
-            <!-- Quiz Section -->
-            <div id="quizBox" class="section hidden space-y-4 animate-up">
-                <h3 class="text-lg font-extrabold mb-4 flex items-center gap-2">
-                    <span class="w-2 h-6 bg-cyan-500 rounded-full"></span> Materi Dasar
+            <!-- Menu Section Baru - 4 Kotak Kiri ke Kanan -->
+            <div id="quizBox" class="section space-y-6 animate-up">
+                <h3 class="text-lg font-extrabold mb-6 flex items-center gap-2">
+                    <span class="w-2 h-6 bg-cyan-500 rounded-full"></span> Sosial Media Page421
                 </h3>
-                <div class="space-y-3">
-                    <div class="glass-card p-5 rounded-2xl"><p class="text-xs text-cyan-500 font-bold mb-1">01. PENGENALAN</p><p class="text-sm font-semibold text-gray-200">Investasi Page421 adalah platform profit harian otomatis.</p></div>
-                    <div class="glass-card p-5 rounded-2xl"><p class="text-xs text-cyan-500 font-bold mb-1">02. DEPOSIT</p><p class="text-sm font-semibold text-gray-200">Minimal deposit tetap Rp 50.000 untuk keamanan sistem.</p></div>
-                    <div class="glass-card p-5 rounded-2xl"><p class="text-xs text-cyan-500 font-bold mb-1">03. PENARIKAN</p><p class="text-sm font-semibold text-gray-200">Minimal penarikan saldo adalah Rp 50.000.</p></div>
+                
+                <!-- 4 Kotak Kiri ke Kanan -->
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <!-- Kotak 1 - TikTok (Pertama dengan Gambar TikTok) -->
+                    <a href="https://www.tiktok.com/@page421_official?_r=1&_t=ZS-964gY6z88u7" target="_blank" class="group">
+                        <div class="glass-card p-6 rounded-2xl border-2 border-cyan-500/50 hover:border-cyan-500 transition-all hover:scale-105 cursor-pointer">
+                            <div class="text-4xl mb-3 tiktok-icon group-hover:scale-110 transition-all">📱</div>
+                            <h4 class="text-sm font-black text-white mb-1">TikTok</h4>
+                            <p class="text-[10px] text-cyan-400 font-bold">@page421_official</p>
+                            <p class="text-[9px] text-gray-500 mt-1">Ikuti update terbaru</p>
+                        </div>
+                    </a>
+
+                    <!-- Kotak 2 -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/10 hover:border-cyan-500/50 transition-all hover:scale-105 cursor-pointer">
+                        <div class="text-4xl mb-3 text-yellow-400">📺</div>
+                        <h4 class="text-sm font-black text-white mb-1">YouTube</h4>
+                        <p class="text-[10px] text-gray-400 font-bold">Page421 Official</p>
+                        <p class="text-[9px] text-gray-500 mt-1">Tutorial lengkap</p>
+                    </div>
+
+                    <!-- Kotak 3 -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/10 hover:border-cyan-500/50 transition-all hover:scale-105 cursor-pointer">
+                        <div class="text-4xl mb-3 text-blue-400">📘</div>
+                        <h4 class="text-sm font-black text-white mb-1">Telegram</h4>
+                        <p class="text-[10px] text-gray-400 font-bold">Page421 Group</p>
+                        <p class="text-[9px] text-gray-500 mt-1">Komunitas investor</p>
+                    </div>
+
+                    <!-- Kotak 4 -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/10 hover:border-cyan-500/50 transition-all hover:scale-105 cursor-pointer">
+                        <div class="text-4xl mb-3 text-pink-400">📷</div>
+                        <h4 class="text-sm font-black text-white mb-1">Instagram</h4>
+                        <p class="text-[10px] text-gray-400 font-bold">@page421</p>
+                        <p class="text-[9px] text-gray-500 mt-1">Tips & motivasi</p>
+                    </div>
+                </div>
+
+                <!-- Konten Bawah (Kosong atau bisa ditambahkan konten lain) -->
+                <div class="glass-card p-6 rounded-2xl text-center border border-cyan-500/30">
+                    <p class="text-sm text-gray-400">Ikuti semua sosial media Page421 untuk update terbaru dan tips investasi!</p>
                 </div>
             </div>
 
@@ -220,7 +265,7 @@
         <!-- Navbar Bawah -->
         <nav class="fixed bottom-0 left-0 right-0 bg-[#0a0a0a]/90 backdrop-blur-xl border-t border-white/5 px-6 py-3 flex justify-between items-center z-[9000]">
             <button onclick="showSection('newsBox', this)" class="menu-item menu-active flex flex-col items-center gap-1"><div class="p-2"><img src="https://img.icons8.com/color/48/news.png" class="w-6 h-6"></div><span class="text-[9px] font-bold">Berita</span></button>
-            <button onclick="showSection('quizBox', this)" class="menu-item flex flex-col items-center gap-1"><div class="p-2"><img src="https://img.icons8.com/color/48/book-shelf.png" class="w-6 h-6"></div><span class="text-[9px] font-bold">Soal</span></button>
+            <button onclick="showSection('quizBox', this)" class="menu-item flex flex-col items-center gap-1"><div class="p-2"><img src="https://img.icons8.com/color/48/book-shelf.png" class="w-6 h-6"></div><span class="text-[9px] font-bold">Sosmed</span></button>
             <button onclick="showSection('investBox', this)" class="menu-item flex flex-col items-center gap-1"><div class="p-2"><img src="https://img.icons8.com/color/48/coins.png" class="w-6 h-6"></div><span class="text-[9px] font-bold">Invest</span></button>
             <button onclick="showSection('depoBox', this)" class="menu-item flex flex-col items-center gap-1"><div class="p-2"><img src="https://img.icons8.com/color/48/request-money.png" class="w-6 h-6"></div><span class="text-[9px] font-bold">Depo</span></button>
             <button onclick="showSection('tarikBox', this)" class="menu-item flex flex-col items-center gap-1"><div class="p-2"><img src="https://img.icons8.com/color/48/atm.png" class="w-6 h-6"></div><span class="text-[9px] font-bold">Tarik</span></button>
