@@ -73,15 +73,6 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
-        /* Invest Compact Styling */
-        .invest-compact {
-            max-height: 220px;
-            overflow: hidden;
-        }
-        .invest-compact .glass-card {
-            padding: 1rem !important;
-        }
     </style>
 </head>
 <body class="selection:bg-cyan-500 selection:text-black">
@@ -202,30 +193,28 @@
                 </div>
             </div>
 
-            <!-- Invest Section (DIHIDDEN) - DIPERKECIL -->
-            <div id="investBox" class="section hidden invest-compact animate-up">
-                <div class="glass-card rounded-2xl p-4 border border-cyan-500/50">
-                    <div class="flex justify-between items-center mb-3">
+            <!-- Invest Section (DIHIDDEN) -->
+            <div id="investBox" class="section hidden animate-up">
+                <div class="glass-card rounded-[32px] p-6 border border-cyan-500/30">
+                    <div class="flex justify-between items-start mb-6">
                         <div>
-                            <h3 class="text-base font-bold text-white">Paket Premium A</h3>
-                            <p class="text-[10px] text-gray-500">60 hari • Rp 500/hari</p>
+                            <h3 class="text-xl font-extrabold text-white">Paket Premium A</h3>
+                            <p class="text-xs text-gray-500">Masa aktif 60 hari</p>
                         </div>
-                        <span id="labelPaketA" class="hidden bg-cyan-500 text-black text-[9px] px-2 py-1 rounded-full font-bold">ACTIVE</span>
+                        <span id="labelPaketA" class="hidden bg-cyan-500 text-black text-[10px] px-3 py-1 rounded-full font-black">ACTIVE</span>
                     </div>
-                    
-                    <div class="grid grid-cols-2 gap-3 mb-4">
-                        <div class="bg-black/50 p-3 rounded-xl border border-white/10 text-center">
-                            <p class="text-[9px] text-gray-400 font-bold uppercase mb-1">Harga</p>
-                            <p class="text-sm font-bold text-white">Rp 20.000</p>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                            <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">Harga</p>
+                            <p class="text-sm font-bold">Rp 20.000</p>
                         </div>
-                        <div class="bg-black/50 p-3 rounded-xl border border-white/10 text-center">
-                            <p class="text-[9px] text-green-400 font-bold uppercase mb-1">Profit</p>
-                            <p class="text-sm font-bold text-green-400">Rp 500/hari</p>
+                        <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                            <p class="text-[10px] text-green-500 font-bold uppercase mb-1">Profit</p>
+                            <p class="text-sm font-bold text-green-400">Rp 500 / Hari</p>
                         </div>
                     </div>
-                    
-                    <div id="timerA" class="hidden mb-3 text-center text-[9px] font-mono text-cyan-400 bg-cyan-500/10 py-1.5 rounded-lg border border-cyan-500/20"></div>
-                    <button id="btnBeliA" onclick="buyInvest()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-bold py-3 rounded-xl text-sm active:scale-95 transition-all shadow-lg shadow-cyan-500/20 disabled:bg-gray-800 disabled:text-gray-500 disabled:shadow-none">BELI PAKET</button>
+                    <div id="timerA" class="hidden mb-6 text-center text-[10px] font-mono text-cyan-500 bg-cyan-500/5 py-2 rounded-xl border border-cyan-500/20"></div>
+                    <button id="btnBeliA" onclick="buyInvest()" class="w-full bg-white text-black font-black py-4 rounded-2xl active:scale-95 transition-all shadow-xl disabled:bg-gray-800 disabled:text-gray-500">BELI PAKET SEKARANG</button>
                 </div>
             </div>
 
@@ -391,7 +380,7 @@
                 profit += (Math.min(diff, 60) * 500);
                 if (diff < 60) {
                     aktif = true;
-                    document.getElementById('timerA').innerText = (60 - diff) + " HARI SISA";
+                    document.getElementById('timerA').innerText = "PAKET BERJALAN: " + (60 - diff) + " HARI SISA";
                 }
             });
             balance = _lastDepo - cost + profit - _lastTarik;
@@ -399,7 +388,7 @@
             document.getElementById('saldoTarik').innerText = "SALDO: Rp " + balance.toLocaleString('id-ID');
             document.getElementById('labelPaketA').style.display = aktif ? "inline" : "none";
             document.getElementById('btnBeliA').disabled = aktif;
-            document.getElementById('btnBeliA').innerText = aktif ? "SUDAH AKTIF" : "BELI PAKET";
+            document.getElementById('btnBeliA').innerText = aktif ? "SUDAH AKTIF" : "BELI PAKET SEKARANG";
             document.getElementById('timerA').style.display = aktif ? "block" : "none";
         }
 
