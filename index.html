@@ -89,6 +89,34 @@
             font-family: 'Inter', sans-serif;
             box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
         }
+
+        /* WhatsApp Styling */
+        .whatsapp-box {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+        }
+        .whatsapp-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(37, 211, 102, 0.4);
+        }
+        .whatsapp-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body class="selection:bg-cyan-500 selection:text-black">
@@ -279,17 +307,35 @@
         </button>
 
         <div id="chatWidget">
-            <div class="p-5 flex justify-between items-center border-b border-white/5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-t-[24px] relative">
-                <div class="flex items-center gap-3">
-                    <div class="support-avatar">CS</div>
-                    <div>
-                        <h4 class="text-sm font-black text-white uppercase tracking-widest">Customer Support</h4>
-                        <p class="text-[10px] text-white/80 font-medium">Online - 24/7</p>
+            <!-- Header dengan WhatsApp Box -->
+            <div class="p-5 space-y-4 border-b border-white/10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-t-[24px]">
+                <!-- Customer Support Info -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="support-avatar">CS</div>
+                        <div>
+                            <h4 class="text-sm font-black text-white uppercase tracking-widest">Customer Support</h4>
+                            <p class="text-[10px] text-white/80 font-medium">Online - 24/7</p>
+                        </div>
                     </div>
+                    <button onclick="toggleChat()" class="text-white text-2xl leading-none hover:text-gray-200 transition-colors">&times;</button>
                 </div>
-                <button onclick="toggleChat()" class="text-white text-2xl leading-none hover:text-gray-200 transition-colors">&times;</button>
+
+                <!-- WhatsApp Official Box -->
+                <div class="whatsapp-box" onclick="openWhatsApp()">
+                    <div class="whatsapp-icon">📱</div>
+                    <div class="flex-1 text-left">
+                        <p class="text-sm font-bold text-white mb-1">Saluran Resmi Page421</p>
+                        <p class="text-[11px] text-white/90 font-medium">Hubungi Admin WA</p>
+                    </div>
+                    <div class="text-2xl text-white font-bold">></div>
+                </div>
             </div>
+
+            <!-- Chat Content -->
             <div id="chatContent" class="flex-1 overflow-y-auto p-5 space-y-4 custom-scrollbar bg-gradient-to-b from-[#0f0f0f] to-[#111]"></div>
+            
+            <!-- Input Chat -->
             <div class="p-3 bg-[#111] flex gap-2 rounded-b-[24px] border-t border-white/5">
                 <input id="chatInput" type="text" placeholder="Ketik pesan untuk Customer Support..." class="flex-1 bg-[#000] text-xs p-4 rounded-xl outline-none focus:ring-1 ring-cyan-500 border border-white/10">
                 <button onclick="sendChat()" class="bg-gradient-to-r from-cyan-500 to-blue-500 text-black px-5 rounded-xl font-black text-xs active:scale-90 transition-all shadow-lg shadow-cyan-500/30">KIRIM</button>
@@ -316,6 +362,9 @@
 
         let balance = 0, historyInv = [], sedangDaftar = false;
         let _lastDepo = 0, _lastTarik = 0;
+
+        // WhatsApp Link
+        const WA_LINK = "https://wa.me/6281234567890?text=Halo%20Admin%20Page421%2C%20saya%20${auth.currentUser?.email || 'user'}";
 
         auth.onAuthStateChanged(user => {
             if (sedangDaftar) return;
@@ -355,6 +404,11 @@
                 });
             }
         });
+
+        function openWhatsApp() {
+            const userEmail = auth.currentUser ? auth.currentUser.email : 'user';
+            window.open(`https://wa.me/6281234567890?text=Halo%20Admin%20Page421%2C%20saya%20${encodeURIComponent(userEmail)}`, '_blank');
+        }
 
         function listenData(uid) {
             db.ref("topup").on("value", snap => {
@@ -475,13 +529,9 @@
             document.getElementById('registerBox').style.display = r ? 'block' : 'none';
         }
 
-        // FUNGSI showSection YANG SUDAH DIPERBAIKI - SEMUA SECTION DIHIDDEN DULU
         function showSection(id, el) {
-            // Sembunyikan SEMUA section dulu
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-            // Tampilkan HANYA section yang dipilih
             document.getElementById(id).classList.remove('hidden');
-            // Update menu active
             document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('menu-active'));
             el.classList.add('menu-active');
         }
@@ -512,18 +562,16 @@
                     const isMe = d.uid === auth.currentUser.uid && d.isUser;
                     
                     if (isMe) {
-                        // Pesan dari user
                         h += `<div class="flex flex-col items-end w-full animate-up">
                             <div class="bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-l-2xl rounded-br-2xl p-3 px-4 text-xs max-w-[85%] break-words shadow-lg">
                                 ${d.m}
                             </div>
                             <div class="flex items-center gap-1 text-[9px] text-gray-500 mt-1">
                                 <span>👤</span>
-                                <span>${auth.currentUser.email.split('@')[0]}</span>
+                                <span>${auth.currentUser?.email?.split('@')[0] || 'User'}</span>
                             </div>
                         </div>`;
                     } else {
-                        // Pesan dari Customer Support
                         h += `<div class="flex flex-col items-start w-full animate-up">
                             <div class="flex items-center gap-2 mb-1">
                                 <div class="support-avatar">CS</div>
