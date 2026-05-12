@@ -45,6 +45,21 @@
             animation: slideUp 0.4s ease-out forwards;
         }
 
+        /* New animation slideDown for messages */
+        @keyframes slideDown {
+            0% {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .animate-down {
+            animation: slideDown 0.4s ease-out forwards;
+        }
+
         .menu-active {
             color: #06b6d4 !important;
         }
@@ -654,8 +669,9 @@
             const msg = document.getElementById("authMessage");
             if (!msg) return;
             msg.innerText = text;
-            msg.classList.remove("hidden", "message-red", "message-green");
-            msg.classList.add(isError ? "message-red" : "message-green");
+            msg.classList.remove("hidden", "message-red", "message-green", "animate-down");
+            void msg.offsetWidth; // Trigger reflow untuk reset animasi
+            msg.classList.add(isError ? "message-red" : "message-green", "animate-down");
             msg.style.display = "block";
             if (!isError) {
                 setTimeout(() => {
@@ -666,8 +682,9 @@
         function showDashboardMessage(text, duration = 3000) {
             const msgBox = document.getElementById("dashboardMessage");
             msgBox.innerText = text;
-            msgBox.classList.remove("hidden", "message-red", "message-green");
-            msgBox.classList.add("message-green");
+            msgBox.classList.remove("hidden", "message-red", "message-green", "animate-down");
+            void msgBox.offsetWidth; // Trigger reflow untuk reset animasi
+            msgBox.classList.add("message-green", "animate-down");
             msgBox.style.display = "block";
             setTimeout(() => {
                 msgBox.style.display = "none";
