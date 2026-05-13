@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>INVESTASI - PAGE421 OFFICIAL</title>
+    <!-- Tailwind & Animations -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -13,7 +14,7 @@
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .font-space { font-family: 'Space+Grotesk', sans-serif; }
         
-        /* Floating Top Notification (Premium Style) */
+        /* Floating Top Notification */
         .notif-bar {
             position: fixed;
             top: 25px;
@@ -32,7 +33,7 @@
             display: none;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
             animation: slideInDown 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
         }
         @keyframes slideInDown {
             from { transform: translate(-50%, -100%); opacity: 0; }
@@ -55,24 +56,23 @@
 
         .video-container { position: relative; width: 100%; border-radius: 28px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
         
-        .loader-spin { width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #06b6d4; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .loader-spin { width: 24px; height: 24px; border: 3px solid rgba(0,0,0,0.1); border-top-color: #000; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .hero-gradient { background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.15), transparent 60%); }
+        .hero-gradient { background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.2), transparent 70%); }
     </style>
 </head>
 <body class="selection:bg-cyan-500/30">
-    <!-- UI Notification -->
     <div id="notifBar" class="notif-bar"></div>
 
     <div id="app" class="min-h-screen flex flex-col">
-        <!-- Visual Background for Desktop -->
+        <!-- Visual Glow Background -->
         <div class="fixed inset-0 pointer-events-none overflow-hidden opacity-30 z-0">
             <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-cyan-500/10 blur-[140px] rounded-full"></div>
             <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-500/10 blur-[140px] rounded-full"></div>
         </div>
 
-        <!-- Initial Splash -->
+        <!-- Initial Splash (Loading) -->
         <div id="splash" class="fixed inset-0 bg-black flex items-center justify-center z-[99999]">
             <div class="text-center animate_animated animate_zoomIn">
                 <h1 class="text-6xl font-space font-bold text-cyan-500 tracking-tighter">PAGE421</h1>
@@ -91,7 +91,7 @@
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
         import { getDatabase, ref, set, get, push, onValue, query as rtdbQuery, limitToLast } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
-        // CONFIGURASI FIREBASE
+        // CONFIG FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyBMJzc3gMP4oLuzntjpjVCtEGry5eKFJAQ",
             authDomain: "page421-b9a6c.firebaseapp.com",
@@ -126,6 +126,12 @@
             setTimeout(() => { el.style.display = 'none'; }, 4000);
         }
 
+        // Force hide splash if it takes too long
+        setTimeout(() => {
+            const s = document.getElementById('splash');
+            if(s && s.style.display !== 'none') s.style.display = 'none';
+        }, 3500);
+
         function render() {
             if (!state.user) {
                 renderAuth();
@@ -137,37 +143,37 @@
             setTimeout(() => {
                 const s = document.getElementById('splash');
                 if(s) s.style.display = 'none';
-            }, 800);
+            }, 600);
         }
 
-        // --- AUTH ---
+        // --- AUTH SECTION ---
         function renderAuth() {
             root.innerHTML = `
                 <div class="flex-1 flex flex-col items-center justify-center p-8 bg-black z-10 relative">
                     <div class="w-full max-w-sm space-y-12">
-                        <div class="text-center animate_animated animate_fadeInDown">
+                        <div class="text-center">
                             <h1 class="text-6xl font-space font-bold text-cyan-500 tracking-tighter">PAGE421</h1>
-                            <p class="text-gray-600 text-[10px] font-black tracking-[0.5em] mt-3 uppercase">Financial Portal</p>
+                            <p class="text-gray-600 text-[10px] font-black tracking-[0.5em] mt-3 uppercase">Access Portal</p>
                         </div>
 
-                        <div class="glass p-10 rounded-[3rem] shadow-2xl border-white/5 animate_animated animate_fadeInUp">
+                        <div class="glass p-10 rounded-[3rem] shadow-2xl border-white/5 bg-black/40">
                             <form id="authForm" class="space-y-6">
                                 <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-gray-500 ml-1 uppercase tracking-widest">Email Address</label>
-                                    <input type="email" id="email" class="w-full h-15 rounded-2xl px-6 text-sm font-semibold" placeholder="investor@mail.com" required>
+                                    <label class="text-[10px] font-black text-gray-500 ml-1 uppercase">Email Account</label>
+                                    <input type="email" id="email" class="w-full h-15 rounded-2xl px-6 text-sm font-bold bg-[#0a0a0a]" placeholder="investor@mail.com" required>
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-gray-500 ml-1 uppercase tracking-widest">Access Key</label>
-                                    <input type="password" id="password" class="w-full h-15 rounded-2xl px-6 text-sm font-semibold" placeholder="••••••••" required minlength="6">
+                                    <label class="text-[10px] font-black text-gray-500 ml-1 uppercase">Security Password</label>
+                                    <input type="password" id="password" class="w-full h-15 rounded-2xl px-6 text-sm font-bold bg-[#0a0a0a]" placeholder="••••••••" required minlength="6">
                                 </div>
-                                <button type="submit" class="w-full h-15 btn-cyan rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/40">
-                                    ${state.isLoading ? '<div class="loader-spin"></div>' : (state.isRegister ? 'JOIN PORTAL' : 'AUTHORIZE LOGIN')}
+                                <button type="submit" class="w-full h-15 btn-cyan rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/20">
+                                    ${state.isLoading ? '<div class="loader-spin"></div>' : (state.isRegister ? 'DAFTAR SEKARANG' : 'MASUK KE SISTEM')}
                                 </button>
                                 
                                 <p class="text-center text-[10px] text-gray-500 font-bold pt-4">
                                     ${state.isRegister ? 'SUDAH ADA AKUN?' : 'PENGGUNA BARU?'} 
                                     <span id="toggleAuth" class="text-cyan-400 cursor-pointer ml-1 underline decoration-2 underline-offset-4">
-                                        ${state.isRegister ? 'LOGIN' : 'DAFTAR DI SINI'}
+                                        ${state.isRegister ? 'LOGIN' : 'DAFTAR'}
                                     </span>
                                 </p>
                             </form>
@@ -191,11 +197,11 @@
                 if (state.isRegister) {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
                     await set(ref(db, users/${res.user.uid}), { uid: res.user.uid, email, createdAt: Date.now() });
-                    notify("Berhasil Daftar!");
+                    notify("Akun Berhasil Dibuat!");
                     state.isRegister = false;
                 } else {
                     await signInWithEmailAndPassword(auth, email, pass);
-                    notify("Selamat Datang.");
+                    notify("Identitas Diverifikasi.");
                 }
             } catch (err) {
                 notify(err.message, 'error');
@@ -204,170 +210,141 @@
             }
         }
 
-        // --- MAIN DASHBOARD ---
+        // --- DASHBOARD SECTION ---
         function renderMain() {
             const fmt = (v) => 'Rp ' + Number(v).toLocaleString('id-ID');
             root.innerHTML = `
                 <div class="flex-1 flex flex-col h-screen overflow-hidden z-10 relative">
-                    <!-- Top Bar -->
                     <header class="p-6 flex justify-between items-center border-b border-white/5 bg-black/40 backdrop-blur-3xl sticky top-0 z-50">
                         <div class="flex items-center gap-4">
-                            <div class="w-13 h-13 rounded-2xl border-2 border-cyan-500/30 p-0.5 overflow-hidden shadow-xl shadow-cyan-500/5">
+                            <div class="w-13 h-13 rounded-2xl border-2 border-cyan-500/20 p-0.5 shadow-xl">
                                 <img src="https://i.imgur.com/8Km9tLL.png" class="w-full h-full object-cover rounded-[11px]">
                             </div>
                             <div>
                                 <h3 class="text-xs font-extrabold truncate max-w-[140px] tracking-tight">${state.user.email}</h3>
-                                <div class="flex items-center gap-1.5 mt-0.5">
-                                    <span class="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(6,182,212,1)]"></span>
-                                    <p class="text-[9px] font-black text-cyan-500 uppercase tracking-tighter font-space">Premium Portal</p>
-                                </div>
+                                <p class="text-[9px] font-black text-cyan-500 uppercase tracking-tighter mt-0.5">Premium Investor</p>
                             </div>
                         </div>
-                        <button id="logoutBtn" class="w-13 h-13 glass rounded-2xl flex items-center justify-center text-red-500 hover:bg-red-500/10 transition-all border-red-500/10">
+                        <button id="logoutBtn" class="w-12 h-12 glass rounded-2xl flex items-center justify-center text-red-500">
                             <i data-lucide="power" class="w-5 h-5"></i>
                         </button>
                     </header>
 
-                    <!-- Scroll Area -->
                     <main class="flex-1 overflow-y-auto p-6 pb-36 custom-scrollbar">
-                        
-                        <!-- TAB: HOME -->
-                        <section id="tab-home" class="space-y-7 ${state.activeTab === 'home' ? '' : 'hidden'} animate_animated animate_fadeIn">
-                            <div class="glass p-11 rounded-[3.5rem] hero-gradient border-cyan-500/20 shadow-2xl relative overflow-hidden group">
-                                <p class="text-[10px] font-black text-gray-500 tracking-[0.5em] mb-4 uppercase">Total Saldo Portfolio</p>
-                                <h2 class="text-5xl font-space font-bold tracking-tighter mb-12 group-hover:scale-[1.02] transition-transform duration-500">${fmt(state.balance)}</h2>
+                        <!-- HOME TAB -->
+                        <section id="p-home" class="space-y-7 ${state.activeTab === 'home' ? '' : 'hidden'} animate_animated animate_fadeIn">
+                            <div class="glass p-11 rounded-[3.5rem] hero-gradient border-cyan-500/20 shadow-2xl relative">
+                                <p class="text-[10px] font-black text-gray-500 tracking-[0.5em] mb-4 uppercase">Portfolio Value</p>
+                                <h2 class="text-5xl font-space font-bold tracking-tighter mb-12">${fmt(state.balance)}</h2>
                                 <div class="flex gap-4">
-                                    <button onclick="switchTab('depo')" class="flex-1 h-15 bg-white text-black font-black rounded-2xl text-[10px] shadow-2xl hover:bg-cyan-50 transition-all uppercase tracking-widest">DEPOSIT</button>
-                                    <button onclick="switchTab('tarik')" class="flex-1 h-15 glass text-white font-black rounded-2xl text-[10px] hover:bg-white/5 uppercase tracking-widest">PENARIKAN</button>
+                                    <button onclick="switchTab('depo')" class="flex-1 h-15 bg-white text-black font-black rounded-2xl text-[10px] shadow-xl uppercase">ISI SALDO</button>
+                                    <button onclick="switchTab('tarik')" class="flex-1 h-15 glass text-white font-black rounded-2xl text-[10px] uppercase">TARIK</button>
                                 </div>
                             </div>
-
-                            <div class="glass p-7 rounded-[2.5rem] border-white/5 bg-[#050505]/40 shadow-xl">
-                                <div class="flex items-center justify-between mb-5">
-                                    <h4 class="text-[10px] font-bold text-cyan-500 uppercase tracking-widest flex items-center gap-2">
-                                        <i data-lucide="info" class="w-3.5 h-3.5"></i> Informasi Terbaru
-                                    </h4>
-                                    <span class="text-[8px] bg-red-600 text-white px-2 py-0.5 rounded-full font-black animate-pulse">LIVE</span>
-                                </div>
+                            <div class="glass p-7 rounded-[2.5rem] border-white/5 bg-[#050505]/40 p-8 shadow-xl">
+                                <h4 class="text-[10px] font-bold text-cyan-500 uppercase tracking-widest mb-5 flex items-center gap-2">
+                                    <i data-lucide="video" class="w-4 h-4"></i> Edukasi Sistem
+                                </h4>
                                 <div class="video-container mb-6">
                                     <video controls poster="https://static.vecteezy.com/system/resources/previews/001/879/490/non_2x/abstract-futuristic-scify-background-with-dots-and-layers-free-vector.jpg" class="w-full h-full object-cover">
                                         <source src="https://files.catbox.moe/ke70c6.mp4" type="video/mp4">
                                     </video>
                                 </div>
-                                <p class="text-xs text-gray-500 leading-relaxed font-semibold">
-                                    Halo Investor! Gunakan profit harian Anda untuk mengembangkan portofolio.
-                                    Lapor admin di grup jika ada kendala saldo.
+                                <p class="text-xs text-gray-500 leading-relaxed font-bold">
+                                    Pantau profit harian anda secara otomatis. Pastikan anda sudah mengaktifkan paket investasi.
                                 </p>
                             </div>
                         </section>
 
-                        <!-- TAB: INVESTMENT -->
-                        <section id="tab-invest" class="space-y-7 ${state.activeTab === 'invest' ? '' : 'hidden'} animate_animated animate_fadeIn">
-                            <h2 class="text-3xl font-space font-bold px-2 tracking-tighter">PREMIUM MARKET</h2>
-                            <div class="glass p-9 rounded-[3.5rem] border-cyan-500/25 relative overflow-hidden bg-gradient-to-br from-[#080808] to-transparent">
+                        <!-- INVEST TAB -->
+                        <section id="p-invest" class="space-y-7 ${state.activeTab === 'invest' ? '' : 'hidden'} animate_animated animate_fadeIn">
+                            <h2 class="text-2xl font-space font-bold px-2">MARKET INVESTASI</h2>
+                            <div class="glass p-9 rounded-[3rem] border-cyan-500/20 bg-gradient-to-br from-[#080808] to-black">
                                 <div class="flex justify-between items-center mb-8">
-                                    <div>
-                                        <h4 class="font-bold text-xl text-white">VIP PACKAGE A</h4>
-                                        <p class="text-[9px] text-gray-600 font-bold uppercase tracking-widest mt-1">Durasi: 60 Hari</p>
-                                    </div>
-                                    <div class="flex items-center gap-2 bg-cyan-500/10 px-3 py-1.5 rounded-2xl border border-cyan-500/20">
-                                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i>
-                                        <span class="text-[9px] text-cyan-400 font-black uppercase">Aktif</span>
-                                    </div>
+                                    <h4 class="font-bold text-xl">PAKET PREMIUM A</h4>
+                                    <span class="text-[8px] bg-cyan-500 text-black px-3 py-1 rounded-lg font-black font-space">AKTIF</span>
                                 </div>
                                 <div class="grid grid-cols-2 gap-5 mb-10">
-                                    <div class="glass border-white/5 p-5 rounded-3xl bg-black/30">
-                                        <p class="text-[9px] text-gray-600 font-black mb-1.5 uppercase tracking-tighter">HARGA PAKET</p>
-                                        <p class="text-xl font-bold text-white">${fmt(20000)}</p>
+                                    <div class="glass border-white/5 p-5 rounded-3xl">
+                                        <p class="text-[9px] text-gray-700 font-bold mb-1.5 uppercase">Biaya</p>
+                                        <p class="text-lg font-bold">${fmt(20000)}</p>
                                     </div>
                                     <div class="glass border-cyan-500/10 p-5 rounded-3xl bg-cyan-500/5 text-cyan-400">
-                                        <p class="text-[9px] text-cyan-700 font-black mb-1.5 uppercase tracking-tighter">PROFIT / HR</p>
-                                        <p class="text-xl font-bold">Rp 500</p>
+                                        <p class="text-[9px] text-cyan-700 font-bold mb-1.5 uppercase">Profit / Hari</p>
+                                        <p class="text-lg font-bold">Rp 500</p>
                                     </div>
                                 </div>
-                                <button id="buyBtn" class="w-full h-17 btn-cyan rounded-[2rem] text-[11px] shadow-2xl shadow-cyan-500/20 uppercase tracking-widest flex items-center justify-center gap-2 group">
-                                    <span>AKTIFKAN INVESTASI</span>
-                                    <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                                </button>
+                                <button id="buyBtn" class="w-full h-17 btn-cyan rounded-[2rem] text-[11px] shadow-2xl shadow-cyan-500/30 uppercase tracking-widest">AKTIFKAN SEKARANG</button>
                             </div>
                         </section>
 
-                        <!-- TAB: DEPOSIT -->
-                        <section id="tab-depo" class="space-y-7 ${state.activeTab === 'depo' ? '' : 'hidden'} animate_animated animate_fadeIn">
-                            <h2 class="text-3xl font-space font-bold px-2 tracking-tighter">ISI SALDO</h2>
-                            <div class="bg-white rounded-[3.5rem] p-12 text-black text-center shadow-2xl relative overflow-hidden group">
-                                <p class="text-[11px] font-black opacity-30 uppercase tracking-[0.3em] mb-4">Setoran Cepat</p>
-                                <h1 class="text-6xl font-space font-bold my-5 tracking-tighter">${fmt(50000)}</h1>
-                                <button id="depoBtn" class="w-full h-15 bg-black text-white font-black rounded-2xl mt-5 shadow-2xl hover:scale-[0.98] transition-all uppercase text-[10px] tracking-widest">REQUEST SEKARANG</button>
+                        <!-- DEPOSIT TAB -->
+                        <section id="p-depo" class="space-y-7 ${state.activeTab === 'depo' ? '' : 'hidden'} animate_animated animate_fadeIn">
+                            <h2 class="text-2xl font-space font-bold px-2">SALDO TOP UP</h2>
+                            <div class="bg-white rounded-[3rem] p-12 text-black text-center shadow-2xl relative overflow-hidden">
+                                <p class="text-[10px] font-black opacity-30 uppercase tracking-widest">Fixed Amount</p>
+                                <h1 class="text-5xl font-black my-5 tracking-tighter">${fmt(50000)}</h1>
+                                <button id="depoBtn" class="w-full h-15 bg-black text-white font-black rounded-2xl mt-5 shadow-2xl active:scale-95 uppercase text-[10px]">ISI SALDO SEKARANG</button>
                             </div>
-                            <div class="space-y-3 px-1 mt-8">
-                                <h4 class="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-4">Riwayat Depo</h4>
-                                ${renderHistoryList(state.deposits, 'DEPOSIT')}
+                            <div class="space-y-3">
+                                ${renderHistory(state.deposits, 'DEPOSIT')}
                             </div>
                         </section>
 
-                        <!-- TAB: WITHDRAW -->
-                        <section id="tab-tarik" class="space-y-7 ${state.activeTab === 'tarik' ? '' : 'hidden'} animate_animated animate_fadeIn">
-                            <h2 class="text-3xl font-space font-bold px-2 tracking-tighter">TARIK PROFIT</h2>
-                            <div class="glass p-11 rounded-[3.5rem] text-center border-red-500/15 shadow-2xl bg-gradient-to-br from-red-500/5 to-transparent">
-                                <p class="text-[11px] font-bold text-gray-500 mb-4 uppercase tracking-[0.2em]">SALDO TERSIEDIA: ${fmt(state.balance)}</p>
-                                <div class="relative mb-8">
-                                    <input id="tarikNominal" type="number" value="50000" class="w-full bg-transparent text-center text-6xl font-space font-bold outline-none text-white tracking-tighter">
+                        <!-- WITHDRAW TAB -->
+                        <section id="p-tarik" class="space-y-7 ${state.activeTab === 'tarik' ? '' : 'hidden'} animate_animated animate_fadeIn">
+                            <h2 class="text-2xl font-space font-bold px-2">PENARIKAN DANA</h2>
+                            <div class="glass p-11 rounded-[3rem] text-center border-red-500/15 shadow-2xl">
+                                <p class="text-[10px] font-bold text-gray-500 mb-2 uppercase">SALDO: ${fmt(state.balance)}</p>
+                                <input id="tarikNominal" type="number" value="50000" class="w-full bg-transparent text-center text-5xl font-extrabold outline-none mb-6">
+                                <div class="bg-red-500/5 p-4 rounded-3xl border border-red-500/10 mb-8 inline-block w-full">
+                                    <p class="text-[10px] text-red-500 font-black uppercase tracking-widest">Biaya Admin: Rp 2.500</p>
                                 </div>
-                                <div class="inline-flex flex-col gap-2 bg-red-500/10 p-4 rounded-3xl border border-red-500/10 mb-8 mx-auto w-full">
-                                    <p class="text-[10px] text-red-500 font-extrabold uppercase tracking-widest">Biaya Admin: Rp 2.500</p>
-                                    <p class="text-[9px] text-gray-600 font-medium italic">Waktu Proses: 5-30 Menit</p>
-                                </div>
-                                <button id="tarikBtn" class="w-full h-16 bg-red-600/90 text-white font-black rounded-3xl shadow-2xl shadow-red-900/40 text-[11px] uppercase tracking-widest hover:bg-red-600 transition-colors">SUBMIT REQUEST</button>
+                                <button id="tarikBtn" class="w-full h-15 bg-red-600 text-white font-black rounded-3xl shadow-xl shadow-red-900/20 text-[11px] uppercase">REQUEST PENARIKAN</button>
                             </div>
-                            <div class="space-y-3 px-1 mt-8">
-                                <h4 class="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-4">Riwayat Tarik</h4>
-                                ${renderHistoryList(state.withdrawals, 'PENARIKAN')}
+                            <div class="space-y-3">
+                                ${renderHistory(state.withdrawals, 'PENARIKAN')}
                             </div>
                         </section>
                     </main>
 
-                    <!-- Bottom Nav -->
-                    <nav class="fixed bottom-0 left-0 right-0 glass border-t border-white/5 px-8 pt-5 pb-8 flex justify-between items-center z-[1000] rounded-t-[2.5rem]">
+                    <!-- NAVBAR -->
+                    <nav class="fixed bottom-0 left-0 right-0 glass border-t border-white/5 px-8 pt-5 pb-10 flex justify-between items-center z-[1000] rounded-t-[2.5rem]">
                         <button onclick="switchTab('home')" class="nav-item flex flex-col items-center gap-2 ${state.activeTab === 'home' ? 'menu-active' : 'text-gray-600'}">
                             <div class="p-2.5 icon-bg border border-transparent rounded-[1.2rem] transition-all"><i data-lucide="home" class="w-6 h-6"></i></div>
-                            <span class="text-[9px] font-black uppercase tracking-tighter">DASHBOARD</span>
+                            <span class="text-[9px] font-black uppercase tracking-tighter">Home</span>
                         </button>
                         <button onclick="switchTab('invest')" class="nav-item flex flex-col items-center gap-2 ${state.activeTab === 'invest' ? 'menu-active' : 'text-gray-600'}">
                             <div class="p-2.5 icon-bg border border-transparent rounded-[1.2rem] transition-all"><i data-lucide="gem" class="w-6 h-6"></i></div>
-                            <span class="text-[9px] font-black uppercase tracking-tighter">MARKET</span>
+                            <span class="text-[9px] font-black uppercase tracking-tighter">Invest</span>
                         </button>
                         <button onclick="switchTab('depo')" class="nav-item flex flex-col items-center gap-2 ${state.activeTab === 'depo' ? 'menu-active' : 'text-gray-600'}">
                             <div class="p-2.5 icon-bg border border-transparent rounded-[1.2rem] transition-all"><i data-lucide="plus-circle" class="w-6 h-6"></i></div>
-                            <span class="text-[9px] font-black uppercase tracking-tighter">TOP UP</span>
+                            <span class="text-[9px] font-black uppercase tracking-tighter">Depo</span>
                         </button>
                         <button onclick="switchTab('tarik')" class="nav-item flex flex-col items-center gap-2 ${state.activeTab === 'tarik' ? 'menu-active' : 'text-gray-600'}">
                             <div class="p-2.5 icon-bg border border-transparent rounded-[1.2rem] transition-all"><i data-lucide="wallet" class="w-6 h-6"></i></div>
-                            <span class="text-[9px] font-black uppercase tracking-tighter">CASH OUT</span>
+                            <span class="text-[9px] font-black uppercase tracking-tighter">Tarik</span>
                         </button>
                     </nav>
 
-                    <!-- Chat Trigger -->
-                    <button id="openChat" class="fixed bottom-28 right-7 w-16 h-16 btn-cyan rounded-[1.8rem] shadow-2xl flex items-center justify-center z-[500] hover:scale-110 active:scale-95 transition-all text-black">
+                    <!-- CHAT -->
+                    <button id="openChat" class="fixed bottom-28 right-7 w-16 h-16 btn-cyan rounded-[1.8rem] shadow-2xl flex items-center justify-center z-[500] hover:scale-105 active:scale-95 transition-all">
                         <i data-lucide="message-square" class="w-7 h-7"></i>
-                        <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-red-600 rounded-full border-2 border-black animate-pulse"></span>
+                        <span class="absolute top-0 right-0 w-3 h-3 bg-red-600 rounded-full border-2 border-black animate-pulse"></span>
                     </button>
                 </div>
 
-                <!-- Chat Overlay -->
-                <div id="chatModal" class="fixed inset-0 bg-[#020202]/98 backdrop-blur-3xl z-[10000] hidden flex-col p-7 animate__animated">
+                <div id="chatModal" class="fixed inset-0 bg-[#000000]/98 backdrop-blur-3xl z-[10000] hidden flex-col p-7 animate__animated">
                     <div class="max-w-md mx-auto w-full h-full flex flex-col pt-10">
-                        <div class="flex justify-between items-center mb-10">
-                            <div>
-                                <h2 class="text-4xl font-space font-bold text-white tracking-tighter">GLOBAL CHAT</h2>
-                                <p class="text-[9px] font-black text-gray-700 uppercase tracking-[0.4em] mt-1">Private Hub</p>
-                            </div>
-                            <button id="closeChat" class="w-14 h-14 glass rounded-[1.8rem] flex items-center justify-center"><i data-lucide="x" class="w-6 h-6"></i></button>
+                        <div class="flex justify-between items-center mb-8">
+                            <h2 class="text-3xl font-space font-bold text-white tracking-tighter">GLOBAL CHAT</h2>
+                            <button id="closeChat" class="w-12 h-12 glass rounded-2xl flex items-center justify-center"><i data-lucide="x" class="w-6 h-6"></i></button>
                         </div>
-                        <div id="chatList" class="flex-1 overflow-y-auto space-y-6 pr-3 custom-scrollbar"></div>
-                        <div class="mt-8 flex gap-4 pb-8">
-                            <input type="text" id="chatInp" placeholder="Tulis pesan..." class="flex-1 h-16 px-7 glass rounded-[1.8rem] text-sm border-white/5">
-                            <button id="chatSend" class="w-16 h-16 btn-cyan rounded-[1.8rem] flex items-center justify-center text-black">
+                        <div id="chatHistory" class="flex-1 overflow-y-auto space-y-5 pr-3 custom-scrollbar"></div>
+                        <div class="mt-6 flex gap-3 pb-10">
+                            <input type="text" id="chatInp" placeholder="Tulis pesan..." class="flex-1 h-15 px-6 glass rounded-2xl text-sm border-white/5">
+                            <button id="chatSend" class="w-15 h-15 btn-cyan rounded-2xl flex items-center justify-center shadow-xl shadow-cyan-500/30">
                                 <i data-lucide="send" class="w-6 h-6"></i>
                             </button>
                         </div>
@@ -375,11 +352,11 @@
                 </div>
             `;
 
-            // Bindings
+            // BIND EVENTS
             document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => location.reload());
             
-            const buyBtn = document.getElementById('buyBtn');
-            if(buyBtn) buyBtn.onclick = handleBuy;
+            const bBtn = document.getElementById('buyBtn');
+            if(bBtn) bBtn.onclick = handleBuy;
 
             const dBtn = document.getElementById('depoBtn');
             if(dBtn) dBtn.onclick = handleDepo;
@@ -391,7 +368,7 @@
                 const modal = document.getElementById('chatModal');
                 modal.classList.remove('hidden', 'animate__fadeOutDown');
                 modal.classList.add('flex', 'animate__fadeInUp');
-                renderChatList();
+                updateChatUI();
             };
             document.getElementById('closeChat').onclick = () => {
                 const modal = document.getElementById('chatModal');
@@ -403,53 +380,52 @@
             updateBalance();
         }
 
-        function renderHistoryList(items, type) {
-            if(!items || items.length === 0) return '<div class="py-12 flex flex-col items-center opacity-20"><p class="text-[9px] font-black uppercase">Belum Ada Riwayat</p></div>';
+        function renderHistory(items, label) {
+            if(!items || items.length === 0) return '<p class="text-center py-10 text-[9px] text-gray-700 font-bold uppercase tracking-[0.2em]">Belum Ada Aktifitas</p>';
             return items.sort((a,b) => b.timestamp - a.timestamp).map(i => `
-                <div class="glass p-5 rounded-[2rem] flex justify-between items-center text-[11px] animate_animated animate_fadeInUp border-white/5">
+                <div class="glass p-5 rounded-3xl flex justify-between items-center text-[11px] animate_animated animate_fadeInUp border-white/5">
                     <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-2xl glass flex items-center justify-center ${type === 'DEPOSIT' ? 'text-cyan-500' : 'text-red-500'}">
-                            <i data-lucide="${type === 'DEPOSIT' ? 'arrow-down' : 'arrow-up'}" class="w-5 h-5"></i>
+                        <div class="w-9 h-9 rounded-xl glass border-white/10 flex items-center justify-center ${label === 'DEPOSIT' ? 'text-cyan-500' : 'text-red-500'}">
+                            <i data-lucide="${label === 'DEPOSIT' ? 'plus' : 'minus'}" class="w-4 h-4"></i>
                         </div>
                         <div>
-                            <p class="text-[9px] font-black uppercase opacity-40 mb-0.5">${type}</p>
-                            <p class="font-bold text-[13px] tracking-tight">${fmt(i.nominal)}</p>
+                            <p class="text-[9px] font-black ${label === 'DEPOSIT' ? 'text-cyan-500' : 'text-red-500'} uppercase mb-0.5 tracking-tighter">${label}</p>
+                            <p class="font-bold opacity-90">${fmt(i.nominal)}</p>
                         </div>
                     </div>
                     <div class="text-right">
-                        <p class="text-[9px] text-gray-700 font-bold mb-1.5">${new Date(i.timestamp).toLocaleDateString()}</p>
-                        <span class="px-3 py-1 rounded-lg text-[9px] font-black uppercase ${i.status === 'selesai' ? 'bg-cyan-500/10 text-cyan-400' : 'bg-white/5 text-gray-600'}">${i.status || 'Active'}</span>
+                        <p class="text-[8px] text-gray-700 font-bold mb-1">${new Date(i.timestamp).toLocaleDateString()}</p>
+                        <span class="text-[8px] font-black uppercase ${i.status === 'selesai' ? 'text-cyan-400' : 'text-gray-500'}">${i.status || 'Active'}</span>
                     </div>
                 </div>
             `).join('');
-            function fmt(v){ return 'Rp ' + Number(v).toLocaleString('id-ID'); }
         }
 
-        // --- SISTEM ---
+        // --- CORE LOGIC ---
         window.switchTab = (tab) => { state.activeTab = tab; renderMain(); };
 
         async function handleDepo() {
             try {
                 await push(ref(db, "topup"), { uid: state.user.uid, email: state.user.email, nominal: 50000, status: 'pending', timestamp: Date.now() });
-                notify("Request Berhasil dikirim!");
-            } catch (e) { notify("Koneksi Error", 'error'); }
+                notify("Permintaan Saldo Terkirim.");
+            } catch (e) { notify("Error Komunikasi", 'error'); }
         }
 
         async function handleBuy() {
-            if(state.balance < 20000) return notify("Saldo Tidak Cukup!", 'error');
+            if(state.balance < 20000) return notify("Saldo Tidak Mencukupi", 'error');
             try {
                 await push(ref(db, invest_history/${state.user.uid}), { tanggalBeli: Date.now() });
-                notify("Investasi Aktif!");
-            } catch (e) { notify("Error Sistem", 'error'); }
+                notify("Paket VIP Berhasil Aktif.");
+            } catch (e) { notify("Gagal Memproses", 'error'); }
         }
 
         async function handleWithdraw(n) {
-            if (n < 50000) return notify("Min Penarikan Rp 50.000", 'error');
-            if (state.balance < (n + 2500)) return notify("Saldo Kurang!", 'error');
+            if (n < 50000) return notify("Minimal penarikan Rp 50.000", 'error');
+            if (state.balance < (n + 2500)) return notify("Saldo Kurang Untuk Biaya Admin", 'error');
             try {
                 await push(ref(db, "penarikan"), { uid: state.user.uid, email: state.user.email, nominal: n, biayaAdmin: 2500, status: 'pending', timestamp: Date.now() });
-                notify("Request Sedang Diproses.");
-            } catch (e) { notify("Gagal Request", 'error'); }
+                notify("Permintaan WD Diproses.");
+            } catch (e) { notify("Terjadi Gangguan", 'error'); }
         }
 
         async function sendChat() {
@@ -462,25 +438,26 @@
             } catch (e) { notify("Gagal Kirim", 'error'); }
         }
 
+        // Logic Penghitungan Profit Otomatis (Sistem 7.21)
         function updateBalance() {
             const now = Date.now();
-            const d = state.deposits.filter(x => x.status === 'selesai').reduce((a,c) => a + c.nominal, 0);
-            const w = state.withdrawals.reduce((a,c) => a + (c.nominal + (c.biayaAdmin || 0)), 0);
-            let p = 0;
+            const dTotal = state.deposits.filter(x => x.status === 'selesai').reduce((a,c) => a + c.nominal, 0);
+            const wTotal = state.withdrawals.reduce((a,c) => a + (c.nominal + (c.biayaAdmin || 0)), 0);
+            let pTotal = 0;
             state.investments.forEach(i => {
                 const days = Math.floor((now - i.tanggalBeli) / 86400000);
-                p += Math.min(days, 60) * 500;
+                pTotal += Math.min(days, 60) * 500;
             });
-            state.balance = d + p - w - (state.investments.length * 20000);
+            state.balance = dTotal + pTotal - wTotal - (state.investments.length * 20000);
         }
 
-        function renderChatList() {
-            const box = document.getElementById('chatList');
+        function updateChatUI() {
+            const box = document.getElementById('chatHistory');
             if(!box) return;
             box.innerHTML = state.chats.map(m => `
-                <div class="${m.uid === state.user.uid ? 'text-right pl-14' : 'pr-14'} animate_animated animate_fadeIn">
-                    <p class="text-[9px] font-black text-cyan-700 uppercase tracking-widest mb-2">${m.email.split('@')[0]}</p>
-                    <div class="inline-block p-5 rounded-[2rem] ${m.uid === state.user.uid ? 'bg-cyan-500 text-black font-extrabold' : 'glass border-white/5 text-gray-200'} text-[13px] shadow-2xl break-words">
+                <div class="${m.uid === state.user.uid ? 'text-right pl-12' : 'pr-12'} animate_animated animate_fadeIn">
+                    <p class="text-[9px] font-black text-cyan-700 uppercase tracking-widest mb-1.5">${m.email.split('@')[0]}</p>
+                    <div class="inline-block p-4 rounded-3xl ${m.uid === state.user.uid ? 'bg-cyan-500 text-black font-extrabold' : 'glass border-white/5'} text-[13px] shadow-xl break-words">
                         ${m.m}
                     </div>
                 </div>
@@ -488,7 +465,7 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        // --- AUTH & DATA ---
+        // --- AUTH OBSERVERS ---
         onAuthStateChanged(auth, (fbUser) => {
             if (fbUser) {
                 state.user = { uid: fbUser.uid, email: fbUser.email };
@@ -506,9 +483,8 @@
                 });
                 onValue(rtdbQuery(ref(db, 'global_chats'), limitToLast(30)), (s) => {
                     const d = []; s.forEach(c => d.push({...c.val(), id: c.key}));
-                    state.chats = d; renderChatList();
+                    state.chats = d; updateChatUI();
                 });
-                onValue(ref(db, '.info/connected'), (snap) => { if (snap.val() === true) console.log("System Connected"); });
             } else {
                 state.user = null; render();
             }
