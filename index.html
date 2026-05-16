@@ -307,11 +307,17 @@
                 });
         }
 
-        // NOTIFIKASI REGISTER
+        // NOTIFIKASI REGISTER (SUDAH DI-VALIDASI @GMAIL.COM)
         function register() {
-            const email = document.getElementById('regUser').value;
+            const email = document.getElementById('regUser').value.trim();
             const pass = document.getElementById('regPass').value;
+            
             if(!email || pass.length < 6) return Swal.fire('Data Lemah', 'Email harus valid & Password min 6 karakter!', 'warning');
+
+            // VALIDASI: Memastikan email berakhiran @gmail.com
+            if (!email.toLowerCase().endsWith('@gmail.com')) {
+                return Swal.fire('Email Tidak Valid', 'Pendaftaran wajib menggunakan akun @gmail.com!', 'error');
+            }
 
             sedangDaftar = true;
             Swal.fire({ title: 'Membuat Akun...', didOpen: () => { Swal.showLoading() } });
