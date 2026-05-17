@@ -276,7 +276,7 @@
             </div>
         </main>
 
-        <!-- BOTTOM NAV BAR (MENGGUNAKAN SVG NATIVE INTERNAL - ANTI ERROR/RUSAK) -->
+        <!-- BOTTOM NAV BAR -->
         <nav class="fixed bottom-0 left-0 right-0 bg-[#070a13]/80 backdrop-blur-2xl border-t border-white/5 px-4 py-3 flex justify-between items-center z-[9000]">
             <!-- BERITA -->
             <button onclick="showSection('newsBox', this)" class="menu-item menu-active flex flex-col items-center gap-1 flex-1">
@@ -340,7 +340,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <script>
-        // SCRIPT PROTEKSI FITUR ANTI-SALIN & REAKSI TEKAN LAMA (HOLD)
+        // SCRIPT PROTEKSI FITUR ANTI-SALIN
         function alertAksesDitolak() {
             Swal.fire({
                 icon: 'error',
@@ -351,26 +351,13 @@
             });
         }
 
-        // Blokir Klik Kanan / Tahan Lama (Hold HP)
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            alertAksesDitolak();
-        });
-
-        // Blokir Kombinasi Tombol Copy Keyboard
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); alertAksesDitolak(); });
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 65)) {
-                e.preventDefault();
-                alertAksesDitolak();
-                return false;
+                e.preventDefault(); alertAksesDitolak(); return false;
             }
         });
-
-        // Blokir Event Copy Mekanis
-        document.addEventListener('copy', function(e) {
-            e.preventDefault();
-            alertAksesDitolak();
-        });
+        document.addEventListener('copy', function(e) { e.preventDefault(); alertAksesDitolak(); });
 
         // FIREBASE INITIALIZATION
         const firebaseConfig = {
@@ -387,36 +374,37 @@
         let _lastDepo = 0, _lastTarik = 0;
         let isSaldoHidden = false;
 
+        // PERBAIKAN UTAMA: Manajemen state Auth State agar tidak menahan proses halaman
         auth.onAuthStateChanged(user => {
-            if (sedangDaftar) return;
             if (user) {
+                // Sembunyikan Auth Box, Buka Dashboard Utama
                 document.getElementById('authContainer').classList.add('hidden');
                 document.getElementById('dashboard').classList.remove('hidden');
                 document.getElementById('chatBtn').style.display = 'flex';
                 document.getElementById('emailText').innerText = user.email;
+                
                 db.ref("users/" + user.uid + "/photo").on("value", snap => {
                     if (snap.val()) document.getElementById('userImg').src = snap.val();
                 });
+                
                 showPopup();
                 listenData(user.uid);
                 listenChat();
             } else {
-                document.getElementById('dashboard').classList.add('hidden');
-                document.getElementById('authContainer').classList.remove('hidden');
-                document.getElementById('chatBtn').style.display = 'none';
+                if (!sedangDaftar) {
+                    document.getElementById('dashboard').classList.add('hidden');
+                    document.getElementById('authContainer').classList.remove('hidden');
+                    document.getElementById('chatBtn').style.display = 'none';
+                }
             }
         });
 
         function login() {
-            const email = document.getElementById('loginUser').value;
+            const email = document.getElementById('loginUser').value.trim();
             const pass = document.getElementById('loginPass').value;
             if(!email || !pass) return Swal.fire('Oops!', 'Lengkapi email dan password!', 'warning');
             
-            Swal.fire({
-                title: 'Menghubungkan...',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading() }
-            });
+            Swal.fire({ title: 'Menghubungkan...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
 
             auth.signInWithEmailAndPassword(email, pass)
                 .then(() => {
@@ -432,23 +420,23 @@
             const pass = document.getElementById('regPass').value;
             
             if(!email || pass.length < 6) return Swal.fire('Data Lemah', 'Email harus valid & Password min 6 karakter!', 'warning');
-
             if (!email.toLowerCase().endsWith('@gmail.com')) {
                 return Swal.fire('Email Tidak Valid', 'Pendaftaran wajib menggunakan akun @gmail.com!', 'error');
             }
 
             sedangDaftar = true;
-            Swal.fire({ title: 'Membuat Akun...', didOpen: () => { Swal.showLoading() } });
+            Swal.fire({ title: 'Membuat Akun...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
 
             auth.createUserWithEmailAndPassword(email, pass)
                 .then(() => { 
-                    sedangDaftar=false; 
-                    Swal.fire('Sukses!', 'Akun berhasil dibuat, silakan masuk.', 'success');
+                    Swal.fire('Sukses!', 'Akun berhasil dibuat, silakan masuk menggunakan akun baru Anda.', 'success');
                     toggleAuth(false); 
-                    auth.signOut(); 
+                    auth.signOut().then(() => {
+                        sedangDaftar = false;
+                    });
                 })
                 .catch(e => { 
-                    sedangDaftar=false;
+                    sedangDaftar = false;
                     Swal.fire('Registrasi Gagal', e.message, 'error');
                 });
         }
@@ -562,7 +550,8 @@
             });
 
             db.ref("invest_history/" + uid).on("value", snap => {
-                historyInv = []; snap.forEach(c => historyInv.push(c.val()));
+                historyInv = []; 
+                snap.forEach(c => { historyInv.push(c.val()); });
                 hitungSaldo();
             });
         }
@@ -603,26 +592,31 @@
         }
 
         function logout() { auth.signOut().then(() => location.reload()); }
+        
         function toggleAuth(r) {
             document.getElementById('loginBox').classList.toggle('hidden', r);
             document.getElementById('registerBox').classList.toggle('hidden', !r);
         }
+        
         function showSection(id, el) {
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
             document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('menu-active'));
             el.classList.add('menu-active');
         }
+        
         function toggleChat() {
             const w = document.getElementById('chatWidget');
             w.style.display = (w.style.display === 'flex') ? 'none' : 'flex';
         }
+        
         function sendChat() {
             const inp = document.getElementById('chatInput');
             if (!inp.value.trim()) return;
             db.ref("global_chats").push({ m: inp.value.trim(), t: Date.now(), uid: auth.currentUser.uid });
             inp.value = "";
         }
+        
         function listenChat() {
             db.ref("global_chats").limitToLast(15).on("value", snap => {
                 const box = document.getElementById('chatContent');
@@ -640,12 +634,15 @@
                 box.scrollTop = box.scrollHeight;
             });
         }
+        
         function uploadFoto() {
             const f = document.getElementById('fileInput').files[0];
+            if(!f) return;
             const rd = new FileReader();
             rd.onload = e => db.ref("users/" + auth.currentUser.uid).update({ photo: e.target.result });
             rd.readAsDataURL(f);
         }
+        
         function openGallery() { document.getElementById('fileInput').click(); }
         function showPopup() { document.getElementById('announcementPopup').style.display = "flex"; }
         function closePopup() { document.getElementById('announcementPopup').style.display = "none"; }
